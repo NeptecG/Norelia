@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Heart, ShoppingBag, X, Search } from 'lucide-react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { BRAND, MEN_NAV_CATS, WOMEN_NAV_CATS, NAV_CAT_TO_SLUG } from '@/lib/constants'
 import { PRODUCTS } from '@/data/products'
@@ -29,6 +30,14 @@ function useIsMobile() {
 
 export function Nav() {
   const isMobile = useIsMobile()
+  const shouldReduceMotion = useReducedMotion()
+
+  // Dropdown animation variants — computed inside component to depend on shouldReduceMotion
+  const dropdownVariants = {
+    initial: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -4 },
+    animate: shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 },
+    exit:    shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -4 },
+  }
 
   // Local state
   const [activeMenu, setActiveMenu]   = useState<'men' | 'women' | null>(null)
@@ -109,31 +118,47 @@ export function Nav() {
               className="relative"
               onMouseEnter={() => openMenu('men')}
               onMouseLeave={closeMenu}
+              onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
             >
-              <Link href="/men" className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors">
+              <Link
+                href="/men"
+                aria-expanded={activeMenu === 'men'}
+                aria-haspopup="menu"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              >
                 Men
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
-              {activeMenu === 'men' && (
-                <div className="absolute top-[calc(100%+1px)] left-1/2 -translate-x-1/2 bg-surface-alt border border-border py-1.5 min-w-[140px] z-50">
-                  {MEN_NAV_CATS.map(cat => (
-                    <Link
-                      key={cat}
-                      href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
-                      onClick={() => setActiveMenu(null)}
-                      className={cn(
-                        'group/item relative block px-5 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase transition-colors',
-                        cat === 'Sales' ? 'text-destructive hover:text-destructive' : 'text-on-surface/82 hover:text-on-surface',
-                      )}
-                    >
-                      <span className="relative">
-                        {cat}
-                        <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {activeMenu === 'men' && (
+                  <motion.div
+                    key="men-dropdown"
+                    variants={dropdownVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    className="absolute top-[calc(100%+1px)] left-1/2 -translate-x-1/2 bg-surface-alt border border-border py-1.5 min-w-[140px] z-50"
+                  >
+                    {MEN_NAV_CATS.map(cat => (
+                      <Link
+                        key={cat}
+                        href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
+                        onClick={() => setActiveMenu(null)}
+                        className={cn(
+                          'group/item relative block px-5 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase transition-colors',
+                          cat === 'Sales' ? 'text-destructive hover:text-destructive' : 'text-on-surface/82 hover:text-on-surface',
+                        )}
+                      >
+                        <span className="relative">
+                          {cat}
+                          <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
+                        </span>
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Women dropdown */}
@@ -141,31 +166,47 @@ export function Nav() {
               className="relative"
               onMouseEnter={() => openMenu('women')}
               onMouseLeave={closeMenu}
+              onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
             >
-              <Link href="/women" className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors">
+              <Link
+                href="/women"
+                aria-expanded={activeMenu === 'women'}
+                aria-haspopup="menu"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              >
                 Women
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
-              {activeMenu === 'women' && (
-                <div className="absolute top-[calc(100%+1px)] left-1/2 -translate-x-1/2 bg-surface-alt border border-border py-1.5 min-w-[140px] z-50">
-                  {WOMEN_NAV_CATS.map(cat => (
-                    <Link
-                      key={cat}
-                      href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
-                      onClick={() => setActiveMenu(null)}
-                      className={cn(
-                        'group/item relative block px-5 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase transition-colors',
-                        cat === 'Sales' ? 'text-destructive hover:text-destructive' : 'text-on-surface/82 hover:text-on-surface',
-                      )}
-                    >
-                      <span className="relative">
-                        {cat}
-                        <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <AnimatePresence>
+                {activeMenu === 'women' && (
+                  <motion.div
+                    key="women-dropdown"
+                    variants={dropdownVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    className="absolute top-[calc(100%+1px)] left-1/2 -translate-x-1/2 bg-surface-alt border border-border py-1.5 min-w-[140px] z-50"
+                  >
+                    {WOMEN_NAV_CATS.map(cat => (
+                      <Link
+                        key={cat}
+                        href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
+                        onClick={() => setActiveMenu(null)}
+                        className={cn(
+                          'group/item relative block px-5 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase transition-colors',
+                          cat === 'Sales' ? 'text-destructive hover:text-destructive' : 'text-on-surface/82 hover:text-on-surface',
+                        )}
+                      >
+                        <span className="relative">
+                          {cat}
+                          <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
+                        </span>
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Studio */}
