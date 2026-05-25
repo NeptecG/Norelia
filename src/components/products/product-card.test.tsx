@@ -1,8 +1,11 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { ProductCard } from './product-card'
 import type { Product } from '@/types'
+import { useFavoritesStore } from '@/stores/favorites-store'
+import { useCartStore } from '@/stores/cart-store'
+import { useUIStore } from '@/stores/ui-store'
 
 // Mock next/image — omit non-DOM props (fill, priority) to avoid React warnings
 vi.mock('next/image', () => ({
@@ -25,26 +28,28 @@ vi.mock('next/link', () => ({
 
 // Mock Zustand stores (localStorage unavailable in jsdom)
 vi.mock('@/stores/favorites-store', () => ({
-  useFavoritesStore: () => ({
+  useFavoritesStore: vi.fn(() => ({
     favorites: [],
     toggleFavorite: vi.fn(),
     isFavorite: () => false,
-  }),
+  })),
 }))
 
 vi.mock('@/stores/cart-store', () => ({
-  useCartStore: () => ({
+  useCartStore: vi.fn(() => ({
     cartItems: {},
     addToCart: vi.fn(),
     cartCount: () => 0,
-  }),
+  })),
 }))
 
 vi.mock('@/stores/ui-store', () => ({
-  useUIStore: () => ({
+  useUIStore: vi.fn(() => ({
     showToast: vi.fn(),
     sidePanel: null,
-  }),
+    setSidePanel: vi.fn(),
+    toggleSidePanel: vi.fn(),
+  })),
 }))
 
 const baseProduct: Product = {
@@ -58,6 +63,8 @@ const baseProduct: Product = {
   tag: '',
   img: '/images/products/ts-001.jpg',
 }
+
+const mockProduct = baseProduct
 
 describe('ProductCard', () => {
   it('renders the product name', () => {
@@ -89,5 +96,26 @@ describe('ProductCard', () => {
     expect(original).toHaveClass('line-through')
     // Sale price shown
     expect(screen.getByText('€27')).toBeInTheDocument()
+  })
+
+  it('calls toggleFavorite when heart button is clicked', () => {
+    const toggleFavorite = vi.fn()
+    vi.mocked(useFavoritesStore).mockReturnValue({ favorites: [], toggleFavorite, isFavorite: () => false })
+    render(<ProductCard product={mockProduct} />)
+    const heartBtn = screen.getByLabelText(/add to favorites/i)
+    fireEvent.click(heartBtn)
+    expect(toggleFavorite).toHaveBeenCalledWith(mockProduct.id)
+  })
+
+  it('calls addToCart and showToast when Quick Add is clicked', () => {
+    const addToCart = vi.fn()
+    const showToast = vi.fn()
+    vi.mocked(useCartStore).mockReturnValue({ cartItems: {}, addToCart, cartCount: () => 0 })
+    vi.mocked(useUIStore).mockReturnValue({ showToast, sidePanel: null, setSidePanel: vi.fn(), toggleSidePanel: vi.fn() })
+    render(<ProductCard product={mockProduct} />)
+    const quickAdd = screen.getByText(/quick add/i)
+    fireEvent.click(quickAdd)
+    expect(addToCart).toHaveBeenCalledWith(mockProduct.id, 1)
+    expect(showToast).toHaveBeenCalled()
   })
 })

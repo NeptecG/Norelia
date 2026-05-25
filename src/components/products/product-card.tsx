@@ -37,7 +37,7 @@ export function ProductCard({ product, priority = false }: Props) {
   const lastToggleRef = useRef<Record<number, number>>({})
 
   const favorited = isFavorite(product.id)
-  const outOfStock = product.salePrice !== undefined && getStock(product.id) === 0
+  const outOfStock = getStock(product.id) === 0
 
   function handleFavorite(e: React.MouseEvent) {
     e.preventDefault()
@@ -123,7 +123,7 @@ export function ProductCard({ product, priority = false }: Props) {
             <Heart
               size={16}
               className={cn(
-                favorited ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-on-surface-muted',
+                favorited ? 'fill-destructive stroke-destructive' : 'fill-none stroke-on-surface-muted',
               )}
             />
           </motion.button>
@@ -169,11 +169,11 @@ export function ProductCard({ product, priority = false }: Props) {
           {SWATCHES.map((s) => (
             <span
               key={s.name}
+              style={{ '--swatch-color': s.hex } as React.CSSProperties}
               className={cn(
-                'h-3 w-3 rounded-full',
+                'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)]',
                 s.outline && 'ring-1 ring-border ring-offset-1',
               )}
-              style={{ backgroundColor: s.hex }}
             />
           ))}
         </motion.div>
