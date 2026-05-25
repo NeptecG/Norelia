@@ -62,6 +62,8 @@ export function catLabel(cat: string): string {
     HOODIES:  'Hoodie',
     ZIPPERS:  'Zip Hoodie',
     TANKTOPS: 'Tank Top',
+    NEWIN:    'New In',
+    SALES:    'Sale',
   }
   return map[cat] ?? cat
 }
@@ -72,6 +74,8 @@ export function catLabelPlural(cat: string): string {
     HOODIES:  'Hoodies',
     ZIPPERS:  'Zippers',
     TANKTOPS: 'Tank Tops',
+    NEWIN:    'New In',
+    SALES:    'Sale',
   }
   return map[cat] ?? cat
 }
