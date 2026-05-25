@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/products/product-card'
 import type { Product } from '@/types'
 
+const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
+
 // Module-level hook — not defined inside FeaturedCarousel
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
@@ -81,7 +83,8 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
                 className="absolute inset-x-0 bottom-0 h-px bg-on-surface origin-left"
                 initial={{ scaleX: 0 }}
                 whileHover={{ scaleX: reducedMotion ? 0 : 1 }}
-                transition={{ duration: 0.25, ease: [0.25, 0, 0, 1] }}
+                whileFocus={{ scaleX: reducedMotion ? 0 : 1 }}
+                transition={{ duration: 0.25, ease: EASE }}
               />
             </Link>
           )}
@@ -104,7 +107,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
                   transition={{
                     duration: 0.4,
                     delay: idx * 0.08,
-                    ease: [0.25, 0, 0, 1],
+                    ease: EASE,
                   }}
                 >
                   <ProductCard product={product} />

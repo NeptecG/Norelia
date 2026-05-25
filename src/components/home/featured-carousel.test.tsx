@@ -132,14 +132,13 @@ describe('FeaturedCarousel', () => {
   it('shows dot pagination when there are more than 4 products', () => {
     render(<FeaturedCarousel title="New In" products={FIVE_PRODUCTS} />)
     act(() => vi.advanceTimersByTime(1000))
-    const dots = screen.getAllByRole('button')
-    // 2 pages → 2 dot buttons
+    const dots = screen.getAllByLabelText(/Go to page/)
     expect(dots.length).toBeGreaterThanOrEqual(2)
   })
 
   it('does NOT show dot pagination when there are 4 or fewer products', () => {
     render(<FeaturedCarousel title="New In" products={FOUR_PRODUCTS} />)
     act(() => vi.advanceTimersByTime(1000))
-    expect(screen.queryByRole('button')).toBeNull()
+    expect(screen.queryByLabelText(/Go to page/)).toBeNull()
   })
 })
