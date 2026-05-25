@@ -2,6 +2,12 @@ import type { Metadata } from 'next'
 import { Bebas_Neue, DM_Sans } from 'next/font/google'
 import './globals.css'
 import { BRAND } from '@/lib/constants'
+import { Nav }           from '@/components/layout/nav'
+import { SiteFooter }    from '@/components/layout/site-footer'
+import { NewsletterBar } from '@/components/layout/newsletter-bar'
+import { SidePanel }     from '@/components/layout/side-panel'
+import { Toast }         from '@/components/layout/toast'
+import { GDPRBanner }    from '@/components/layout/gdpr-banner'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -27,7 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable}`}>
       <body className="font-body bg-surface text-on-surface antialiased">
-        {children}
+        <Nav />
+        <main>{children}</main>
+        <NewsletterBar />
+        <SiteFooter />
+        {/* Client-only overlays rendered after main content */}
+        <SidePanel />
+        <Toast />
+        <GDPRBanner />
       </body>
     </html>
   )
