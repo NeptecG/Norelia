@@ -1,3 +1,3 @@
 'use client'
 interface Props { onClose: () => void }
-export function CheckoutComingSoonModal({ onClose }: Props) { return null }
+export function CheckoutComingSoonModal({ onClose: _onClose }: Props) { return null }
