@@ -3,6 +3,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { STORAGE_TTL_MS } from '@/lib/constants'
+import { PRODUCTS } from '@/data/products'
+import type { CartItem } from '@/types'
 
 interface CartStore {
   cartItems: Record<number, number>
@@ -11,6 +13,7 @@ interface CartStore {
   decrementCart:  (id: number) => void
   clearCart:      () => void
   cartCount:      () => number
+  cartLines:      () => CartItem[]
 }
 
 function makeTTLStorage() {
@@ -53,6 +56,13 @@ export const useCartStore = create<CartStore>()(
         }),
       clearCart: () => set({ cartItems: {} }),
       cartCount: () => Object.values(get().cartItems).reduce((sum, q) => sum + q, 0),
+      cartLines: () => Object.entries(get().cartItems)
+        .map(([id, qty]) => {
+          const product = PRODUCTS.find(p => p.id === Number(id))
+          if (!product) return null
+          return { ...product, qty }
+        })
+        .filter((item): item is CartItem => item !== null),
     }),
     { name: 'norelia_cart', storage: createJSONStorage(makeTTLStorage) },
   ),

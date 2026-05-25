@@ -3,7 +3,6 @@ interface Props {
   products: Product[]
   filter: string
   genderFilter?: string
-  onFilterChange?: (f: string) => void
 }
 export function ProductGrid({ products }: Props) {
   return (
