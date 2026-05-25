@@ -68,7 +68,10 @@ export function Nav() {
 
   // Close mobile menu on route change
   const pathname = usePathname()
-  useEffect(() => { setMobMenuOpen(false) }, [pathname])
+  useEffect(() => { setMobMenuOpen(false); setMobExpanded(null) }, [pathname])
+
+  // Clean up dropdown close timer on unmount
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current) }, [])
 
   // Dropdown helpers
   const openMenu = (name: 'men' | 'women') => {
@@ -119,11 +122,11 @@ export function Nav() {
               onMouseEnter={() => openMenu('men')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
+              aria-expanded={activeMenu === 'men'}
+              aria-haspopup="menu"
             >
               <Link
                 href="/men"
-                aria-expanded={activeMenu === 'men'}
-                aria-haspopup="menu"
                 className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 Men
@@ -167,11 +170,11 @@ export function Nav() {
               onMouseEnter={() => openMenu('women')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
+              aria-expanded={activeMenu === 'women'}
+              aria-haspopup="menu"
             >
               <Link
                 href="/women"
-                aria-expanded={activeMenu === 'women'}
-                aria-haspopup="menu"
                 className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 Women
@@ -386,7 +389,7 @@ export function Nav() {
           {/* Hamburger */}
           <button
             aria-label="Menu"
-            onClick={() => { setMobMenuOpen(v => !v); setSearchOpen(false) }}
+            onClick={() => { setMobMenuOpen(v => { if (v) setMobExpanded(null); return !v }); setSearchOpen(false) }}
             className="text-on-surface/82 flex items-center justify-center w-[22px] h-[22px]"
           >
             {mobMenuOpen ? <X size={20} strokeWidth={1.8} /> : (
@@ -447,9 +450,9 @@ export function Nav() {
         </div>
       )}
 
-      {/* Mobile menu overlay — bg-[#181818] is the dark panel colour matching surface-alt in dark mode */}
+      {/* Mobile menu overlay — inside .dark nav so bg-surface-alt resolves to dark surface */}
       {mobMenuOpen && (
-        <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-[#181818] z-[199] overflow-y-auto px-6 pb-12 pt-2">
+        <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2">
 
           <Link href="/" onClick={() => setMobMenuOpen(false)} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Home</Link>
 

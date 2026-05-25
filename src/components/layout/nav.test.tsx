@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@/stores/cart-store', () => ({ useCartStore: vi.fn() }))
@@ -68,5 +68,28 @@ describe('Nav', () => {
     render(<Nav />)
     expect(screen.getByLabelText(/saved items/i)).toBeTruthy()
     expect(screen.getByLabelText(/cart/i)).toBeTruthy()
+  })
+
+  it('shows Men dropdown on mouseenter', async () => {
+    render(<Nav />)
+    const menWrapper = document.querySelector('[aria-haspopup="menu"]') as HTMLElement
+    fireEvent.mouseEnter(menWrapper)
+    // MEN_NAV_CATS links should appear — check for at least one category link
+    expect(document.querySelector('a[href*="/men/"]')).toBeTruthy()
+  })
+
+  it('closes Men dropdown on Escape key', async () => {
+    render(<Nav />)
+    const menWrapper = document.querySelector('[aria-haspopup="menu"]') as HTMLElement
+    fireEvent.mouseEnter(menWrapper)
+    fireEvent.keyDown(menWrapper, { key: 'Escape' })
+    expect(menWrapper.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('calls setShowSignIn when Sign In clicked', () => {
+    render(<Nav />)
+    const setShowSignIn = vi.mocked(useUIStore)().setShowSignIn
+    fireEvent.click(screen.getByLabelText(/sign in/i))
+    expect(setShowSignIn).toHaveBeenCalledWith(true)
   })
 })
