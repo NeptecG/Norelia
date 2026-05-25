@@ -82,7 +82,10 @@ const FOUR_PRODUCTS = [
 
 const FIVE_PRODUCTS = [...FOUR_PRODUCTS, makeProduct(5, 'Product Five')]
 
-beforeEach(() => vi.useFakeTimers())
+beforeEach(() => {
+  vi.useFakeTimers()
+  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1280 })
+})
 afterEach(() => {
   vi.useRealTimers()
   vi.clearAllMocks()
