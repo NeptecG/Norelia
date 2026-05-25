@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PRODUCTS } from '@/data/products'
 import { BRAND } from '@/lib/constants'
+import { ProductPage } from '@/components/products/product-page'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -23,13 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductDetailPage({ params }: Props) {
   const { id } = await params
   const product = PRODUCTS.find(p => p.code === id)
   if (!product) notFound()
-  return (
-    <main className="min-h-screen pt-20 px-8 bg-surface">
-      <p className="font-display text-4xl text-on-surface">{product.name} (shell)</p>
-    </main>
-  )
+  return <ProductPage product={product} />
 }

@@ -8,6 +8,8 @@ import { NewsletterBar } from '@/components/layout/newsletter-bar'
 import { SidePanel }     from '@/components/layout/side-panel'
 import { Toast }         from '@/components/layout/toast'
 import { GDPRBanner }    from '@/components/layout/gdpr-banner'
+import { SignInModal }             from '@/components/modals/sign-in-modal'
+import { CheckoutComingSoonModal } from '@/components/modals/checkout-coming-soon-modal'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -41,6 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SidePanel />
         <Toast />
         <GDPRBanner />
+        <SignInModal />
+        <CheckoutComingSoonModal />
       </body>
     </html>
   )
