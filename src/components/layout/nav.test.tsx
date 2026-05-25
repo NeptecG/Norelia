@@ -87,8 +87,12 @@ describe('Nav', () => {
   })
 
   it('calls setShowSignIn when Sign In clicked', () => {
+    const setShowSignIn = vi.fn()
+    vi.mocked(useUIStore).mockReturnValueOnce({
+      toggleSidePanel: vi.fn(),
+      setShowSignIn,
+    } as ReturnType<typeof useUIStore>)
     render(<Nav />)
-    const setShowSignIn = vi.mocked(useUIStore)().setShowSignIn
     fireEvent.click(screen.getByLabelText(/sign in/i))
     expect(setShowSignIn).toHaveBeenCalledWith(true)
   })

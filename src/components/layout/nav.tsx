@@ -454,7 +454,7 @@ export function Nav() {
       {mobMenuOpen && (
         <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2">
 
-          <Link href="/" onClick={() => setMobMenuOpen(false)} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Home</Link>
+          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Home</Link>
 
           {/* Men accordion */}
           <button
@@ -468,7 +468,7 @@ export function Nav() {
             <Link
               key={cat}
               href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
-              onClick={() => setMobMenuOpen(false)}
+              onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
               className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
             >
               {cat}
@@ -487,17 +487,17 @@ export function Nav() {
             <Link
               key={cat}
               href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
-              onClick={() => setMobMenuOpen(false)}
+              onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
               className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
             >
               {cat}
             </Link>
           ))}
 
-          <Link href="/studio" onClick={() => setMobMenuOpen(false)} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Design Your Own</Link>
+          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Design Your Own</Link>
 
           <button
-            onClick={() => { setShowSignIn(true); setMobMenuOpen(false) }}
+            onClick={() => { setShowSignIn(true); setMobMenuOpen(false); setMobExpanded(null) }}
             className="block mt-7 w-full border border-on-surface/35 font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/75 px-6 py-3 text-left"
           >
             Sign In
