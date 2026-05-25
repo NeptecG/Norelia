@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
@@ -56,9 +57,9 @@ export function GDPRBanner() {
 
             <p className="font-body text-[12px] tracking-[0.06em] text-on-surface/70">
               We use cookies to enhance your experience.{' '}
-              <a href="/privacy" className="underline text-on-surface/60 hover:text-on-surface transition-colors duration-200">
+              <Link href="/privacy" className="underline text-on-surface/60 hover:text-on-surface transition-colors duration-200">
                 Learn more
-              </a>
+              </Link>
             </p>
 
             <div className="flex items-center gap-4 shrink-0">
