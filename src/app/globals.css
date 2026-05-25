@@ -69,6 +69,17 @@
   }
 }
 
+@layer utilities {
+  /* Hide scrollbar while preserving scroll behaviour across browsers */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer base {
   :root {
     /* Shadcn base tokens */
