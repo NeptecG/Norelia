@@ -73,7 +73,9 @@ function HeroHalf({
           fill
           priority
           sizes="50vw"
-          style={{ objectFit: 'cover', objectPosition }}
+          className="object-cover"
+          // objectPosition is dynamic data — inline style is unavoidable here
+          style={{ objectPosition }}
         />
       </motion.div>
 
@@ -118,7 +120,7 @@ export function Hero() {
   const [hovered, setHovered] = useState<'women' | 'men' | null>(null)
 
   return (
-    <section className="flex flex-col md:flex-row md:h-[88vh] border-b border-on-surface">
+    <section className="flex flex-col md:flex-row md:h-[88vh] border-b border-border">
       <HeroHalf
         side="women"
         label="WOMEN"

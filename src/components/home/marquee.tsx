@@ -23,7 +23,7 @@ export function Marquee({ text = MARQUEE_TEXT, dark = false }: Props) {
       <div
         className={cn(
           'flex whitespace-nowrap animate-ticker font-body text-[11px] tracking-[0.2em] uppercase',
-          dark ? 'text-[rgba(255,255,255,0.92)]' : 'text-on-surface',
+          dark ? 'text-[color:var(--color-surface)] opacity-90' : 'text-on-surface',
         )}
       >
         {items}
