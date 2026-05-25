@@ -11,7 +11,7 @@ export function SignInModal() {
   const [tab, setTab] = useState<'signin' | 'register'>('signin')
 
   return (
-    <Dialog open={showSignIn} onOpenChange={(open) => { if (!open) setShowSignIn(false) }}>
+    <Dialog open={showSignIn} onOpenChange={(open) => { if (!open) { setShowSignIn(false); setTab('signin') } }}>
       <DialogContent className="dark bg-surface-alt p-0 max-w-[420px]" showCloseButton={false}>
 
         {/* Header */}

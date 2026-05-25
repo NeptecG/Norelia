@@ -32,7 +32,7 @@ beforeEach(() => {
 describe('ProductPage', () => {
   it('renders product name', () => {
     render(<ProductPage product={PROD} />)
-    expect(screen.getByText('TEST TEE')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'TEST TEE' })).toBeTruthy()
   })
   it('renders size buttons S through 3XL', () => {
     render(<ProductPage product={PROD} />)
@@ -49,5 +49,15 @@ describe('ProductPage', () => {
     render(<ProductPage product={PROD} />)
     fireEvent.click(screen.getByRole('button', { name: /^M$/ }))
     expect(screen.getByRole('button', { name: /add to cart/i })).not.toHaveAttribute('disabled')
+  })
+  it('calls addToRecent with the product on mount', () => {
+    const addToRecent = vi.fn()
+    vi.mocked(useUIStore).mockReturnValueOnce({
+      toggleSidePanel: vi.fn(),
+      showToast: vi.fn(),
+      addToRecent,
+    } as ReturnType<typeof useUIStore>)
+    render(<ProductPage product={PROD} />)
+    expect(addToRecent).toHaveBeenCalledWith(PROD)
   })
 })

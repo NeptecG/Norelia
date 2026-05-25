@@ -29,7 +29,8 @@ export function ProductPage({ product }: Props) {
 
   useEffect(() => {
     addToRecent(product)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Intentional: fire once on mount. `product` is a stable RSC prop; `addToRecent` is a stable Zustand action.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const stock = getStock(product.id) - (cartItems[product.id] ?? 0)
@@ -42,7 +43,7 @@ export function ProductPage({ product }: Props) {
   const catSlug = NAV_CAT_TO_SLUG[catKey] ?? ''
   const catHref = `${genderHref}/${catSlug}`
 
-  function handleAddToCart() {
+  const handleAddToCart = () => {
     if (!selectedSize || stock <= 0) return
     addToCart(product.id, qty)
     showToast(`${product.name} added to cart`, 'add')
@@ -83,9 +84,8 @@ export function ProductPage({ product }: Props) {
               <li aria-hidden="true"> / </li>
               <li><Link href={catHref}>{catLabelPlural(product.cat)}</Link></li>
               <li aria-hidden="true"> / </li>
-              {/* Zero-width space appended so getByText(name) targets only the <h1> */}
-              <li aria-current="page" aria-label={product.name}>
-                {product.name}{'​'}
+              <li aria-current="page" data-testid="breadcrumb-current">
+                {product.name}
               </li>
             </ol>
           </nav>
