@@ -1,3 +1,162 @@
+import type React from 'react'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { BRAND } from '@/lib/constants'
+
+// ── Column heading ─────────────────────────────────────────────────────────────
+
+function FooterHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-5">
+      {children}
+    </p>
+  )
+}
+
+// ── Footer link ────────────────────────────────────────────────────────────────
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/60 hover:text-on-surface transition-colors duration-200 mb-2.5"
+    >
+      {children}
+    </Link>
+  )
+}
+
+// ── Brand column ───────────────────────────────────────────────────────────────
+
+function BrandColumn() {
+  return (
+    <div>
+      <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-2')}>
+        {BRAND}
+      </p>
+      <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-7">
+        Premium Streetwear
+      </p>
+      <div className="flex gap-4">
+        {/* Instagram — inline SVG (lucide-react does not export Instagram in this version) */}
+        <a
+          href="https://instagram.com/norelia"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Norelia on Instagram"
+          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+          </svg>
+        </a>
+
+        {/* X (Twitter) — inline SVG */}
+        <a
+          href="https://x.com/norelia"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Norelia on X"
+          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M4 4l16 16M4 20L20 4" />
+          </svg>
+        </a>
+
+        {/* YouTube — inline SVG (lucide-react does not export Youtube in this version) */}
+        <a
+          href="https://youtube.com/@norelia"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Norelia on YouTube"
+          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+            <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  )
+}
+
+// ── Info column ────────────────────────────────────────────────────────────────
+
+function InfoColumn() {
+  return (
+    <div>
+      <FooterHeading>Information</FooterHeading>
+      <FooterLink href="/size-guide">Size Guide</FooterLink>
+      <FooterLink href="/studio">Studio</FooterLink>
+      <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
+      <FooterLink href="/privacy">Privacy Policy</FooterLink>
+      <FooterLink href="/terms">Terms of Service</FooterLink>
+    </div>
+  )
+}
+
+// ── Contact column ─────────────────────────────────────────────────────────────
+
+function ContactColumn() {
+  return (
+    <div>
+      <FooterHeading>Contact</FooterHeading>
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+        hello@norelia.com
+      </p>
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40 mb-2.5">
+        Mon–Fri, 9:00–17:00 CET
+      </p>
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40">
+        Free shipping over €60
+      </p>
+    </div>
+  )
+}
+
+// ── Payment column ─────────────────────────────────────────────────────────────
+
+function PaymentColumn() {
+  return (
+    <div>
+      <FooterHeading>Payment</FooterHeading>
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 leading-relaxed">
+        Visa · Mastercard · PayPal · Klarna
+      </p>
+    </div>
+  )
+}
+
+// ── SiteFooter ─────────────────────────────────────────────────────────────────
+
 export function SiteFooter() {
-  return <footer className="bg-surface-alt text-on-surface py-10" />
+  return (
+    <footer className="dark bg-surface-alt text-on-surface">
+      {/* Main columns */}
+      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-16">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <BrandColumn />
+          <InfoColumn />
+          <ContactColumn />
+          <PaymentColumn />
+        </div>
+      </div>
+
+      {/* Divider + copyright */}
+      <div className="border-t border-border">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/35 uppercase">
+            &copy; {new Date().getFullYear()} Norelia. All rights reserved.
+          </p>
+          <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/25 uppercase">
+            Made with craft &amp; care
+          </p>
+        </div>
+      </div>
+    </footer>
+  )
 }
