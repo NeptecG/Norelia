@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { PRODUCTS } from '@/data/products'
 import { BRAND } from '@/lib/constants'
 import { ProductPage } from '@/components/products/product-page'
+import { RelatedProducts } from '@/components/products/related-products'
+import { RecentlyViewedStrip } from '@/components/products/recently-viewed-strip'
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -28,5 +30,11 @@ export default async function ProductDetailPage({ params }: Props) {
   const { id } = await params
   const product = PRODUCTS.find(p => p.code === id)
   if (!product) notFound()
-  return <ProductPage product={product} />
+  return (
+    <>
+      <ProductPage product={product} />
+      <RelatedProducts product={product} />
+      <RecentlyViewedStrip />
+    </>
+  )
 }
