@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -29,15 +29,20 @@ export function NewsletterBar() {
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
+  useEffect(() => {
+    if (!submitted) return
+    const id = setTimeout(() => setSubmitted(false), 3000)
+    return () => clearTimeout(id)
+  }, [submitted])
+
   function onSubmit(_data: FormValues) {
     setSubmitted(true)
     reset()
-    setTimeout(() => setSubmitted(false), 3000)
   }
 
   return (
     <div className={cn(
-      'dark bg-surface-alt border-t border-border',
+      'dark bg-surface-alt border-t border-b border-border',
     )}>
       <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
@@ -53,7 +58,7 @@ export function NewsletterBar() {
 
         {/* Right: form or thank-you */}
         {submitted ? (
-          <p className="font-body text-[12px] tracking-[0.1em] text-on-surface/80">
+          <p role="status" aria-live="polite" className="font-body text-[12px] tracking-[0.1em] text-on-surface/80">
             You&apos;re on the list. ✓
           </p>
         ) : (

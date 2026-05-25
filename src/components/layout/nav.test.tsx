@@ -11,8 +11,10 @@ vi.mock('next/link', () => ({
     <a href={href} onClick={onClick} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
 }))
 vi.mock('next/image', () => ({
-  default: ({ alt, ...rest }: { alt: string; [key: string]: unknown }) =>
-    <img alt={alt} {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)} />,
+  default: ({ alt, ...rest }: { alt: string; [key: string]: unknown }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img alt={alt} {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)} />
+  ),
 }))
 vi.mock('next/navigation', () => ({
   usePathname: () => '/',

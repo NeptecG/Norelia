@@ -68,7 +68,13 @@ export function Nav() {
 
   // Close mobile menu on route change
   const pathname = usePathname()
-  useEffect(() => { setMobMenuOpen(false); setMobExpanded(null) }, [pathname])
+  useEffect(() => {
+    function closeMenu() {
+      setMobMenuOpen(false)
+      setMobExpanded(null)
+    }
+    closeMenu()
+  }, [pathname])
 
   // Clean up dropdown close timer on unmount
   useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current) }, [])

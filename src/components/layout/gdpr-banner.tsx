@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
@@ -10,17 +10,10 @@ const CONSENT_KEY = 'norelia_gdpr_consent'
 // ── GDPRBanner ─────────────────────────────────────────────────────────────────
 
 export function GDPRBanner() {
-  const [mounted, setMounted] = useState(false)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState<boolean>(
+    () => typeof window !== 'undefined' && !localStorage.getItem(CONSENT_KEY),
+  )
   const shouldReduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    setMounted(true)
-    const stored = localStorage.getItem(CONSENT_KEY)
-    if (!stored) setVisible(true)
-  }, [])
-
-  if (!mounted) return null
 
   function accept() {
     localStorage.setItem(CONSENT_KEY, 'accepted')

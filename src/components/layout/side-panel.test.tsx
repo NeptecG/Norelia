@@ -22,6 +22,7 @@ vi.mock('motion/react', () => ({
 
 // Mock next/image
 vi.mock('next/image', () => ({
+  // eslint-disable-next-line @next/next/no-img-element
   default: ({ alt, ...rest }: { alt: string; [key: string]: unknown }) => <img alt={alt} {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)} />,
 }))
 
