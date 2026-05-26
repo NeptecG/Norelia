@@ -26,9 +26,10 @@ vi.mock('@emailjs/browser', () => ({
 }))
 
 // Mock XMLSerializer + URL for download test
-global.XMLSerializer = class {
-  serializeToString() { return '<svg/>' }
-} as unknown as typeof XMLSerializer
+class MockXMLSerializer {
+  serializeToString(_node: Node): string { return '<svg/>' }
+}
+Object.defineProperty(global, 'XMLSerializer', { value: MockXMLSerializer, writable: true })
 global.URL.createObjectURL = vi.fn(() => 'blob:mock')
 global.URL.revokeObjectURL = vi.fn()
 
@@ -40,8 +41,18 @@ const mockSetShowCheckoutModal = vi.fn()
 
 function setupStore() {
   vi.mocked(useUIStore).mockReturnValue({
+    sidePanel:            null,
+    setSidePanel:         vi.fn(),
+    toggleSidePanel:      vi.fn(),
+    toast:                { msg: '', visible: false, type: 'add' },
+    showToast:            vi.fn(),
+    showSignIn:           false,
+    setShowSignIn:        vi.fn(),
+    showCheckoutModal:    false,
     setShowCheckoutModal: mockSetShowCheckoutModal,
-  } as ReturnType<typeof useUIStore>)
+    recentlyViewed:       [],
+    addToRecent:          vi.fn(),
+  })
 }
 
 beforeEach(() => {
@@ -175,6 +186,23 @@ describe('GarmentDesigner', () => {
     await waitFor(() => {
       expect(screen.getByText('ORDER RECEIVED')).toBeTruthy()
     })
+  })
+
+  it('calls emailjs.send when order form is submitted with env vars set', async () => {
+    vi.stubEnv('NEXT_PUBLIC_EMAILJS_SERVICE_ID', 'svc-test')
+    vi.stubEnv('NEXT_PUBLIC_EMAILJS_TEMPLATE_ID', 'tpl-test')
+    vi.stubEnv('NEXT_PUBLIC_EMAILJS_PUBLIC_KEY', 'pub-test')
+
+    render(<GarmentDesigner />)
+    fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    fireEvent.click(screen.getByRole('button', { name: /design order/i }))
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Test User' } })
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } })
+    fireEvent.click(screen.getByRole('button', { name: /place order/i }))
+    await screen.findByText('ORDER RECEIVED')
+    expect(vi.mocked(emailjs.send)).toHaveBeenCalled()
+
+    vi.unstubAllEnvs()
   })
 
   // ─── Success step / download button ───────────────────────────────────────

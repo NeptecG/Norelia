@@ -12,10 +12,19 @@ import { cn, getPrice } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor, DesignState } from '@/types'
 
-// ─── EmailJS env vars (optional — UI works gracefully when empty) ─────────────
-const EMAILJS_SERVICE  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID  ?? ''
-const EMAILJS_TEMPLATE = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? ''
-const EMAILJS_PUBLIC   = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY  ?? ''
+// ─── Module-level typed constants (avoids inline `as X[]` assertions) ─────────
+const GARMENT_TYPES: GarmentType[]  = ['tshirt', 'hoodie', 'zipper']
+const FIT_TYPES:     FitType[]      = ['normal', 'oversized']
+const PRINT_METHODS: PrintMethod[]  = ['dtg', 'embroidery']
+
+// Step numbers typed via `as const` so STEP_NUMS[i] is typed as 1 | 2 | 3
+const STEP_NUMS = [1, 2, 3] as const
+
+// Micro-typography constants: below Tailwind's standard scale, used for all uppercase labels
+const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted'
+
+/** 0.5 maps screen-pixel delta to SVG-coordinate delta for a ~800px SVG rendered at ~400px */
+const SVG_DRAG_SCALE = 0.5
 
 // ─── Order form schema ────────────────────────────────────────────────────────
 const orderSchema = z.object({
@@ -120,7 +129,7 @@ export function GarmentPreview({
         <path
           d={PATHS[garmentType][side]}
           fill={color.hex}
-          stroke={color.outline ? '#cccccc' : color.hex}
+          stroke={color.outline ? 'var(--color-border-subtle)' : color.hex}
           strokeWidth="1.5"
         />
         {/* Design zone — dotted border rect where print will appear */}
@@ -130,7 +139,7 @@ export function GarmentPreview({
           width="100"
           height="100"
           fill="none"
-          stroke="rgba(100,100,100,0.4)"
+          stroke="var(--color-border-subtle)"
           strokeWidth="1"
           strokeDasharray="4 3"
           aria-label="Print area"
@@ -144,19 +153,26 @@ export function GarmentPreview({
             width={designState.w}
             height={designState.h}
             className="cursor-move"
+            aria-label="Uploaded design — drag to reposition"
+            role="img"
+            tabIndex={0}
             onPointerDown={(e) => {
-              e.currentTarget.setPointerCapture(e.pointerId)
-              const startX = e.clientX
-              const startY = e.clientY
+              // SVGImageElement — narrowing from EventTarget is safe here
+              const el = e.currentTarget as SVGImageElement
+              el.setPointerCapture(e.pointerId)
+              let prevX = e.clientX
+              let prevY = e.clientY
               const move = (ev: PointerEvent) => {
-                onDesignMove?.(ev.clientX - startX, ev.clientY - startY)
+                onDesignMove?.(ev.clientX - prevX, ev.clientY - prevY)
+                prevX = ev.clientX
+                prevY = ev.clientY
               }
               const up = () => {
-                e.currentTarget.removeEventListener('pointermove', move)
-                e.currentTarget.removeEventListener('pointerup', up)
+                el.removeEventListener('pointermove', move)
+                el.removeEventListener('pointerup', up)
               }
-              e.currentTarget.addEventListener('pointermove', move)
-              e.currentTarget.addEventListener('pointerup', up)
+              el.addEventListener('pointermove', move)
+              el.addEventListener('pointerup', up)
             }}
           />
         )}
@@ -171,10 +187,13 @@ export function SideToggle({ side, onToggle }: SideToggleProps) {
       {(['front', 'back'] as const).map((s) => (
         <button
           key={s}
+          type="button"
           onClick={() => onToggle(s)}
           aria-pressed={side === s}
           className={cn(
-            'px-4 py-1.5 font-body text-[9px] tracking-[0.2em] uppercase transition-colors',
+            'px-4 py-1.5',
+            LABEL_CLS,
+            'transition-colors',
             side === s
               ? 'bg-on-surface text-surface'
               : 'bg-transparent text-on-surface-muted border border-border hover:text-on-surface',
@@ -190,13 +209,15 @@ export function SideToggle({ side, onToggle }: SideToggleProps) {
 export function GarmentTypeSelector({ garmentType, onChange }: GarmentTypeSelectorProps) {
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      {/* controls sidebar: 380px — matches design spec fixed panel width */}
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Garment
       </legend>
       <div className="flex gap-1">
-        {(['tshirt', 'hoodie', 'zipper'] as GarmentType[]).map((g) => (
+        {GARMENT_TYPES.map((g) => (
           <button
             key={g}
+            type="button"
             onClick={() => onChange(g)}
             aria-pressed={garmentType === g}
             className={cn(
@@ -217,13 +238,14 @@ export function GarmentTypeSelector({ garmentType, onChange }: GarmentTypeSelect
 export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Color: <span className="normal-case tracking-normal">{color.name}</span>
       </legend>
       <div className="flex gap-2">
         {GCOLORS.map((c) => (
           <button
             key={c.name}
+            type="button"
             aria-label={c.name}
             aria-pressed={color.name === c.name}
             onClick={() => onChange(c)}
@@ -232,7 +254,7 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
               color.name === c.name && 'ring-2 ring-offset-2 ring-on-surface',
             )}
             /* dynamic color — cannot use static Tailwind class */
-            style={{ backgroundColor: c.hex, border: c.outline ? '1px solid #ccc' : 'none' }}
+            style={{ backgroundColor: c.hex, border: c.outline ? '1px solid var(--color-border)' : 'none' }}
           />
         ))}
       </div>
@@ -243,13 +265,14 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
 export function FitToggle({ fit, onChange }: FitToggleProps) {
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Fit
       </legend>
-      <div className="flex gap-1" role="group">
-        {(['normal', 'oversized'] as FitType[]).map((f) => (
+      <div className="flex gap-1">
+        {FIT_TYPES.map((f) => (
           <button
             key={f}
+            type="button"
             onClick={() => onChange(f)}
             aria-pressed={fit === f}
             className={cn(
@@ -270,13 +293,14 @@ export function FitToggle({ fit, onChange }: FitToggleProps) {
 export function PrintMethodToggle({ printMethod, onChange }: PrintMethodToggleProps) {
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Print Method
       </legend>
-      <div className="flex gap-1" role="group">
-        {(['dtg', 'embroidery'] as PrintMethod[]).map((p) => (
+      <div className="flex gap-1">
+        {PRINT_METHODS.map((p) => (
           <button
             key={p}
+            type="button"
             onClick={() => onChange(p)}
             aria-pressed={printMethod === p}
             className={cn(
@@ -297,13 +321,14 @@ export function PrintMethodToggle({ printMethod, onChange }: PrintMethodTogglePr
 export function SizeSelector({ size, onChange }: SizeSelectorProps) {
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Size
       </legend>
       <div className="flex gap-1 flex-wrap">
         {SIZES.map((s) => (
           <button
             key={s}
+            type="button"
             aria-pressed={size === s}
             onClick={() => onChange(s)}
             className={cn(
@@ -324,7 +349,7 @@ export function SizeSelector({ size, onChange }: SizeSelectorProps) {
 export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadProps) {
   return (
     <div>
-      <p className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <p className={cn(LABEL_CLS, 'mb-2')}>
         Your Design
       </p>
       <div className="flex items-center gap-3">
@@ -343,6 +368,7 @@ export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadPr
         </label>
         {designState.el && (
           <button
+            type="button"
             onClick={onRemove}
             aria-label="Remove design"
             className="font-body text-lg text-on-surface-muted hover:text-on-surface transition-colors leading-none"
@@ -366,6 +392,7 @@ export function PriceSummary({ price, size, onAddToCart, onDesignOrder }: PriceS
       </div>
       <div className="flex flex-col gap-2">
         <button
+          type="button"
           onClick={onAddToCart}
           disabled={!size}
           aria-label="Add to cart"
@@ -380,6 +407,7 @@ export function PriceSummary({ price, size, onAddToCart, onDesignOrder }: PriceS
         </button>
         {size && (
           <button
+            type="button"
             onClick={onDesignOrder}
             className="w-full py-3 font-body text-xs tracking-[0.2em] uppercase border border-on-surface text-on-surface hover:bg-on-surface hover:text-surface transition-colors"
           >
@@ -411,6 +439,7 @@ export function DownloadButton({ svgRef }: DownloadButtonProps) {
 
   return (
     <button
+      type="button"
       onClick={handleDownload}
       className="font-body text-xs tracking-[0.12em] uppercase px-4 py-2 border border-border text-on-surface-muted hover:text-on-surface hover:border-on-surface transition-colors"
     >
@@ -429,7 +458,7 @@ export function OrderForm({ onSubmit, onBack, isLoading }: OrderFormProps) {
       <div>
         <label
           htmlFor="order-name"
-          className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted block mb-1"
+          className={cn(LABEL_CLS, 'block mb-1')}
         >
           Name
         </label>
@@ -446,7 +475,7 @@ export function OrderForm({ onSubmit, onBack, isLoading }: OrderFormProps) {
       <div>
         <label
           htmlFor="order-email"
-          className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted block mb-1"
+          className={cn(LABEL_CLS, 'block mb-1')}
         >
           Email
         </label>
@@ -464,7 +493,7 @@ export function OrderForm({ onSubmit, onBack, isLoading }: OrderFormProps) {
       <div>
         <label
           htmlFor="order-notes"
-          className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted block mb-1"
+          className={cn(LABEL_CLS, 'block mb-1')}
         >
           Notes (optional)
         </label>
@@ -506,6 +535,7 @@ export function OrderSuccess({ svgRef, onReset }: OrderSuccessProps) {
       <div className="flex gap-3 justify-center">
         <DownloadButton svgRef={svgRef} />
         <button
+          type="button"
           onClick={onReset}
           className="font-body text-xs tracking-[0.12em] uppercase px-4 py-2 bg-on-surface text-surface hover:opacity-80 transition-opacity"
         >
@@ -521,7 +551,7 @@ export function StepIndicator({ step }: StepIndicatorProps) {
   return (
     <div className="flex items-center gap-2 mb-8" aria-label="Order steps">
       {steps.map((label, i) => {
-        const n = (i + 1) as 1 | 2 | 3
+        const n = STEP_NUMS[i]  // typed as 1 | 2 | 3 via as const
         const isActive = n === step
         const isDone   = n < step
         return (
@@ -539,7 +569,8 @@ export function StepIndicator({ step }: StepIndicatorProps) {
               </span>
               <span
                 className={cn(
-                  'font-body text-[9px] tracking-[0.15em] uppercase',
+                  LABEL_CLS,
+                  'tracking-[0.15em]',
                   isActive ? 'text-on-surface' : 'text-on-surface-muted',
                 )}
               >
@@ -592,21 +623,23 @@ export function GarmentDesigner() {
   }
 
   function handleRemoveDesign() {
-    setDesignState((s) => ({ ...s, el: null }))
+    setDesignState({ el: null, x: 160, y: 160, w: 80, h: 80, angle: 0 })
   }
 
   function handleDesignMove(dx: number, dy: number) {
-    // factor 0.5 maps screen-pixel delta to SVG-coordinate delta (approx viewport ratio)
-    setDesignState((s) => ({ ...s, x: s.x + dx * 0.5, y: s.y + dy * 0.5 }))
+    setDesignState((s) => ({ ...s, x: s.x + dx * SVG_DRAG_SCALE, y: s.y + dy * SVG_DRAG_SCALE }))
   }
 
   async function handleOrderSubmit(data: OrderFields) {
     setIsSubmitting(true)
     try {
-      if (EMAILJS_SERVICE && EMAILJS_TEMPLATE && EMAILJS_PUBLIC) {
+      const serviceId  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID  ?? ''
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? ''
+      const publicKey  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY  ?? ''
+      if (serviceId && templateId && publicKey) {
         await emailjs.send(
-          EMAILJS_SERVICE,
-          EMAILJS_TEMPLATE,
+          serviceId,
+          templateId,
           {
             from_name:    data.name,
             from_email:   data.email,
@@ -617,7 +650,7 @@ export function GarmentDesigner() {
             print_method: printMethod,
             notes:        data.notes ?? '',
           },
-          EMAILJS_PUBLIC,
+          publicKey,
         )
       }
       setStep(3)
@@ -639,6 +672,7 @@ export function GarmentDesigner() {
     <section aria-label="Garment customiser" className="w-full">
       <StepIndicator step={step} />
 
+      {/* controls sidebar: 380px — matches design spec fixed panel width */}
       {step === 1 && (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
           {/* Left: SVG preview */}
