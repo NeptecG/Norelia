@@ -4,6 +4,7 @@ import type React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Trash2 } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion, type Variants } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
@@ -88,9 +89,9 @@ export function CartItemRow({ item, variants, stock, onDecrement, onIncrement, o
             type="button"
             aria-label={`Remove ${item.name} from cart`}
             onClick={() => onRemove(item.id)}
-            className="flex-shrink-0 font-body text-base text-on-surface/40 hover:text-on-surface transition-colors leading-none"
+            className="flex-shrink-0 text-on-surface/40 hover:text-destructive transition-colors"
           >
-            ×
+            <Trash2 size={14} />
           </button>
         </div>
 

@@ -46,6 +46,8 @@ export function ProductCard({ product, priority = false }: Props) {
     if (now - last < COOLDOWN_MS) return
     lastToggleRef.current[product.id] = now
     toggleFavorite(product.id)
+    // favorited is the state BEFORE toggle, so !favorited = new state
+    showToast(favorited ? 'Removed from favorites' : 'Added to favorites', favorited ? 'remove' : 'add')
   }
 
   function handleQuickAdd(e: React.MouseEvent) {

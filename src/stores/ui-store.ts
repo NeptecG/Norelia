@@ -47,6 +47,9 @@ function makeTTLStorage() {
   }
 }
 
+// Module-level timer ref so each new toast cancels the previous one's hide timer
+let _toastTimer: ReturnType<typeof setTimeout> | null = null
+
 export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
@@ -56,9 +59,11 @@ export const useUIStore = create<UIStore>()(
 
       toast: { msg: '', visible: false, type: 'add' },
       showToast: (msg, type) => {
+        // Cancel any in-flight hide timer so rapid toasts each get the full duration
+        if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null }
         set({ toast: { msg, visible: true, type } })
-        setTimeout(
-          () => set(s => ({ toast: { ...s.toast, visible: false } })),
+        _toastTimer = setTimeout(
+          () => { set(s => ({ toast: { ...s.toast, visible: false } })); _toastTimer = null },
           TOAST_DURATION_MS,
         )
       },
