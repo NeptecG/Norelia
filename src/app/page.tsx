@@ -28,6 +28,7 @@ export default function HomePage() {
         title="TRENDING"
         subtitle="THIS SEASON"
         products={trendingProducts}
+        viewAllHref="/men"
       />
       <FeaturedCarousel
         title="ON SALE"
