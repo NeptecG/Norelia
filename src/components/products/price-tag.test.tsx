@@ -14,13 +14,13 @@ describe('PriceTag', () => {
     expect(original).toBeInTheDocument()
     expect(original).toHaveClass('line-through')
     expect(screen.getByText('€27')).toBeInTheDocument()
-    expect(screen.getByText(/-\d+%/)).toBeInTheDocument()
+    expect(screen.getByText(/[−-]\d+%/)).toBeInTheDocument()
   })
 
   it('calculates discount percentage correctly', () => {
     // €89 → salePrice 50 → (1 - 50/89) * 100 = 43.8... → rounds to 44
     render(<PriceTag price="€89" salePrice={50} />)
-    expect(screen.getByText('-44%')).toBeInTheDocument()
+    expect(screen.getByText('−44%')).toBeInTheDocument()
   })
 
   it('applies sm size class', () => {

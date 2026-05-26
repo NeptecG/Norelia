@@ -37,21 +37,20 @@ export default function OurStudioPage() {
 
           {/* Google Maps embed — Preveza, Greece */}
           <div className="relative">
-            <div className="w-full aspect-[4/3] lg:aspect-auto lg:h-full min-h-[400px] grayscale">
+            <div className="w-full aspect-[4/3] lg:aspect-auto lg:h-full min-h-[400px]">
               <iframe
                 title="Norelia studio location — Preveza, Greece"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d24863.3!2d20.7373!3d38.9519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x135e723e4dba91c9%3A0x23e5dac3451fca09!2sPreveza%2C+Greece!5e0!3m2!1sen!2sgr!4v1748250000000"
+                src="https://maps.google.com/maps?q=38.971454,20.746212&z=17&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0, display: 'block', minHeight: '400px' }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                className="filter grayscale"
               />
             </div>
             {/* Open in Google Maps link */}
             <a
-              href="https://maps.google.com/?q=Preveza,Greece"
+              href="https://maps.google.com/?q=38.971454,20.746212"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 mt-3 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
