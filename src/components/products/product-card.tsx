@@ -84,7 +84,7 @@ export function ProductCard({ product, priority = false }: Props) {
       onHoverStart={() => setHovering(true)}
       onHoverEnd={() => setHovering(false)}
     >
-      <Link href={`/product/${product.id}`} aria-label={product.name} className="flex flex-col">
+      <Link href={`/product/${product.code}`} aria-label={product.name} className="flex flex-col">
         {/* Image container */}
         <div className="relative aspect-[3/4] overflow-hidden bg-surface-alt">
           <motion.div
@@ -116,9 +116,7 @@ export function ProductCard({ product, priority = false }: Props) {
             onClick={handleFavorite}
             variants={heartVariants}
             transition={{ duration: 0.15 }}
-            className={cn(
-              'absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-surface/70 backdrop-blur-sm',
-            )}
+            className="absolute right-2 top-2 z-10 p-1"
           >
             <Heart
               size={16}

@@ -52,7 +52,7 @@ export function NewsletterBar() {
             Stay in the know
           </p>
           <p className="font-body text-[12px] text-on-surface/50">
-            New drops, exclusive offers — straight to your inbox.
+            New drops, exclusive offers, straight to your inbox.
           </p>
         </div>
 

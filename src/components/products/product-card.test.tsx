@@ -83,10 +83,10 @@ describe('ProductCard', () => {
     expect(screen.queryByText('NEW')).not.toBeInTheDocument()
   })
 
-  it('renders a link to /product/{id}', () => {
+  it('renders a link to /product/{code}', () => {
     render(<ProductCard product={baseProduct} />)
     const link = screen.getByRole('link', { name: baseProduct.name })
-    expect(link).toHaveAttribute('href', '/product/1')
+    expect(link).toHaveAttribute('href', '/product/TS-001')
   })
 
   it('renders sale indicator when salePrice exists', () => {

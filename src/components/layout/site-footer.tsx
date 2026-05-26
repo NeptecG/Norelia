@@ -118,15 +118,58 @@ function ContactColumn() {
   )
 }
 
+// ── Payment icons ──────────────────────────────────────────────────────────────
+
+function VisaIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Visa" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#1A1F71" />
+      <text x="25" y="22" textAnchor="middle" fill="white" fontSize="14" fontWeight="700" fontFamily="Arial, sans-serif" fontStyle="italic" letterSpacing="1">VISA</text>
+    </svg>
+  )
+}
+
+function MastercardIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Mastercard" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#252525" />
+      <circle cx="19" cy="16" r="9" fill="#EB001B" />
+      <circle cx="31" cy="16" r="9" fill="#F79E1B" />
+      <path d="M25 9.5a9 9 0 0 1 0 13A9 9 0 0 1 25 9.5z" fill="#FF5F00" />
+    </svg>
+  )
+}
+
+function PayPalIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="PayPal" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#003087" />
+      <text x="25" y="21" textAnchor="middle" fill="white" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif" letterSpacing="0.3">PayPal</text>
+    </svg>
+  )
+}
+
+function KlarnaIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Klarna" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#FFB3C7" />
+      <text x="25" y="21" textAnchor="middle" fill="#1A1A1A" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif" letterSpacing="0.3">klarna</text>
+    </svg>
+  )
+}
+
 // ── Payment column ─────────────────────────────────────────────────────────────
 
 function PaymentColumn() {
   return (
     <div>
-      <FooterHeading>Payment</FooterHeading>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 leading-relaxed">
-        Visa · Mastercard · PayPal · Klarna
-      </p>
+      <FooterHeading>Payment Methods</FooterHeading>
+      <div className="flex flex-wrap gap-2">
+        <VisaIcon />
+        <MastercardIcon />
+        <PayPalIcon />
+        <KlarnaIcon />
+      </div>
     </div>
   )
 }
