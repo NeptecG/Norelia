@@ -10,6 +10,7 @@ export default function ShippingPage() {
   return (
     <main className="min-h-screen bg-surface">
       {/* Dark hero band */}
+      {/* max-w-[1440px] / md:px-[60px] — project-wide content container; tracking-[0.3em] — editorial label spacing */}
       <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <p className="font-body text-xs tracking-[0.3em] uppercase text-on-surface-muted mb-4">
