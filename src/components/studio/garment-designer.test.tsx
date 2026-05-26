@@ -109,8 +109,9 @@ describe('GarmentDesigner', () => {
 
   it('fit toggle shows NORMAL and OVERSIZED options', () => {
     render(<GarmentDesigner />)
-    expect(screen.getByRole('button', { name: /normal/i })).toBeTruthy()
-    expect(screen.getByRole('button', { name: /oversized/i })).toBeTruthy()
+    // "Normal" only appears in fit toggle; "Oversized" also appears in PlacementSelector
+    expect(screen.getByRole('button', { name: /^normal$/i })).toBeTruthy()
+    expect(screen.getAllByRole('button', { name: /oversized/i }).length).toBeGreaterThanOrEqual(1)
   })
 
   it('print method shows DTG and EMBROIDERY options', () => {
@@ -133,20 +134,63 @@ describe('GarmentDesigner', () => {
     expect(screen.getByText('Confirmation')).toBeTruthy()
   })
 
+  // ─── Placement selector ────────────────────────────────────────────────────
+
+  it('PlacementSelector shows 3 options on front side', () => {
+    render(<GarmentDesigner />)
+    // Default side is front — should show Logo, Standard, Oversized
+    expect(screen.getByRole('button', { name: /logo/i })).toBeTruthy()
+    // Use getAllByRole since "Standard" and "Oversized" appear in fit toggle too
+    const standardBtns = screen.getAllByRole('button', { name: /standard/i })
+    expect(standardBtns.length).toBeGreaterThanOrEqual(1)
+    const oversizedBtns = screen.getAllByRole('button', { name: /oversized/i })
+    expect(oversizedBtns.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('PlacementSelector shows 2 options on back side', () => {
+    render(<GarmentDesigner />)
+    // Switch to back side
+    fireEvent.click(screen.getByRole('button', { name: /back/i }))
+    // Logo is front-only — should not appear
+    expect(screen.queryByRole('button', { name: /^logo$/i })).toBeNull()
+    // Standard and Oversized should still be present
+    const standardBtns = screen.getAllByRole('button', { name: /standard/i })
+    expect(standardBtns.length).toBeGreaterThanOrEqual(1)
+    const oversizedBtns = screen.getAllByRole('button', { name: /oversized/i })
+    expect(oversizedBtns.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('Selecting a placement enables the DESIGN ORDER button when size also selected', () => {
+    render(<GarmentDesigner />)
+    // Initially no DESIGN ORDER button
+    expect(screen.queryByRole('button', { name: /design order/i })).toBeNull()
+    // Select size only — still no DESIGN ORDER (needs placement too)
+    fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    expect(screen.queryByRole('button', { name: /design order/i })).toBeNull()
+    // Now select a placement (Logo on front)
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
+    // Now DESIGN ORDER should appear
+    expect(screen.getByRole('button', { name: /design order/i })).toBeTruthy()
+  })
+
   // ─── DESIGN ORDER button and step 2 ───────────────────────────────────────
 
-  it('DESIGN ORDER button appears only after selecting a size', () => {
+  it('DESIGN ORDER button appears only after selecting a size AND a placement', () => {
     render(<GarmentDesigner />)
-    // Should not be visible before size selection
+    // Should not be visible before size + placement selection
     expect(screen.queryByRole('button', { name: /design order/i })).toBeNull()
-    // Select a size
+    // Select size only
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    expect(screen.queryByRole('button', { name: /design order/i })).toBeNull()
+    // Select placement
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     expect(screen.getByRole('button', { name: /design order/i })).toBeTruthy()
   })
 
   it('clicking DESIGN ORDER advances to step 2 and shows the order form', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'L' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
     // Step 2 — form should be visible
     expect(screen.getByLabelText(/name/i)).toBeTruthy()
@@ -158,6 +202,7 @@ describe('GarmentDesigner', () => {
   it('order form has name and email fields', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
     expect(screen.getByLabelText(/name/i)).toBeTruthy()
     expect(screen.getByLabelText(/email/i)).toBeTruthy()
@@ -166,6 +211,7 @@ describe('GarmentDesigner', () => {
   it('order form BACK button returns to step 1', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
     fireEvent.click(screen.getByRole('button', { name: /back/i }))
     // Step 1 controls visible again
@@ -177,6 +223,7 @@ describe('GarmentDesigner', () => {
   it('submitting the order form calls emailjs.send and advances to step 3', async () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
 
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Jane Doe' } })
@@ -195,6 +242,7 @@ describe('GarmentDesigner', () => {
 
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Test User' } })
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } })
@@ -210,6 +258,7 @@ describe('GarmentDesigner', () => {
   it('download button is visible on the success step', async () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
 
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Jane Doe' } })
@@ -224,6 +273,7 @@ describe('GarmentDesigner', () => {
   it('DESIGN ANOTHER button resets back to step 1', async () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    fireEvent.click(screen.getByRole('button', { name: /logo/i }))
     fireEvent.click(screen.getByRole('button', { name: /design order/i }))
 
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Jane Doe' } })

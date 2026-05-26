@@ -10,7 +10,25 @@ import { GCOLORS } from '@/data/colors'
 import { SIZES } from '@/data/sizes'
 import { cn, getPrice } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
-import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor, DesignState } from '@/types'
+import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor } from '@/types'
+
+// ─── Placement types (internal to garment-designer) ──────────────────────────
+type FrontPlacement = 'logo' | 'normal' | 'oversized'
+type BackPlacement  = 'normal' | 'oversized'
+
+// ─── Placement zone data ──────────────────────────────────────────────────────
+interface PlacementZone { label: string; size: string; x: number; y: number; w: number; h: number }
+
+const FRONT_ZONES: Record<FrontPlacement, PlacementZone> = {
+  logo:      { label: 'Logo',      size: '~5×5 cm',   x: 96,  y: 70, w: 18, h: 18 },
+  normal:    { label: 'Standard',  size: '20×20 cm',  x: 107, y: 90, w: 26, h: 26 },
+  oversized: { label: 'Oversized', size: '30×30 cm',  x: 99,  y: 83, w: 42, h: 42 },
+}
+
+const BACK_ZONES: Record<BackPlacement, PlacementZone> = {
+  normal:    { label: 'Standard',  size: '20×20 cm',  x: 107, y: 90, w: 26, h: 26 },
+  oversized: { label: 'Oversized', size: '30×30 cm',  x: 99,  y: 83, w: 42, h: 42 },
+}
 
 // ─── Module-level typed constants (avoids inline `as X[]` assertions) ─────────
 const GARMENT_TYPES: GarmentType[]  = ['tshirt', 'hoodie', 'zipper']
@@ -23,9 +41,6 @@ const STEP_NUMS = [1, 2, 3] as const
 // Micro-typography constants: below Tailwind's standard scale, used for all uppercase labels
 const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted'
 
-/** 0.5 maps screen-pixel delta to SVG-coordinate delta for a ~800px SVG rendered at ~400px */
-const SVG_DRAG_SCALE = 0.5
-
 // ─── Order form schema ────────────────────────────────────────────────────────
 const orderSchema = z.object({
   name:  z.string().min(2, 'Name is required'),
@@ -37,12 +52,13 @@ export type OrderFields = z.infer<typeof orderSchema>
 // ─── Sub-component prop interfaces ───────────────────────────────────────────
 
 interface GarmentPreviewProps {
-  garmentType:   GarmentType
-  color:         GarmentColor
-  side:          'front' | 'back'
-  designState:   DesignState
-  svgRef:        React.RefObject<SVGSVGElement | null>
-  onDesignMove?: (dx: number, dy: number) => void
+  garmentType:    GarmentType
+  color:          GarmentColor
+  side:           'front' | 'back'
+  frontPlacement: FrontPlacement | null
+  backPlacement:  BackPlacement  | null
+  designImg:      HTMLImageElement | null
+  svgRef:         React.RefObject<SVGSVGElement | null>
 }
 
 interface SideToggleProps {
@@ -76,15 +92,24 @@ interface SizeSelectorProps {
 }
 
 interface DesignUploadProps {
-  designState: DesignState
-  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onRemove: () => void
+  hasDesign: boolean
+  onUpload:  (e: React.ChangeEvent<HTMLInputElement>) => void
+  onRemove:  () => void
+}
+
+interface PlacementSelectorProps {
+  side:           'front' | 'back'
+  frontPlacement: FrontPlacement | null
+  backPlacement:  BackPlacement  | null
+  onFront:        (p: FrontPlacement) => void
+  onBack:         (p: BackPlacement)  => void
 }
 
 interface PriceSummaryProps {
-  price:      number | null
-  size:       SizeKey | null
-  onAddToCart: () => void
+  price:        number | null
+  size:         SizeKey | null
+  canOrder:     boolean
+  onAddToCart:  () => void
   onDesignOrder: () => void
 }
 
@@ -113,10 +138,14 @@ export function GarmentPreview({
   garmentType,
   color,
   side,
-  designState,
+  frontPlacement,
+  backPlacement,
+  designImg,
   svgRef,
-  onDesignMove,
 }: GarmentPreviewProps) {
+  const zones          = side === 'front' ? FRONT_ZONES : BACK_ZONES
+  const activePlacement = side === 'front' ? frontPlacement : backPlacement
+
   return (
     <div className="relative bg-surface-raised aspect-[9/11] flex items-center justify-center overflow-hidden">
       <svg
@@ -132,48 +161,33 @@ export function GarmentPreview({
           stroke={color.outline ? 'var(--color-border-subtle)' : color.hex}
           strokeWidth="1.5"
         />
-        {/* Design zone — dotted border rect where print will appear */}
-        <rect
-          x="150"
-          y="150"
-          width="100"
-          height="100"
-          fill="none"
-          stroke="var(--color-border-subtle)"
-          strokeWidth="1"
-          strokeDasharray="4 3"
-          aria-label="Print area"
-        />
-        {/* Design image overlay if uploaded */}
-        {designState.el && (
+
+        {/* Placement zone indicators — faint dashed rects for each zone */}
+        {(Object.entries(zones) as [string, PlacementZone][]).map(([key, zone]) => {
+          const isActive = key === activePlacement
+          return (
+            <rect
+              key={key}
+              x={zone.x}
+              y={zone.y}
+              width={zone.w}
+              height={zone.h}
+              fill={isActive ? 'rgba(100,100,100,0.08)' : 'none'}
+              stroke={isActive ? 'rgba(100,100,100,0.6)' : 'rgba(100,100,100,0.2)'}
+              strokeWidth="0.8"
+              strokeDasharray={isActive ? '3 2' : '2 3'}
+            />
+          )
+        })}
+
+        {/* Design image at active placement */}
+        {designImg !== null && activePlacement !== null && (
           <image
-            href={designState.el.src}
-            x={designState.x}
-            y={designState.y}
-            width={designState.w}
-            height={designState.h}
-            className="cursor-move"
-            aria-label="Uploaded design — drag to reposition"
-            role="img"
-            tabIndex={0}
-            onPointerDown={(e) => {
-              // SVGImageElement — narrowing from EventTarget is safe here
-              const el = e.currentTarget as SVGImageElement
-              el.setPointerCapture(e.pointerId)
-              let prevX = e.clientX
-              let prevY = e.clientY
-              const move = (ev: PointerEvent) => {
-                onDesignMove?.(ev.clientX - prevX, ev.clientY - prevY)
-                prevX = ev.clientX
-                prevY = ev.clientY
-              }
-              const up = () => {
-                el.removeEventListener('pointermove', move)
-                el.removeEventListener('pointerup', up)
-              }
-              el.addEventListener('pointermove', move)
-              el.addEventListener('pointerup', up)
-            }}
+            href={designImg.src}
+            x={zones[activePlacement as keyof typeof zones].x}
+            y={zones[activePlacement as keyof typeof zones].y}
+            width={zones[activePlacement as keyof typeof zones].w}
+            height={zones[activePlacement as keyof typeof zones].h}
           />
         )}
       </svg>
@@ -346,7 +360,7 @@ export function SizeSelector({ size, onChange }: SizeSelectorProps) {
   )
 }
 
-export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadProps) {
+export function DesignUpload({ hasDesign, onUpload, onRemove }: DesignUploadProps) {
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-2')}>
@@ -357,7 +371,7 @@ export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadPr
           htmlFor="design-upload"
           className="inline-block px-4 py-2 font-body text-xs tracking-[0.12em] uppercase border border-border text-on-surface-muted hover:text-on-surface hover:border-on-surface transition-colors cursor-pointer"
         >
-          {designState.el ? 'Change design' : 'Upload design (PNG / SVG)'}
+          {hasDesign ? 'Change design' : 'Upload design (PNG / SVG)'}
           <input
             id="design-upload"
             type="file"
@@ -366,7 +380,7 @@ export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadPr
             onChange={onUpload}
           />
         </label>
-        {designState.el && (
+        {hasDesign && (
           <button
             type="button"
             onClick={onRemove}
@@ -381,7 +395,71 @@ export function DesignUpload({ designState, onUpload, onRemove }: DesignUploadPr
   )
 }
 
-export function PriceSummary({ price, size, onAddToCart, onDesignOrder }: PriceSummaryProps) {
+export function PlacementSelector({
+  side,
+  frontPlacement,
+  backPlacement,
+  onFront,
+  onBack,
+}: PlacementSelectorProps) {
+  if (side === 'front') {
+    return (
+      <fieldset>
+        <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+          Print Placement
+        </legend>
+        <div className="flex flex-col gap-1.5">
+          {(Object.entries(FRONT_ZONES) as [FrontPlacement, PlacementZone][]).map(([key, zone]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onFront(key)}
+              aria-pressed={frontPlacement === key}
+              className={cn(
+                'flex items-center justify-between px-3 py-2 font-body text-xs tracking-[0.1em] uppercase border transition-colors text-left',
+                frontPlacement === key
+                  ? 'bg-on-surface text-surface border-on-surface'
+                  : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
+              )}
+            >
+              <span>{zone.label}</span>
+              <span className="text-[10px] normal-case tracking-normal opacity-60">{zone.size}</span>
+            </button>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+  return (
+    <fieldset>
+      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+        Print Placement
+      </legend>
+      <div className="flex flex-col gap-1.5">
+        {(Object.entries(BACK_ZONES) as [BackPlacement, PlacementZone][]).map(([key, zone]) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onBack(key)}
+            aria-pressed={backPlacement === key}
+            className={cn(
+              'flex items-center justify-between px-3 py-2 font-body text-xs tracking-[0.1em] uppercase border transition-colors text-left',
+              backPlacement === key
+                ? 'bg-on-surface text-surface border-on-surface'
+                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
+            )}
+          >
+            <span>{zone.label}</span>
+            <span className="text-[10px] normal-case tracking-normal opacity-60">{zone.size}</span>
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
+export function PriceSummary({ price, size, canOrder, onAddToCart, onDesignOrder }: PriceSummaryProps) {
   return (
     <div className="mt-8 border-t border-border pt-6">
       <div className="flex justify-between mb-4">
@@ -405,7 +483,7 @@ export function PriceSummary({ price, size, onAddToCart, onDesignOrder }: PriceS
         >
           {size ? 'ADD TO CART' : 'SELECT A SIZE'}
         </button>
-        {size && (
+        {canOrder && (
           <button
             type="button"
             onClick={onDesignOrder}
@@ -588,46 +666,36 @@ export function StepIndicator({ step }: StepIndicatorProps) {
 // ─── Main GarmentDesigner component ──────────────────────────────────────────
 
 export function GarmentDesigner() {
-  const [garmentType, setGarmentType] = useState<GarmentType>('tshirt')
-  const [color, setColor]             = useState<GarmentColor>(GCOLORS[1]) // Black
-  const [fit, setFit]                 = useState<FitType>('normal')
-  const [printMethod, setPrintMethod] = useState<PrintMethod>('dtg')
-  const [size, setSize]               = useState<SizeKey | null>(null)
-  const [side, setSide]               = useState<'front' | 'back'>('front')
-  const [designState, setDesignState] = useState<DesignState>({
-    el: null,
-    x: 160,
-    y: 160,
-    w: 80,
-    h: 80,
-    angle: 0,
-  })
-  const [step, setStep]               = useState<1 | 2 | 3>(1)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [garmentType,     setGarmentType]     = useState<GarmentType>('tshirt')
+  const [color,           setColor]           = useState<GarmentColor>(GCOLORS[1]) // Black
+  const [fit,             setFit]             = useState<FitType>('normal')
+  const [printMethod,     setPrintMethod]     = useState<PrintMethod>('dtg')
+  const [size,            setSize]            = useState<SizeKey | null>(null)
+  const [side,            setSide]            = useState<'front' | 'back'>('front')
+  const [frontPlacement,  setFrontPlacement]  = useState<FrontPlacement | null>(null)
+  const [backPlacement,   setBackPlacement]   = useState<BackPlacement  | null>(null)
+  const [designImg,       setDesignImg]       = useState<HTMLImageElement | null>(null)
+  const [step,            setStep]            = useState<1 | 2 | 3>(1)
+  const [isSubmitting,    setIsSubmitting]    = useState(false)
 
   const svgRef = useRef<SVGSVGElement | null>(null)
 
   const { setShowCheckoutModal } = useUIStore()
 
-  const price = size ? getPrice(garmentType, size, fit, printMethod) : null
+  const price    = size ? getPrice(garmentType, size, fit, printMethod) : null
+  const canOrder = size !== null && (frontPlacement !== null || backPlacement !== null)
 
   function handleDesignUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     const url = URL.createObjectURL(file)
     const img = new window.Image()
-    img.onload = () => {
-      setDesignState({ el: img, x: 155, y: 155, w: 90, h: 90, angle: 0 })
-    }
+    img.onload = () => setDesignImg(img)
     img.src = url
   }
 
   function handleRemoveDesign() {
-    setDesignState({ el: null, x: 160, y: 160, w: 80, h: 80, angle: 0 })
-  }
-
-  function handleDesignMove(dx: number, dy: number) {
-    setDesignState((s) => ({ ...s, x: s.x + dx * SVG_DRAG_SCALE, y: s.y + dy * SVG_DRAG_SCALE }))
+    setDesignImg(null)
   }
 
   async function handleOrderSubmit(data: OrderFields) {
@@ -641,14 +709,16 @@ export function GarmentDesigner() {
           serviceId,
           templateId,
           {
-            from_name:    data.name,
-            from_email:   data.email,
-            garment_type: garmentType,
-            color:        color.name,
-            size:         size ?? '',
-            fit:          fit,
-            print_method: printMethod,
-            notes:        data.notes ?? '',
+            from_name:       data.name,
+            from_email:      data.email,
+            garment_type:    garmentType,
+            color:           color.name,
+            size:            size ?? '',
+            fit:             fit,
+            print_method:    printMethod,
+            front_placement: frontPlacement ?? 'none',
+            back_placement:  backPlacement  ?? 'none',
+            notes:           data.notes ?? '',
           },
           publicKey,
         )
@@ -665,7 +735,9 @@ export function GarmentDesigner() {
   function handleReset() {
     setStep(1)
     setSize(null)
-    setDesignState({ el: null, x: 160, y: 160, w: 80, h: 80, angle: 0 })
+    setDesignImg(null)
+    setFrontPlacement(null)
+    setBackPlacement(null)
   }
 
   return (
@@ -681,9 +753,10 @@ export function GarmentDesigner() {
               garmentType={garmentType}
               color={color}
               side={side}
-              designState={designState}
+              frontPlacement={frontPlacement}
+              backPlacement={backPlacement}
+              designImg={designImg}
               svgRef={svgRef}
-              onDesignMove={handleDesignMove}
             />
             <SideToggle side={side} onToggle={setSide} />
           </div>
@@ -696,13 +769,21 @@ export function GarmentDesigner() {
             <PrintMethodToggle printMethod={printMethod} onChange={setPrintMethod} />
             <SizeSelector size={size} onChange={setSize} />
             <DesignUpload
-              designState={designState}
+              hasDesign={designImg !== null}
               onUpload={handleDesignUpload}
               onRemove={handleRemoveDesign}
+            />
+            <PlacementSelector
+              side={side}
+              frontPlacement={frontPlacement}
+              backPlacement={backPlacement}
+              onFront={setFrontPlacement}
+              onBack={setBackPlacement}
             />
             <PriceSummary
               price={price}
               size={size}
+              canOrder={canOrder}
               onAddToCart={() => setShowCheckoutModal(true)}
               onDesignOrder={() => setStep(2)}
             />
