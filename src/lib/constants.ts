@@ -20,3 +20,4 @@ export const RECENTLY_VIEWED_MAX    = 8
 export const SCROLL_TOP_THRESHOLD   = 400
 export const CART_COOLDOWN_MS       = 1000
 export const FAV_COOLDOWN_MS        = 1000
+export const FREE_SHIPPING_THRESHOLD = 60  // €60 free shipping
