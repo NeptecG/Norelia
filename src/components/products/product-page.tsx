@@ -16,15 +16,17 @@ import { SizeMiniGuide } from '@/components/modals/size-mini-guide'
 import type { Product, GarmentColor } from '@/types'
 
 interface Props {
-  product: Product
+  product:       Product
+  initialColor?: string   // pre-select color from card swatch ?color= param
 }
 
-export function ProductPage({ product }: Props) {
+export function ProductPage({ product, initialColor }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const [activeImageSide, setActiveImageSide] = useState<'front' | 'back'>('front')
-  const [selectedColor, setSelectedColor] = useState<GarmentColor>(GCOLORS[1]) // Black default
+  const defaultColor = GCOLORS.find(c => c.name === initialColor) ?? GCOLORS[1]
+  const [selectedColor, setSelectedColor] = useState<GarmentColor>(defaultColor)
 
   const { cartItems, addToCart } = useCartStore()
   const { favorites, toggleFavorite } = useFavoritesStore()

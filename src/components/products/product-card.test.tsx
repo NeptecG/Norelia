@@ -13,6 +13,11 @@ vi.mock('next/image', () => ({
     React.createElement('img', { src, alt, className, sizes }),
 }))
 
+// Mock next/navigation (useRouter used for color swatch routing)
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
 // Mock next/link
 vi.mock('next/link', () => ({
   default: ({
@@ -107,14 +112,16 @@ describe('ProductCard', () => {
     expect(toggleFavorite).toHaveBeenCalledWith(mockProduct.id)
   })
 
-  it('calls addToCart and showToast when Quick Add is clicked', () => {
+  it('shows size picker when Quick Add is clicked, then calls addToCart on size selection', () => {
     const addToCart = vi.fn()
     const showToast = vi.fn()
     vi.mocked(useCartStore).mockReturnValue({ cartItems: {}, addToCart, cartCount: () => 0 })
     vi.mocked(useUIStore).mockReturnValue({ showToast, sidePanel: null, setSidePanel: vi.fn(), toggleSidePanel: vi.fn() })
     render(<ProductCard product={mockProduct} />)
-    const quickAdd = screen.getByText(/quick add/i)
-    fireEvent.click(quickAdd)
+    // Step 1: click QUICK ADD → size picker appears
+    fireEvent.click(screen.getByText(/quick add/i))
+    // Step 2: pick a size → addToCart and showToast fired
+    fireEvent.click(screen.getByText('M'))
     expect(addToCart).toHaveBeenCalledWith(mockProduct.id, 1)
     expect(showToast).toHaveBeenCalled()
   })

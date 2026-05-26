@@ -4,12 +4,15 @@ import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Heart } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn, catLabel, getStock } from '@/lib/utils'
 import { useFavoritesStore } from '@/stores/favorites-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
 import { PriceTag } from '@/components/products/price-tag'
+import { GCOLORS } from '@/data/colors'
+import { SIZES } from '@/data/sizes'
 import type { Product } from '@/types'
 
 interface Props {
@@ -17,18 +20,13 @@ interface Props {
   priority?: boolean
 }
 
-const SWATCHES = [
-  { name: 'White',    hex: '#FFFFFF', outline: true },
-  { name: 'Black',    hex: '#1e1e1e' },
-  { name: 'Grey',     hex: '#919191' },
-  { name: 'Bordeaux', hex: '#6b1b2c' },
-]
-
 const COOLDOWN_MS = 1000
 
 export function ProductCard({ product, priority = false }: Props) {
-  const reducedMotion = useReducedMotion()
-  const [hovering, setHovering] = useState(false)
+  const reducedMotion  = useReducedMotion()
+  const router         = useRouter()
+  const [hovering, setHovering]           = useState(false)
+  const [sizePickerOpen, setSizePickerOpen] = useState(false)
 
   const { toggleFavorite, isFavorite } = useFavoritesStore()
   const { addToCart } = useCartStore()
@@ -36,7 +34,7 @@ export function ProductCard({ product, priority = false }: Props) {
 
   const lastToggleRef = useRef<Record<number, number>>({})
 
-  const favorited = isFavorite(product.id)
+  const favorited  = isFavorite(product.id)
   const outOfStock = getStock(product.id) === 0
 
   function handleFavorite(e: React.MouseEvent) {
@@ -46,15 +44,19 @@ export function ProductCard({ product, priority = false }: Props) {
     if (now - last < COOLDOWN_MS) return
     lastToggleRef.current[product.id] = now
     toggleFavorite(product.id)
-    // favorited is the state BEFORE toggle, so !favorited = new state
     showToast(favorited ? 'Removed from favorites' : 'Added to favorites', favorited ? 'remove' : 'add')
   }
 
   function handleQuickAdd(e: React.MouseEvent) {
     e.preventDefault()
     if (outOfStock) return
+    setSizePickerOpen(true)
+  }
+
+  function handlePickSize(size: string) {
     addToCart(product.id, 1)
-    showToast('Added to cart', 'add')
+    showToast(`${product.name} — ${size} added`, 'add')
+    setSizePickerOpen(false)
   }
 
   // Motion variants — disabled when user prefers reduced motion
@@ -83,9 +85,9 @@ export function ProductCard({ product, priority = false }: Props) {
     <motion.div
       className="group relative flex flex-col border border-on-surface/20 hover:border-on-surface/50 transition-colors"
       initial="rest"
-      animate={hovering ? 'hover' : 'rest'}
+      animate={hovering || sizePickerOpen ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}
-      onHoverEnd={() => setHovering(false)}
+      onHoverEnd={() => { setHovering(false); setSizePickerOpen(false) }}
     >
       <Link href={`/product/${product.code}`} aria-label={product.name} className="flex flex-col">
         {/* Image container */}
@@ -129,23 +131,40 @@ export function ProductCard({ product, priority = false }: Props) {
             />
           </motion.button>
 
-          {/* Quick Add overlay */}
+          {/* Quick Add / Size picker overlay */}
           <motion.div
             variants={quickAddVariants}
             transition={{ duration: 0.25, ease: [0.25, 0, 0, 1] }}
             className="absolute inset-x-0 bottom-0 z-10"
           >
-            <button
-              type="button"
-              onClick={handleQuickAdd}
-              disabled={outOfStock}
-              className={cn(
-                'w-full bg-on-surface py-3 text-xs font-semibold uppercase tracking-widest text-surface transition-opacity',
-                outOfStock && 'cursor-not-allowed opacity-50',
-              )}
-            >
-              {outOfStock ? 'OUT OF STOCK' : 'QUICK ADD'}
-            </button>
+            {sizePickerOpen ? (
+              <div className="bg-on-surface py-2 px-2">
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {SIZES.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={(e) => { e.preventDefault(); handlePickSize(size) }}
+                      className="px-2 py-1 font-body text-[0.6rem] tracking-widest uppercase text-surface border border-surface/30 hover:bg-surface/20 transition-colors"
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleQuickAdd}
+                disabled={outOfStock}
+                className={cn(
+                  'w-full bg-on-surface py-3 text-xs font-semibold uppercase tracking-widest text-surface transition-opacity',
+                  outOfStock && 'cursor-not-allowed opacity-50',
+                )}
+              >
+                {outOfStock ? 'OUT OF STOCK' : 'QUICK ADD'}
+              </button>
+            )}
           </motion.div>
 
           {/* Bottom underline accent */}
@@ -157,7 +176,7 @@ export function ProductCard({ product, priority = false }: Props) {
           />
         </div>
 
-        {/* Color swatches */}
+        {/* Color swatches — each navigates to product page with pre-selected color */}
         <motion.div
           variants={{
             rest:  { opacity: 0 },
@@ -165,15 +184,21 @@ export function ProductCard({ product, priority = false }: Props) {
           }}
           transition={{ duration: 0.2 }}
           className="mt-2 flex gap-1.5 px-0.5"
-          aria-hidden="true"
         >
-          {SWATCHES.map((s) => (
-            <span
-              key={s.name}
-              style={{ '--swatch-color': s.hex } as React.CSSProperties}
+          {GCOLORS.map((c) => (
+            <button
+              key={c.name}
+              type="button"
+              aria-label={c.name}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}`)
+              }}
+              style={{ '--swatch-color': c.hex } as React.CSSProperties}
               className={cn(
-                'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)]',
-                s.outline && 'ring-1 ring-border ring-offset-1',
+                'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer',
+                c.outline && 'ring-1 ring-border ring-offset-1',
               )}
             />
           ))}
