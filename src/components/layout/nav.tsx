@@ -259,7 +259,7 @@ export function Nav() {
                   ) : searchResults.map(p => (
                     <Link
                       key={p.id}
-                      href={`/product/${p.id}`}
+                      href={`/product/${p.code}`}
                       onClick={() => { setSearchOpen(false); setSearchQuery('') }}
                       className="flex gap-2.5 items-center px-3 py-2.5 border-b border-border-subtle hover:bg-surface-raised transition-colors"
                     >
@@ -288,7 +288,7 @@ export function Nav() {
 
             {/* Favorites */}
             <button
-              aria-label={`Saved items${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
+              aria-label={`Favorites${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
               onClick={() => toggleSidePanel('favorites')}
               className="group relative flex items-center gap-1.5 text-on-surface/82 hover:text-on-surface transition-colors"
             >
@@ -366,7 +366,7 @@ export function Nav() {
 
           {/* Favorites */}
           <button
-            aria-label={`Saved items${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
+            aria-label={`Favorites${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
             onClick={() => toggleSidePanel('favorites')}
             className="relative text-on-surface/82"
           >
@@ -435,7 +435,7 @@ export function Nav() {
               ) : searchResults.map(p => (
                 <Link
                   key={p.id}
-                  href={`/product/${p.id}`}
+                  href={`/product/${p.code}`}
                   onClick={() => { setSearchOpen(false); setSearchQuery('') }}
                   className="flex gap-2.5 items-center py-2 border-b border-border/6 last:border-b-0"
                 >

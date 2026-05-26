@@ -1,12 +1,13 @@
 'use client'
 
 import type React from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence, useReducedMotion, type Variants } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
-import { parsePriceNumber, catLabel } from '@/lib/utils'
+import { parsePriceNumber, catLabel, getStock } from '@/lib/utils'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import type { CartItem } from '@/types'
 
@@ -32,18 +33,19 @@ function makeItemVariants(reduced: boolean): Variants {
 }
 
 // ---------------------------------------------------------------------------
-// CartItemRow — must be at module level (never inside another component)
+// CartItemRow — module level (never inside another component)
 // ---------------------------------------------------------------------------
 
 interface CartItemRowProps {
-  item:           CartItem
-  variants:       Variants
-  onDecrement:    (id: number) => void
-  onIncrement:    (id: number) => void
-  onRemove:       (id: number) => void
+  item:        CartItem
+  variants:    Variants
+  stock:       number          // available stock for this product
+  onDecrement: (id: number) => void
+  onIncrement: (id: number) => void
+  onRemove:    (id: number) => void
 }
 
-export function CartItemRow({ item, variants, onDecrement, onIncrement, onRemove }: CartItemRowProps) {
+export function CartItemRow({ item, variants, stock, onDecrement, onIncrement, onRemove }: CartItemRowProps) {
   const displayPrice =
     item.salePrice != null
       ? `€${item.salePrice.toFixed(2)}`
@@ -59,7 +61,7 @@ export function CartItemRow({ item, variants, onDecrement, onIncrement, onRemove
       className="flex gap-4 py-5 border-b border-border last:border-b-0"
     >
       {/* Thumbnail */}
-      {/* h-[106px]: 4:3 taller portrait ratio on the 80px (w-20) thumbnail */}
+      {/* h-[106px]: portrait-ratio thumbnail at 80px width */}
       <div className="relative flex-shrink-0 w-20 h-[106px] bg-surface-alt overflow-hidden">
         <Image
           src={item.img}
@@ -92,32 +94,55 @@ export function CartItemRow({ item, variants, onDecrement, onIncrement, onRemove
           </button>
         </div>
 
-        {/* Price + qty stepper */}
-        <div className="flex items-center justify-between mt-3">
-          <p className="font-body text-sm text-on-surface">{displayPrice}</p>
+        {/* Price row — shows sale price prominently */}
+        <div className="mt-1">
+          {item.salePrice != null ? (
+            <div className="flex items-center gap-1.5">
+              <span className="font-body text-sm font-bold text-destructive">
+                €{item.salePrice.toFixed(2)}
+              </span>
+              <span className="font-body text-xs text-on-surface/40 line-through">
+                {item.price}
+              </span>
+            </div>
+          ) : (
+            <p className="font-body text-sm text-on-surface">{displayPrice}</p>
+          )}
+        </div>
 
-          {/* Qty stepper */}
+        {/* Qty stepper */}
+        <div className="flex items-center justify-between mt-3">
           <div className="flex items-center gap-0 border border-border">
+            {/* disabled when qty is 1 — prevents going to 0 */}
             <button
               type="button"
               aria-label="Decrease quantity"
+              disabled={item.qty <= 1}
               onClick={() => onDecrement(item.id)}
-              className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-alt transition-colors"
+              className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               −
             </button>
             <span className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface border-x border-border">
               {item.qty}
             </span>
+            {/* disabled when qty reaches stock limit */}
             <button
               type="button"
               aria-label="Increase quantity"
+              disabled={item.qty >= stock}
               onClick={() => onIncrement(item.id)}
-              className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-alt transition-colors"
+              className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               +
             </button>
           </div>
+          {/* Line total when qty > 1 */}
+          {item.qty > 1 && (
+            <p className="font-body text-xs text-on-surface/50">
+              {item.qty} × {displayPrice}
+            </p>
+          )}
         </div>
       </div>
     </motion.li>
@@ -125,23 +150,34 @@ export function CartItemRow({ item, variants, onDecrement, onIncrement, onRemove
 }
 
 // ---------------------------------------------------------------------------
-// OrderSummary — must be at module level
+// OrderSummary — module level
 // ---------------------------------------------------------------------------
 
 interface OrderSummaryProps {
-  subtotal:   number
-  shipping:   number
-  total:      number
+  subtotal:     number
+  shipping:     number
+  total:        number
+  orderNotes:   string
+  onNotesChange: (val: string) => void
   onPlaceOrder: () => void
 }
 
-export function OrderSummary({ subtotal, shipping, total, onPlaceOrder }: OrderSummaryProps) {
-  const progressPct = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
-  const freeShippingMet = subtotal >= FREE_SHIPPING_THRESHOLD
-  const remaining = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)
+export function OrderSummary({
+  subtotal,
+  shipping,
+  total,
+  orderNotes,
+  onNotesChange,
+  onPlaceOrder,
+}: OrderSummaryProps) {
+  const progressPct  = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
+  const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD
+  const remaining    = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)
 
   return (
-    <aside className="lg:sticky lg:top-24 h-fit bg-surface-alt p-6 border border-border">
+    // `dark` class forces dark-mode token values so text-on-surface (#f5f5f5) is readable
+    // against the dark bg-surface-alt (#212121) in light mode — same pattern as nav/side-panel
+    <aside className="dark lg:sticky lg:top-24 h-fit bg-surface-alt p-6 border border-border">
       <h2 className="font-display text-2xl text-on-surface tracking-widest mb-6">YOUR ORDER</h2>
 
       {/* Subtotal */}
@@ -152,7 +188,7 @@ export function OrderSummary({ subtotal, shipping, total, onPlaceOrder }: OrderS
 
       {/* Free shipping progress */}
       <div className="mb-4">
-        {freeShippingMet ? (
+        {freeShipping ? (
           <p className="font-body text-xs text-success tracking-wide">
             Free shipping applied ✓
           </p>
@@ -161,7 +197,7 @@ export function OrderSummary({ subtotal, shipping, total, onPlaceOrder }: OrderS
             <p className="font-body text-xs text-on-surface/60 mb-2">
               €{remaining} away from free shipping
             </p>
-            {/* Progress bar */}
+            {/* CSS custom property drives dynamic width — avoids inline style={} */}
             <div
               className="h-1 w-full bg-border overflow-hidden"
               role="progressbar"
@@ -170,7 +206,6 @@ export function OrderSummary({ subtotal, shipping, total, onPlaceOrder }: OrderS
               aria-valuemax={100}
               aria-label="Free shipping progress"
             >
-              {/* CSS custom property used to drive dynamic width — avoids inline style={} rule violation */}
               <div
                 className="h-full bg-on-surface transition-all duration-500 [width:var(--progress-w)]"
                 style={{ '--progress-w': `${progressPct}%` } as React.CSSProperties}
@@ -183,13 +218,31 @@ export function OrderSummary({ subtotal, shipping, total, onPlaceOrder }: OrderS
       {/* Shipping line */}
       <div className="flex justify-between font-body text-sm text-on-surface mb-6 pb-6 border-b border-border">
         <span>Shipping</span>
-        <span>{shipping === 0 ? '€0.00' : '€4.99'}</span>
+        <span>{shipping === 0 ? 'Free' : '€4.99'}</span>
       </div>
 
       {/* Total */}
-      <div className="flex justify-between font-display text-2xl text-on-surface mb-8">
+      <div className="flex justify-between font-display text-2xl text-on-surface mb-6">
         <span>TOTAL</span>
         <span>€{total.toFixed(2)}</span>
+      </div>
+
+      {/* Order notes / special instructions */}
+      <div className="mb-6">
+        <label
+          htmlFor="order-notes"
+          className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
+        >
+          Special Instructions (optional)
+        </label>
+        <textarea
+          id="order-notes"
+          value={orderNotes}
+          onChange={e => onNotesChange(e.target.value)}
+          rows={3}
+          placeholder="Gift wrap, delivery notes, etc."
+          className="w-full px-3 py-2 bg-on-surface/10 border border-border text-on-surface font-body text-[11px] placeholder:text-on-surface/30 focus:outline-none focus:border-on-surface/50 resize-none"
+        />
       </div>
 
       {/* Place Order */}
@@ -214,6 +267,8 @@ export default function CheckoutPage() {
   const { setShowCheckoutModal } = useUIStore()
   const reduced = useReducedMotion() ?? false
 
+  const [orderNotes, setOrderNotes] = useState('')
+
   const lines   = cartLines()
   const isEmpty = lines.length === 0
 
@@ -233,14 +288,14 @@ export default function CheckoutPage() {
         <h1 className="font-display text-6xl text-on-surface leading-none mb-10">YOUR CART</h1>
 
         {isEmpty ? (
-          /* ---- Empty cart state ---- */
+          /* ---- Empty state ---- */
           <div className="flex flex-col items-center justify-center py-24 gap-6">
             <p className="font-body text-base text-on-surface/60 tracking-wide">
               Your cart is empty.
             </p>
             <Link
               href="/"
-              className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-alt transition-colors"
+              className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-raised transition-colors"
             >
               Continue Shopping
             </Link>
@@ -259,6 +314,7 @@ export default function CheckoutPage() {
                       key={item.id}
                       item={item}
                       variants={variants}
+                      stock={getStock(item.id)}
                       onDecrement={decrementCart}
                       onIncrement={id => addToCart(id, 1)}
                       onRemove={removeFromCart}
@@ -273,6 +329,8 @@ export default function CheckoutPage() {
               subtotal={subtotal}
               shipping={shipping}
               total={total}
+              orderNotes={orderNotes}
+              onNotesChange={setOrderNotes}
               onPlaceOrder={() => setShowCheckoutModal(true)}
             />
           </div>

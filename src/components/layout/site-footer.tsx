@@ -91,7 +91,6 @@ function InfoColumn() {
     <div>
       <FooterHeading>Information</FooterHeading>
       <FooterLink href="/size-guide">Size Guide</FooterLink>
-      <FooterLink href="/studio">Studio</FooterLink>
       <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
       <FooterLink href="/privacy">Privacy Policy</FooterLink>
       <FooterLink href="/terms">Terms of Service</FooterLink>
@@ -111,9 +110,10 @@ function ContactColumn() {
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40 mb-2.5">
         Mon–Fri, 9:00–17:00 CET
       </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40">
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40 mb-2.5">
         Free shipping over €60
       </p>
+      <FooterLink href="/our-studio">Our Studio</FooterLink>
     </div>
   )
 }

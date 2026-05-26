@@ -77,8 +77,9 @@ export function ProductCard({ product, priority = false }: Props) {
   }
 
   return (
+    // ring-1 ring-on-surface/[0.08]: subtle 1px card border; lifts to /[0.18] on hover for feedback
     <motion.div
-      className="group relative flex flex-col"
+      className="group relative flex flex-col ring-1 ring-on-surface/[0.08] hover:ring-on-surface/[0.18] transition-shadow"
       initial="rest"
       animate={hovering ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}

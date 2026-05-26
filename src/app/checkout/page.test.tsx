@@ -141,9 +141,9 @@ describe('CheckoutPage', () => {
       makeCartMock({ cartLines: vi.fn(() => [saleItem]) }) as ReturnType<typeof useCartStore>,
     )
     await renderPage()
-    // salePrice 29 → displayed as €29.00 (item row + subtotal); original €45 should not appear
+    // salePrice 29 → shown as €29.00 in red; original €45 shown with line-through
     expect(screen.getAllByText('€29.00').length).toBeGreaterThan(0)
-    expect(screen.queryByText('€45')).toBeNull()
+    expect(screen.getByText('€45')).toBeTruthy()
   })
 
   it('clicking × remove button calls removeFromCart with correct id', async () => {

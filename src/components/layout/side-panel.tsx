@@ -44,7 +44,7 @@ function CartItemRow({
     <div className="py-3.5 border-b border-border">
       <div className="flex gap-3.5 items-start">
         {/* Thumbnail */}
-        <Link href={`/product/${item.id}`} onClick={onNavigate} className="shrink-0">
+        <Link href={`/product/${item.code}`} onClick={onNavigate} className="shrink-0">
           <div className="relative w-16 h-[85px] bg-surface overflow-hidden">
             <Image
               src={item.img}
@@ -61,7 +61,7 @@ function CartItemRow({
             {catLabel(item.cat)}
           </p>
           <Link
-            href={`/product/${item.id}`}
+            href={`/product/${item.code}`}
             onClick={onNavigate}
             className="font-body text-[12px] font-bold tracking-wide uppercase text-on-surface hover:opacity-60 transition-opacity inline-block mb-1.5"
           >
@@ -146,7 +146,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
   return (
     <div className="py-3.5 border-b border-border">
       <div className="flex gap-3.5 items-start">
-        <Link href={`/product/${product.id}`} onClick={onNavigate} className="shrink-0">
+        <Link href={`/product/${product.code}`} onClick={onNavigate} className="shrink-0">
           <div className="relative w-16 h-[85px] bg-surface overflow-hidden">
             <Image
               src={product.img}
@@ -162,7 +162,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
             {catLabel(product.cat)}
           </p>
           <Link
-            href={`/product/${product.id}`}
+            href={`/product/${product.code}`}
             onClick={onNavigate}
             className="font-body text-[12px] font-bold tracking-wide uppercase text-on-surface hover:opacity-60 transition-opacity inline-block mb-1.5"
           >
@@ -276,7 +276,7 @@ export function SidePanel() {
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-6 border-b border-border">
               <span className="font-display text-[22px] tracking-[0.12em] text-on-surface">
-                {isCart ? 'MY CART' : 'SAVED ITEMS'}
+                {isCart ? 'MY CART' : 'FAVORITES'}
               </span>
               <button
                 onClick={handleClose}

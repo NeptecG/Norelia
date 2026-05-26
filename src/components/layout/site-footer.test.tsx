@@ -18,9 +18,9 @@ describe('SiteFooter', () => {
     render(<SiteFooter />)
     expect(document.querySelector('a[href="/size-guide"]')).toBeTruthy()
   })
-  it('renders Studio link', () => {
+  it('renders Our Studio link', () => {
     render(<SiteFooter />)
-    expect(document.querySelector('a[href="/studio"]')).toBeTruthy()
+    expect(document.querySelector('a[href="/our-studio"]')).toBeTruthy()
   })
   it('renders contact email', () => {
     render(<SiteFooter />)

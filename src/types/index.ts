@@ -17,6 +17,7 @@ export interface Product {
   salePrice?:  number        // plain number, no €
   tag:         'NEW' | ''
   img:         string
+  imgBack?:    string        // optional back-view image
 }
 
 export interface CartItem extends Product {

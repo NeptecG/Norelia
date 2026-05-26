@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, Truck, Shield, RotateCcw } from 'lucide-react'
+import { Heart, Truck, Shield, RotateCcw, Ruler } from 'lucide-react'
 import { cn, catLabel, catLabelPlural, getStock } from '@/lib/utils'
 import { NAV_CAT_TO_SLUG } from '@/lib/constants'
 import { SIZES } from '@/data/sizes'
+import { GCOLORS } from '@/data/colors'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
 import { useUIStore } from '@/stores/ui-store'
 import { PriceTag } from '@/components/products/price-tag'
 import { SizeMiniGuide } from '@/components/modals/size-mini-guide'
-import type { Product } from '@/types'
+import type { Product, GarmentColor } from '@/types'
 
 interface Props {
   product: Product
@@ -22,10 +23,12 @@ export function ProductPage({ product }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
+  const [activeImageSide, setActiveImageSide] = useState<'front' | 'back'>('front')
+  const [selectedColor, setSelectedColor] = useState<GarmentColor>(GCOLORS[1]) // Black default
 
   const { cartItems, addToCart } = useCartStore()
   const { favorites, toggleFavorite } = useFavoritesStore()
-  const { toggleSidePanel, showToast, addToRecent } = useUIStore()
+  const { showToast, addToRecent } = useUIStore()
 
   useEffect(() => {
     addToRecent(product)
@@ -33,21 +36,34 @@ export function ProductPage({ product }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const stock = getStock(product.id) - (cartItems[product.id] ?? 0)
-  const isFav = favorites.includes(product.id)
+  const stock  = getStock(product.id) - (cartItems[product.id] ?? 0)
+  const isFav  = favorites.includes(product.id)
 
   // Breadcrumb helpers
-  const genderHref = product.gender === 'women' ? '/women' : '/men'
+  const genderHref  = product.gender === 'women' ? '/women' : '/men'
   const genderLabel = product.gender === 'women' ? 'Women' : 'Men'
-  const catKey = catLabelPlural(product.cat) // e.g. "T-Shirts"
-  const catSlug = NAV_CAT_TO_SLUG[catKey] ?? ''
-  const catHref = `${genderHref}/${catSlug}`
+  const catKey      = catLabelPlural(product.cat)
+  const catSlug     = NAV_CAT_TO_SLUG[catKey] ?? ''
+  const catHref     = `${genderHref}/${catSlug}`
 
-  const handleAddToCart = () => {
+  // Active image: back view if available and selected, otherwise front
+  const activeImg = activeImageSide === 'back' && product.imgBack ? product.imgBack : product.img
+
+  function handleAddToCart() {
     if (!selectedSize || stock <= 0) return
     addToCart(product.id, qty)
     showToast(`${product.name} added to cart`, 'add')
-    toggleSidePanel('cart')
+    // Cart side panel no longer auto-opens — user opens it via the cart icon
+  }
+
+  function handleToggleFavorite() {
+    toggleFavorite(product.id)
+    showToast(
+      isFav
+        ? `${product.name} removed from favorites`
+        : `${product.name} added to favorites`,
+      isFav ? 'remove' : 'add',
+    )
   }
 
   const addBtnDisabled = !selectedSize || stock <= 0
@@ -60,19 +76,76 @@ export function ProductPage({ product }: Props) {
     <section className="min-h-screen pt-20 bg-surface">
       <div className="mx-auto max-w-6xl px-4 md:px-8 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
 
-        {/* Image */}
-        <div className="relative aspect-[3/4] bg-surface-raised overflow-hidden rounded-sm">
-          <Image
-            src={product.img}
-            alt={product.name}
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+        {/* ── Left: thumbnail strip + main image ── */}
+        <div className="flex gap-3">
+
+          {/* Thumbnail strip — vertical, left of main image */}
+          <div className="flex flex-col gap-2 shrink-0">
+
+            {/* Front thumbnail */}
+            <button
+              type="button"
+              aria-label="View front"
+              onClick={() => setActiveImageSide('front')}
+              className={cn(
+                'relative w-[54px] aspect-[3/4] overflow-hidden border transition-colors',
+                activeImageSide === 'front'
+                  ? 'border-on-surface'
+                  : 'border-border hover:border-on-surface/50',
+              )}
+            >
+              <Image
+                src={product.img}
+                alt={`${product.name} — front`}
+                fill
+                className="object-cover"
+                sizes="54px"
+              />
+            </button>
+
+            {/* Back thumbnail — placeholder until imgBack is set */}
+            <button
+              type="button"
+              aria-label="View back"
+              onClick={() => setActiveImageSide('back')}
+              className={cn(
+                'relative w-[54px] aspect-[3/4] overflow-hidden border transition-colors bg-surface-raised flex items-end justify-center pb-1',
+                activeImageSide === 'back'
+                  ? 'border-on-surface'
+                  : 'border-border hover:border-on-surface/50',
+              )}
+            >
+              {product.imgBack ? (
+                <Image
+                  src={product.imgBack}
+                  alt={`${product.name} — back`}
+                  fill
+                  className="object-cover"
+                  sizes="54px"
+                />
+              ) : (
+                /* Placeholder label until back photo is uploaded */
+                <span className="font-body text-[7px] tracking-[0.1em] uppercase text-on-surface-muted">
+                  Back
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Main image */}
+          <div className="relative flex-1 aspect-[3/4] bg-surface-raised overflow-hidden rounded-sm">
+            <Image
+              src={activeImg}
+              alt={product.name}
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 40vw"
+            />
+          </div>
         </div>
 
-        {/* Info */}
+        {/* ── Right: product info ── */}
         <div className="flex flex-col">
 
           {/* Breadcrumbs */}
@@ -90,13 +163,16 @@ export function ProductPage({ product }: Props) {
             </ol>
           </nav>
 
-          {/* Category + Name */}
+          {/* Category + Name + Product code */}
           <p className="font-body text-[9px] tracking-[0.22em] uppercase text-on-surface-muted mt-6">
             {catLabel(product.cat)}
           </p>
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mt-1">
             {product.name}
           </h1>
+          <p className="font-body text-[10px] tracking-[0.15em] text-on-surface-muted mt-1.5">
+            #{product.code}
+          </p>
 
           {/* Price */}
           <div className="mt-3">
@@ -108,18 +184,45 @@ export function ProductPage({ product }: Props) {
             {product.description}
           </p>
 
+          {/* Color swatches */}
+          <div className="mt-6">
+            <p className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-2">
+              COLOR: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{selectedColor.name}</span>
+            </p>
+            <div className="flex gap-2">
+              {GCOLORS.map((c) => (
+                <button
+                  key={c.name}
+                  type="button"
+                  aria-label={c.name}
+                  aria-pressed={selectedColor.name === c.name}
+                  onClick={() => setSelectedColor(c)}
+                  /* dynamic swatch colour — cannot use a static Tailwind class */
+                  style={{ '--swatch-color': c.hex } as React.CSSProperties}
+                  className={cn(
+                    'w-6 h-6 rounded-full transition-transform hover:scale-110 bg-[var(--swatch-color)]',
+                    c.outline && 'border border-on-surface/20',
+                    selectedColor.name === c.name && 'ring-2 ring-offset-2 ring-on-surface',
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+
           {/* Size picker */}
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface">
                 SIZE
               </span>
+              {/* Ruler icon replaces arrow per design feedback */}
               <button
                 type="button"
                 onClick={() => setSizeGuideOpen(true)}
-                className="font-body text-[10px] tracking-[0.12em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
+                className="flex items-center gap-1.5 font-body text-[10px] tracking-[0.12em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
               >
-                Size Guide →
+                <Ruler size={11} />
+                Size Guide
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -153,7 +256,7 @@ export function ProductPage({ product }: Props) {
                 aria-label="Decrease quantity"
                 disabled={qty <= 1}
                 onClick={() => setQty(q => Math.max(1, q - 1))}
-                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-alt transition-colors"
+                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
               >
                 −
               </button>
@@ -165,7 +268,7 @@ export function ProductPage({ product }: Props) {
                 aria-label="Increase quantity"
                 disabled={qty >= stock}
                 onClick={() => setQty(q => Math.min(stock, q + 1))}
-                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-alt transition-colors"
+                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
               >
                 +
               </button>
@@ -196,12 +299,12 @@ export function ProductPage({ product }: Props) {
             {addBtnText}
           </button>
 
-          {/* Favorites */}
+          {/* Favorites — hover:bg-on-surface/5 (not surface-alt which is dark in light mode) */}
           <button
             type="button"
             aria-pressed={isFav}
-            onClick={() => toggleFavorite(product.id)}
-            className="mt-3 flex items-center justify-center gap-2 w-full border border-border py-3 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface hover:bg-surface-alt transition-colors"
+            onClick={handleToggleFavorite}
+            className="mt-3 flex items-center justify-center gap-2 w-full border border-border py-3 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface hover:bg-on-surface/5 transition-colors"
           >
             <Heart
               size={14}

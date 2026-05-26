@@ -88,8 +88,8 @@ export default async function SizeGuidePage({ searchParams }: Props) {
 
         {/* Two-column: figure left, table right (desktop). Stacked on mobile. */}
         <div className="grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-12 mt-8">
-          {/* figure sidebar: 200px fixed */}
-          <div className="text-on-surface-muted">
+          {/* figure sidebar: 200px fixed — text-on-surface so currentColor = dark silhouette fill */}
+          <div className="text-on-surface">
             {gender === 'women' ? <FemaleFigure /> : <MaleFigure />}
           </div>
 

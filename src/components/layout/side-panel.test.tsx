@@ -78,12 +78,12 @@ describe('SidePanel', () => {
     expect(screen.getByText('MY CART')).toBeTruthy()
   })
 
-  it('shows SAVED ITEMS title when sidePanel is favorites', () => {
+  it('shows FAVORITES title when sidePanel is favorites', () => {
     vi.mocked(useUIStore).mockReturnValue({
       ...DEFAULT_UI, sidePanel: 'favorites',
     } as ReturnType<typeof useUIStore>)
     render(<SidePanel />)
-    expect(screen.getByText('SAVED ITEMS')).toBeTruthy()
+    expect(screen.getByText('FAVORITES')).toBeTruthy()
   })
 
   it('calls setSidePanel(null) when backdrop is clicked', () => {

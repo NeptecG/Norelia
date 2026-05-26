@@ -10,9 +10,9 @@ describe('OurStudioPage', () => {
     expect(screen.getByText('OUR STUDIO')).toBeTruthy()
   })
 
-  it('renders Where We Work section', async () => {
+  it('renders address section with Preveza', async () => {
     render(await OurStudioPage())
-    expect(screen.getByText('Where We Work')).toBeTruthy()
+    expect(screen.getByText(/Preveza/i)).toBeTruthy()
   })
 
   it('renders map iframe', async () => {

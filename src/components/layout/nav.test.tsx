@@ -68,7 +68,7 @@ describe('Nav', () => {
 
   it('renders favorites and cart buttons', () => {
     render(<Nav />)
-    expect(screen.getByLabelText(/saved items/i)).toBeTruthy()
+    expect(screen.getByLabelText(/favorites/i)).toBeTruthy()
     expect(screen.getByLabelText(/cart/i)).toBeTruthy()
   })
 
