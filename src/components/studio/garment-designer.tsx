@@ -146,6 +146,11 @@ export function GarmentPreview({
   const zones          = side === 'front' ? FRONT_ZONES : BACK_ZONES
   const activePlacement = side === 'front' ? frontPlacement : backPlacement
 
+  // Derive active zone without type assertion — use the typed placement variable directly
+  const activeZone: PlacementZone | null =
+    side === 'front' && frontPlacement !== null ? FRONT_ZONES[frontPlacement] :
+    side === 'back'  && backPlacement  !== null ? BACK_ZONES[backPlacement]   : null
+
   return (
     <div className="relative bg-surface-raised aspect-[9/11] flex items-center justify-center overflow-hidden">
       <svg
@@ -162,7 +167,7 @@ export function GarmentPreview({
           strokeWidth="1.5"
         />
 
-        {/* Placement zone indicators — faint dashed rects for each zone */}
+        {/* Placement zone indicators — dashed rects; colour via semantic token + SVG opacity */}
         {(Object.entries(zones) as [string, PlacementZone][]).map(([key, zone]) => {
           const isActive = key === activePlacement
           return (
@@ -172,22 +177,24 @@ export function GarmentPreview({
               y={zone.y}
               width={zone.w}
               height={zone.h}
-              fill={isActive ? 'rgba(100,100,100,0.08)' : 'none'}
-              stroke={isActive ? 'rgba(100,100,100,0.6)' : 'rgba(100,100,100,0.2)'}
+              fill={isActive ? 'var(--color-border-subtle)' : 'none'}
+              fillOpacity={isActive ? 0.15 : 0}
+              stroke="var(--color-border-subtle)"
+              strokeOpacity={isActive ? 0.6 : 0.2}
               strokeWidth="0.8"
               strokeDasharray={isActive ? '3 2' : '2 3'}
             />
           )
         })}
 
-        {/* Design image at active placement */}
-        {designImg !== null && activePlacement !== null && (
+        {/* Design image at active placement zone */}
+        {designImg !== null && activeZone !== null && (
           <image
             href={designImg.src}
-            x={zones[activePlacement as keyof typeof zones].x}
-            y={zones[activePlacement as keyof typeof zones].y}
-            width={zones[activePlacement as keyof typeof zones].w}
-            height={zones[activePlacement as keyof typeof zones].h}
+            x={activeZone.x}
+            y={activeZone.y}
+            width={activeZone.w}
+            height={activeZone.h}
           />
         )}
       </svg>
@@ -405,7 +412,7 @@ export function PlacementSelector({
   if (side === 'front') {
     return (
       <fieldset>
-        <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+        <legend className={cn(LABEL_CLS, 'mb-2')}>
           Print Placement
         </legend>
         <div className="flex flex-col gap-1.5">
@@ -433,7 +440,7 @@ export function PlacementSelector({
 
   return (
     <fieldset>
-      <legend className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+      <legend className={cn(LABEL_CLS, 'mb-2')}>
         Print Placement
       </legend>
       <div className="flex flex-col gap-1.5">
