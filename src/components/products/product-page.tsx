@@ -93,14 +93,14 @@ export function ProductPage({ product, initialColor, from }: Props) {
 
   return (
     <section className="min-h-screen pt-20 bg-surface">
-      {/* Back button — larger tap target on mobile */}
+      {/* Back button — prominent on mobile, subtle on desktop */}
       <div className="mx-auto max-w-6xl px-4 md:px-8 pt-6 pb-0">
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 py-2 pr-3 font-body text-[11px] md:text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
+          className="flex items-center gap-2 py-3 pr-4 md:py-2 md:pr-3 font-body text-sm md:text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
         >
-          <ChevronLeft size={15} strokeWidth={1.5} />
+          <ChevronLeft size={18} strokeWidth={1.5} className="md:w-[15px] md:h-[15px]" />
           Back
         </button>
       </div>
