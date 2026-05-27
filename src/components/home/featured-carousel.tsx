@@ -78,14 +78,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
               <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
                 View All
               </span>
-              {/* Animated underline — using transform/opacity per CLAUDE.md */}
-              <motion.span
-                className="absolute inset-x-0 bottom-0 h-px bg-on-surface origin-left"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: reducedMotion ? 0 : 1 }}
-                whileFocus={{ scaleX: reducedMotion ? 0 : 1 }}
-                transition={{ duration: 0.25, ease: EASE }}
-              />
+              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </Link>
           )}
         </div>
