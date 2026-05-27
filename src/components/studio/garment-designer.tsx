@@ -1,210 +1,330 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
+import { Upload, ArrowLeft, Check, Ruler } from 'lucide-react'
 import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
-import { SIZES } from '@/data/sizes'
+import { SIZES, SIZE_DATA } from '@/data/sizes'
+import { BP } from '@/data/pricing'
 import { cn, getPrice } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor } from '@/types'
 
-// ─── Placement types (internal to garment-designer) ──────────────────────────
-type FrontPlacement = 'logo' | 'normal' | 'oversized'
-type BackPlacement  = 'normal' | 'oversized'
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-// ─── Placement zone data ──────────────────────────────────────────────────────
-interface PlacementZone { label: string; size: string; x: number; y: number; w: number; h: number }
+type DesignStep    = 'design' | 'form' | 'success'
+type FrontPresetId = 'logo' | 'standard' | 'oversized'
+type BackPresetId  = 'standard' | 'oversized'
 
-const FRONT_ZONES: Record<FrontPlacement, PlacementZone> = {
-  logo:      { label: 'Logo',      size: '~5×5 cm',   x: 96,  y: 70, w: 18, h: 18 },
-  normal:    { label: 'Standard',  size: '20×20 cm',  x: 107, y: 90, w: 26, h: 26 },
-  oversized: { label: 'Oversized', size: '30×30 cm',  x: 99,  y: 83, w: 42, h: 42 },
+interface DesignImgState { el: HTMLImageElement | null; x: number; y: number; w: number; h: number }
+interface PrintPreset    { id: string; cm: string; label: string; desc: string; svgX: number; svgY: number; svgW: number; svgH: number }
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+// CW×CH matches NOIR's canvas dimensions — exact pixel size required for canvas overlay alignment
+const CW = 272
+const CH = 310
+
+const FRONT_PRESETS: PrintPreset[] = [
+  { id: 'logo',      cm: '8×8 cm',   label: 'Logo',      desc: 'Left Breast',  svgX: 211, svgY: 128, svgW: 62,  svgH: 62  },
+  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Chest', svgX: 157, svgY: 160, svgW: 86,  svgH: 86  },
+  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Chest', svgX: 132, svgY: 150, svgW: 136, svgH: 136 },
+]
+
+const BACK_PRESETS: PrintPreset[] = [
+  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Back',  svgX: 157, svgY: 155, svgW: 86,  svgH: 86  },
+  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Back',  svgX: 132, svgY: 145, svgW: 136, svgH: 136 },
+]
+
+const GARMENT_TYPES:  GarmentType[] = ['tshirt', 'hoodie', 'zipper']
+const FIT_TYPES:      FitType[]     = ['normal', 'oversized']
+const PRINT_METHODS:  PrintMethod[] = ['dtg', 'embroidery']
+
+const GARMENT_LABELS: Record<GarmentType, string> = {
+  tshirt: 'T-Shirt',
+  hoodie: 'Hoodie',
+  zipper: 'Zip Hoodie',
 }
 
-const BACK_ZONES: Record<BackPlacement, PlacementZone> = {
-  normal:    { label: 'Standard',  size: '20×20 cm',  x: 107, y: 90, w: 26, h: 26 },
-  oversized: { label: 'Oversized', size: '30×30 cm',  x: 99,  y: 83, w: 42, h: 42 },
-}
-
-// ─── Module-level typed constants (avoids inline `as X[]` assertions) ─────────
-const GARMENT_TYPES: GarmentType[]  = ['tshirt', 'hoodie', 'zipper']
-const FIT_TYPES:     FitType[]      = ['normal', 'oversized']
-const PRINT_METHODS: PrintMethod[]  = ['dtg', 'embroidery']
-
-// Step numbers typed via `as const` so STEP_NUMS[i] is typed as 1 | 2 | 3
-const STEP_NUMS = [1, 2, 3] as const
-
-// Micro-typography constants: below Tailwind's standard scale, used for all uppercase labels
+// Below Tailwind's standard scale — intentional for all control labels throughout the designer
 const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted'
 
-// ─── Order form schema ────────────────────────────────────────────────────────
+// ─── Order schema ─────────────────────────────────────────────────────────────
+
 const orderSchema = z.object({
-  name:  z.string().min(2, 'Name is required'),
-  email: z.string().email('Valid email required'),
-  notes: z.string().max(500).optional(),
+  name:    z.string().min(2, 'Name is required'),
+  phone:   z.string().min(4, 'Phone is required'),
+  email:   z.string().email('Valid email required'),
+  address: z.string().min(3, 'Address is required'),
+  city:    z.string().min(2, 'City is required'),
+  zip:     z.string().min(3, 'Postcode is required'),
+  notes:   z.string().max(500).optional(),
 })
 export type OrderFields = z.infer<typeof orderSchema>
 
-// ─── Sub-component prop interfaces ───────────────────────────────────────────
+// ─── Sub-component interfaces ─────────────────────────────────────────────────
 
 interface GarmentPreviewProps {
-  garmentType:    GarmentType
-  color:          GarmentColor
-  side:           'front' | 'back'
-  frontPlacement: FrontPlacement | null
-  backPlacement:  BackPlacement  | null
-  designImg:      HTMLImageElement | null
-  svgRef:         React.RefObject<SVGSVGElement | null>
+  garmentType:      GarmentType
+  color:            GarmentColor
+  side:             'front' | 'back'
+  frontPreset:      FrontPresetId
+  backPreset:       BackPresetId
+  canvasRef:        React.RefObject<HTMLCanvasElement | null>
+  showMeasurements: boolean
+  measureGender:    'men' | 'women'
+  size:             SizeKey | null
 }
 
 interface SideToggleProps {
-  side: 'front' | 'back'
-  onToggle: (side: 'front' | 'back') => void
+  side:      'front' | 'back'
+  hasDesign: { front: boolean; back: boolean }
+  onToggle:  (s: 'front' | 'back') => void
+}
+
+interface PrintPresetSelectorProps {
+  side:          'front' | 'back'
+  frontPreset:   FrontPresetId
+  backPreset:    BackPresetId
+  onFrontChange: (id: FrontPresetId) => void
+  onBackChange:  (id: BackPresetId) => void
+}
+
+interface RemoveLinksProps {
+  hasDesign:     { front: boolean; back: boolean }
+  onRemoveFront: () => void
+  onRemoveBack:  () => void
+}
+
+interface MeasurementsPanelProps {
+  show:           boolean
+  gender:         'men' | 'women'
+  garmentType:    GarmentType
+  size:           SizeKey | null
+  onToggle:       () => void
+  onGenderChange: (g: 'men' | 'women') => void
 }
 
 interface GarmentTypeSelectorProps {
-  garmentType: GarmentType
+  value:    GarmentType
   onChange: (g: GarmentType) => void
 }
 
+interface DesignUploadZoneProps {
+  side:       'front' | 'back'
+  fileRef:    React.RefObject<HTMLInputElement | null>
+  onFilePick: (file: File) => void
+}
+
 interface ColorSwatchesProps {
-  color: GarmentColor
+  color:    GarmentColor
   onChange: (c: GarmentColor) => void
 }
 
-interface FitToggleProps {
-  fit: FitType
-  onChange: (f: FitType) => void
-}
-
-interface PrintMethodToggleProps {
-  printMethod: PrintMethod
-  onChange: (p: PrintMethod) => void
-}
-
 interface SizeSelectorProps {
-  size: SizeKey | null
+  size:     SizeKey | null
   onChange: (s: SizeKey) => void
 }
 
-interface DesignUploadProps {
-  hasDesign: boolean
-  onUpload:  (e: React.ChangeEvent<HTMLInputElement>) => void
-  onRemove:  () => void
+interface FitSelectorProps {
+  fit:      FitType
+  onChange: (f: FitType) => void
 }
 
-interface PlacementSelectorProps {
-  side:           'front' | 'back'
-  frontPlacement: FrontPlacement | null
-  backPlacement:  BackPlacement  | null
-  onFront:        (p: FrontPlacement) => void
-  onBack:         (p: BackPlacement)  => void
+interface PrintMethodSelectorProps {
+  printMethod: PrintMethod
+  onChange:    (p: PrintMethod) => void
 }
 
-interface PriceSummaryProps {
+interface QuantityStepperProps {
+  qty:      number
+  onChange: (q: number) => void
+}
+
+interface PriceDisplayProps {
   price:        number | null
+  qty:          number
+  fit:          FitType
+  printMethod:  PrintMethod
   size:         SizeKey | null
-  canOrder:     boolean
-  onAddToCart:  () => void
-  onDesignOrder: () => void
+  onPlaceOrder: () => void
 }
 
-interface DownloadButtonProps {
-  svgRef: React.RefObject<SVGSVGElement | null>
+interface OrderSummaryProps {
+  garmentType: GarmentType
+  color:       GarmentColor
+  size:        SizeKey | null
+  fit:         FitType
+  printMethod: PrintMethod
+  hasDesign:   { front: boolean; back: boolean }
+  frontPreset: FrontPresetId
+  backPreset:  BackPresetId
+  price:       number | null
+  qty:         number
 }
 
 interface OrderFormProps {
   onSubmit:  (data: OrderFields) => Promise<void>
-  onBack:    () => void
   isLoading: boolean
 }
 
 interface OrderSuccessProps {
-  svgRef:  React.RefObject<SVGSVGElement | null>
+  orderId: string
   onReset: () => void
 }
 
 interface StepIndicatorProps {
-  step: 1 | 2 | 3
+  step: DesignStep
 }
 
-// ─── Sub-components (module level — never defined inside GarmentDesigner) ────
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 export function GarmentPreview({
-  garmentType,
-  color,
-  side,
-  frontPlacement,
-  backPlacement,
-  designImg,
-  svgRef,
+  garmentType, color, side, frontPreset, backPreset,
+  canvasRef, showMeasurements, measureGender, size,
 }: GarmentPreviewProps) {
-  const zones          = side === 'front' ? FRONT_ZONES : BACK_ZONES
-  const activePlacement = side === 'front' ? frontPlacement : backPlacement
+  const activePreset = (side === 'front'
+    ? FRONT_PRESETS.find(p => p.id === frontPreset)
+    : BACK_PRESETS.find(p => p.id === backPreset)
+  ) ?? (side === 'front' ? FRONT_PRESETS[0] : BACK_PRESETS[0])
 
-  // Derive active zone without type assertion — use the typed placement variable directly
-  const activeZone: PlacementZone | null =
-    side === 'front' && frontPlacement !== null ? FRONT_ZONES[frontPlacement] :
-    side === 'back'  && backPlacement  !== null ? BACK_ZONES[backPlacement]   : null
+  // SVG presentation colors derived from the chosen garment color.
+  // Must be inline SVG attributes — Tailwind cannot express dynamic hex values.
+  const isWhite = color.hex === '#FFFFFF'
+  const svgStr = isWhite ? '#CCC'  : 'rgba(255,255,255,0.18)' // garment outline
+  const pgStr  = isWhite ? '#AAA'  : 'rgba(255,255,255,0.5)'  // print area guide
+  const acc    = isWhite ? '#666'  : 'rgba(255,255,255,0.62)' // collar / tag accents
+  const strC   = isWhite ? '#555'  : '#ddd'                   // hoodie drawstring
+  const pktC   = isWhite ? '#888'  : 'rgba(255,255,255,0.68)' // pocket outline
+
+  const isShirt  = garmentType === 'tshirt'
+  const isHoodie = garmentType === 'hoodie'
+  const isZipper = garmentType === 'zipper'
+  const isFront  = side === 'front'
+
+  const mData = showMeasurements && size
+    ? SIZE_DATA[garmentType][measureGender].find(r => r.size === size)
+    : null
+
+  // SVG anchor points for measurement arrows (viewBox 0 0 400 460)
+  const ac          = 'rgba(225,29,72,0.9)'
+  const tc          = '#e11d48'
+  const shoulderY   = 48,  hemY         = 440
+  const bodyL       = 90,  bodyR        = 310
+  const chestY      = 138
+  const sleeveEndX  = isShirt ? 42 : 22
+  const sleeveEndY  = isShirt ? 192 : 300
+  const slvStartX   = 90
+  const slvStartY   = isShirt ? 108 : 98
 
   return (
-    <div className="relative bg-surface-raised aspect-[9/11] flex items-center justify-center overflow-hidden">
+    // w-[272px] h-[310px] = CW×CH canvas dimensions — canvas overlay needs a pixel-exact container
+    <div className="relative w-[272px] h-[310px]">
       <svg
-        ref={svgRef}
         viewBox="0 0 400 460"
-        className="w-full max-w-xs"
+        width={CW}
+        height={CH}
+        xmlns="http://www.w3.org/2000/svg"
         aria-label={`${garmentType} ${side} view`}
+        style={{ display: 'block' }}
       >
-        {/* Garment fill */}
-        <path
-          d={PATHS[garmentType][side]}
-          fill={color.hex}
-          stroke={color.outline ? 'var(--color-border-subtle)' : color.hex}
-          strokeWidth="1.5"
+        {/* Garment body fill */}
+        <path d={PATHS[garmentType][side]} fill={color.hex} stroke={svgStr} strokeWidth="1.5"/>
+
+        {/* T-shirt: collar curve (front) / neck tag (back) */}
+        {isShirt && isFront  && <path d="M168,35 C182,62 218,62 232,35" fill="none" stroke={pgStr} strokeWidth="1.2"/>}
+        {isShirt && !isFront && <rect x="186" y="40" width="28" height="7" rx="1.5" fill={acc}/>}
+
+        {/* Hoodie front: collar mask, drawstrings, pocket */}
+        {isHoodie && isFront && <>
+          <path d="M165,60 L235,60 C221,88 179,88 165,60 Z" fill="#fff" stroke="none"/>
+          <path d="M165,60 C179,88 221,88 235,60" fill="none" stroke={pgStr} strokeWidth="1.2"/>
+          <line x1="187" y1="100" x2="183" y2="158" stroke={strC} strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="183" cy="161" r="3" fill={strC}/>
+          <line x1="213" y1="100" x2="217" y2="158" stroke={strC} strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="217" cy="161" r="3" fill={strC}/>
+          <path d="M132,290 Q200,278 268,290 L268,360 L132,360 Z" fill="none" stroke={pktC} strokeWidth="1.2"/>
+        </>}
+
+        {/* Zipper front: collar mask, zipper line + tab */}
+        {isZipper && isFront && <>
+          <path d="M165,60 L235,60 C221,88 179,88 165,60 Z" fill="#fff" stroke="none"/>
+          <path d="M165,60 C179,88 221,88 235,60" fill="none" stroke={pgStr} strokeWidth="1.2"/>
+          <line x1="200" y1="88" x2="200" y2="440" stroke={strC} strokeWidth="1.5" strokeLinecap="round"/>
+          <rect x="194" y="155" width="12" height="18" rx="2" fill={strC} opacity="0.9"/>
+          <line x1="197" y1="164" x2="203" y2="164" stroke={color.hex} strokeWidth="1"/>
+        </>}
+
+        {/* Hoodie + Zipper back: hood drape, seam, neck tag */}
+        {(isHoodie || isZipper) && !isFront && <>
+          <path d="M118,40 Q200,18 282,40"  fill="none" stroke={acc} strokeWidth="1"/>
+          <path d="M100,58 Q200,82 300,58"  fill="none" stroke={acc} strokeWidth="1.5"/>
+          <rect x="186" y="92" width="28" height="7" rx="1.5" fill={acc}/>
+        </>}
+
+        {/* Print area guide — dashed rect for the active preset zone */}
+        <rect
+          x={activePreset.svgX} y={activePreset.svgY}
+          width={activePreset.svgW} height={activePreset.svgH}
+          fill="none" stroke={pgStr} strokeWidth="1" strokeDasharray="5,4"
         />
 
-        {/* Placement zone indicators — dashed rects; colour via semantic token + SVG opacity */}
-        {(Object.entries(zones) as [string, PlacementZone][]).map(([key, zone]) => {
-          const isActive = key === activePlacement
-          return (
-            <rect
-              key={key}
-              x={zone.x}
-              y={zone.y}
-              width={zone.w}
-              height={zone.h}
-              fill={isActive ? 'var(--color-border-subtle)' : 'none'}
-              fillOpacity={isActive ? 0.15 : 0}
-              stroke="var(--color-border-subtle)"
-              strokeOpacity={isActive ? 0.6 : 0.2}
-              strokeWidth="0.8"
-              strokeDasharray={isActive ? '3 2' : '2 3'}
-            />
-          )
-        })}
-
-        {/* Design image at active placement zone */}
-        {designImg !== null && activeZone !== null && (
-          <image
-            href={designImg.src}
-            x={activeZone.x}
-            y={activeZone.y}
-            width={activeZone.w}
-            height={activeZone.h}
-          />
-        )}
+        {/* Measurement overlay — arrows + text annotating key dimensions */}
+        {mData && <>
+          <defs>
+            {(['len','chs','slv'] as const).map(id => (
+              <React.Fragment key={id}>
+                <marker id={`ma-${id}`} markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6" fill="none" stroke={ac} strokeWidth="1.2"/>
+                </marker>
+                <marker id={`mb-${id}`} markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto">
+                  <path d="M6,0 L0,3 L6,6" fill="none" stroke={ac} strokeWidth="1.2"/>
+                </marker>
+              </React.Fragment>
+            ))}
+          </defs>
+          {/* Length — vertical right */}
+          <line x1={338} y1={shoulderY} x2={338} y2={hemY} stroke={ac} strokeWidth="1.2"
+            markerEnd="url(#ma-len)" markerStart="url(#mb-len)"/>
+          <line x1={bodyR} y1={shoulderY} x2={344} y2={shoulderY} stroke={ac} strokeWidth="0.8" strokeDasharray="3,2"/>
+          <line x1={bodyR} y1={hemY}      x2={344} y2={hemY}      stroke={ac} strokeWidth="0.8" strokeDasharray="3,2"/>
+          <text x={362} y={(shoulderY + hemY) / 2 + 4} fill={tc} fontSize="11" fontFamily="sans-serif"
+            fontWeight="700" textAnchor="middle" transform={`rotate(-90 362 ${(shoulderY + hemY) / 2})`}>
+            {mData.length}cm
+          </text>
+          {/* Chest — horizontal */}
+          <line x1={bodyL} y1={chestY} x2={bodyR} y2={chestY} stroke={ac} strokeWidth="1.2"
+            markerEnd="url(#ma-chs)" markerStart="url(#mb-chs)"/>
+          <text x={(bodyL + bodyR) / 2} y={chestY - 6} fill={tc} fontSize="11"
+            fontFamily="sans-serif" fontWeight="700" textAnchor="middle">{mData.chest}cm</text>
+          {/* Sleeve — diagonal */}
+          <line x1={slvStartX} y1={slvStartY} x2={sleeveEndX} y2={sleeveEndY} stroke={ac} strokeWidth="1.2"
+            markerEnd="url(#ma-slv)" markerStart="url(#mb-slv)"/>
+          <text x={(slvStartX + sleeveEndX) / 2 - 10} y={(slvStartY + sleeveEndY) / 2 - 8}
+            fill={tc} fontSize="10" fontFamily="sans-serif" fontWeight="700" textAnchor="middle">
+            {mData.sleeve}cm
+          </text>
+        </>}
       </svg>
+
+      {/* Canvas — transparent overlay where the uploaded design is rendered via drawImage */}
+      <canvas ref={canvasRef} className="absolute top-0 left-0 pointer-events-none"/>
+
+      {/* FRONT / BACK badge */}
+      <div className="absolute top-2 right-2 bg-on-surface text-surface font-body text-[11px] tracking-[0.22em] uppercase px-2 py-0.5">
+        {isFront ? 'Front' : 'Back'}
+      </div>
     </div>
   )
 }
 
-export function SideToggle({ side, onToggle }: SideToggleProps) {
+export function SideToggle({ side, hasDesign, onToggle }: SideToggleProps) {
   return (
-    <div className="flex gap-1 mt-3 justify-center" role="group" aria-label="View side">
+    <div className="flex border border-on-surface mt-2.5" role="group" aria-label="View side">
       {(['front', 'back'] as const).map((s) => (
         <button
           key={s}
@@ -212,57 +332,228 @@ export function SideToggle({ side, onToggle }: SideToggleProps) {
           onClick={() => onToggle(s)}
           aria-pressed={side === s}
           className={cn(
-            'px-4 py-1.5',
-            LABEL_CLS,
-            'transition-colors',
+            'flex-1 py-2.5 flex items-center justify-center gap-1.5',
+            'font-body text-[9px] tracking-[0.2em] uppercase transition-colors',
             side === s
               ? 'bg-on-surface text-surface'
-              : 'bg-transparent text-on-surface-muted border border-border hover:text-on-surface',
+              : 'bg-surface text-on-surface hover:bg-on-surface/10',
           )}
         >
           {s}
+          {/* Green dot — signals a design has been uploaded on this side */}
+          {hasDesign[s] && (
+            <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" aria-hidden="true"/>
+          )}
         </button>
       ))}
     </div>
   )
 }
 
-export function GarmentTypeSelector({ garmentType, onChange }: GarmentTypeSelectorProps) {
+export function PrintPresetSelector({
+  side, frontPreset, backPreset, onFrontChange, onBackChange,
+}: PrintPresetSelectorProps) {
+  const presets = side === 'front' ? FRONT_PRESETS : BACK_PRESETS
+  const active  = side === 'front' ? frontPreset : backPreset
+
+  function handleChange(id: string) {
+    if (side === 'front') onFrontChange(id as FrontPresetId)
+    else                  onBackChange(id as BackPresetId)
+  }
+
   return (
-    <fieldset>
-      {/* controls sidebar: 380px — matches design spec fixed panel width */}
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Garment
-      </legend>
+    <div className="mt-2.5">
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Area Guide</p>
       <div className="flex gap-1">
+        {presets.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => handleChange(p.id)}
+            aria-pressed={active === p.id}
+            className={cn(
+              'flex-1 px-1 py-1.5 text-center border transition-colors',
+              active === p.id
+                ? 'bg-on-surface text-surface border-on-surface'
+                : 'bg-surface text-on-surface-muted border-border-subtle hover:border-on-surface',
+            )}
+          >
+            <span className="block font-body text-[9px] font-bold tracking-[0.16em] uppercase">{p.label}</span>
+            <span className="block font-body text-[8px] opacity-65 mt-0.5">{p.cm}</span>
+            <span className="block font-body text-[7px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{p.desc}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLinksProps) {
+  if (!hasDesign.front && !hasDesign.back) return null
+  return (
+    <div className="flex gap-3.5 mt-2 justify-end">
+      {hasDesign.front && (
+        <button
+          type="button"
+          onClick={onRemoveFront}
+          className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
+        >
+          Remove Front
+        </button>
+      )}
+      {hasDesign.back && (
+        <button
+          type="button"
+          onClick={onRemoveBack}
+          className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
+        >
+          Remove Back
+        </button>
+      )}
+    </div>
+  )
+}
+
+export function MeasurementsPanel({
+  show, gender, garmentType, size, onToggle, onGenderChange,
+}: MeasurementsPanelProps) {
+  const mData = show && size
+    ? SIZE_DATA[garmentType][gender].find(r => r.size === size)
+    : null
+
+  return (
+    <div className="mt-2.5">
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={onToggle}
+          className={cn(
+            'flex items-center gap-1.5 font-body text-[9px] tracking-[0.16em] uppercase transition-colors',
+            show ? 'text-on-surface' : 'text-on-surface-muted',
+          )}
+        >
+          <Ruler size={12}/>
+          {show ? 'Hide Measurements' : 'Show Measurements'}
+        </button>
+        {show && (
+          <div className="flex gap-1">
+            {(['men', 'women'] as const).map((g) => (
+              <button
+                key={g}
+                type="button"
+                onClick={() => onGenderChange(g)}
+                className={cn(
+                  'font-body text-[8px] tracking-[0.14em] uppercase px-2 py-0.5 border transition-colors',
+                  gender === g
+                    ? 'bg-on-surface text-surface border-on-surface'
+                    : 'bg-transparent text-on-surface-muted border-border-subtle hover:border-on-surface',
+                )}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {mData && (
+        <div className="grid grid-cols-4 gap-1.5 mt-2">
+          {[
+            { label: 'Length', value: `${mData.length} cm` },
+            { label: 'Chest',  value: `${mData.chest} cm`  },
+            { label: 'Sleeve', value: `${mData.sleeve} cm` },
+            ...(mData.waist ? [{ label: 'Waist', value: `${mData.waist} cm` }] : []),
+          ].map(({ label, value }) => (
+            <div key={label} className="border border-border-subtle p-2 text-center">
+              <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{label}</p>
+              <p className="font-display text-base text-on-surface">{value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function GarmentTypeSelector({ value, onChange }: GarmentTypeSelectorProps) {
+  return (
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>Garment</p>
+      <div className="flex border border-on-surface">
         {GARMENT_TYPES.map((g) => (
           <button
             key={g}
             type="button"
             onClick={() => onChange(g)}
-            aria-pressed={garmentType === g}
+            aria-pressed={value === g}
             className={cn(
-              'px-3 py-1.5 font-body text-xs tracking-[0.12em] uppercase transition-colors border',
-              garmentType === g
-                ? 'bg-on-surface text-surface border-on-surface'
-                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
+              'flex-1 py-2.5 text-center border-none transition-colors',
+              value === g
+                ? 'bg-on-surface text-surface'
+                : 'bg-surface text-on-surface hover:bg-on-surface/10',
             )}
           >
-            {g === 'tshirt' ? 'T-Shirt' : g === 'hoodie' ? 'Hoodie' : 'Zipper'}
+            <span className="block font-body text-[10px] tracking-[0.18em] uppercase font-bold">
+              {GARMENT_LABELS[g]}
+            </span>
+            <span className="block font-body text-[9px] opacity-50 mt-0.5">
+              from €{BP[g]['S'].toFixed(2)}
+            </span>
           </button>
         ))}
       </div>
-    </fieldset>
+    </div>
+  )
+}
+
+export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZoneProps) {
+  return (
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>
+        Your Design{' '}
+        <span className="normal-case tracking-normal text-on-surface-muted">
+          ({side === 'front' ? 'Front' : 'Back'})
+        </span>
+      </p>
+      {/* Drop zone — click opens file picker; drag-and-drop also supported */}
+      <div
+        onClick={() => fileRef.current?.click()}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault()
+          const f = e.dataTransfer.files[0]
+          if (f) onFilePick(f)
+        }}
+        className="border border-dashed border-border-subtle p-6 text-center cursor-pointer hover:bg-surface-raised transition-colors"
+        role="button"
+        tabIndex={0}
+        aria-label="Upload your design"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileRef.current?.click() }}
+      >
+        <Upload size={16} className="mx-auto mb-2 text-on-surface-muted"/>
+        <p className="font-body text-[11px] text-on-surface-muted tracking-[0.08em]">
+          Click or drop image here
+        </p>
+      </div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => { if (e.target.files?.[0]) onFilePick(e.target.files[0]) }}
+      />
+    </div>
   )
 }
 
 export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
   return (
-    <fieldset>
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Color: <span className="normal-case tracking-normal">{color.name}</span>
-      </legend>
-      <div className="flex gap-2">
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>
+        Color:{' '}
+        <span className="normal-case tracking-normal text-on-surface">{color.name}</span>
+      </p>
+      <div className="flex gap-2.5">
         {GCOLORS.map((c) => (
           <button
             key={c.name}
@@ -270,82 +561,32 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
             aria-label={c.name}
             aria-pressed={color.name === c.name}
             onClick={() => onChange(c)}
-            className={cn(
-              'w-7 h-7 rounded-full transition-transform hover:scale-110',
-              color.name === c.name && 'ring-2 ring-offset-2 ring-on-surface',
-            )}
-            /* dynamic color — cannot use static Tailwind class */
-            style={{ backgroundColor: c.hex, border: c.outline ? '1px solid var(--color-border)' : 'none' }}
+            className="w-7 h-7 transition-transform hover:scale-110"
+            style={{
+              // Dynamic hex color — cannot use static Tailwind class
+              backgroundColor: c.hex,
+              border: color.name === c.name
+                ? '2px solid var(--color-on-surface)'
+                : c.outline ? '1px solid var(--color-border-subtle)' : '1px solid transparent',
+              transform: color.name === c.name ? 'scale(1.2)' : undefined,
+              outline: color.name === c.name ? '2px solid var(--color-surface)' : undefined,
+              outlineOffset: color.name === c.name ? '-3px' : undefined,
+            }}
           />
         ))}
       </div>
-    </fieldset>
-  )
-}
-
-export function FitToggle({ fit, onChange }: FitToggleProps) {
-  return (
-    <fieldset>
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Fit
-      </legend>
-      <div className="flex gap-1">
-        {FIT_TYPES.map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => onChange(f)}
-            aria-pressed={fit === f}
-            className={cn(
-              'px-3 py-1.5 font-body text-xs tracking-[0.12em] uppercase transition-colors border',
-              fit === f
-                ? 'bg-on-surface text-surface border-on-surface'
-                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
-            )}
-          >
-            {f === 'normal' ? 'Normal' : 'Oversized'}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  )
-}
-
-export function PrintMethodToggle({ printMethod, onChange }: PrintMethodToggleProps) {
-  return (
-    <fieldset>
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Print Method
-      </legend>
-      <div className="flex gap-1">
-        {PRINT_METHODS.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => onChange(p)}
-            aria-pressed={printMethod === p}
-            className={cn(
-              'px-3 py-1.5 font-body text-xs tracking-[0.12em] uppercase transition-colors border',
-              printMethod === p
-                ? 'bg-on-surface text-surface border-on-surface'
-                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
-            )}
-          >
-            {p === 'dtg' ? 'DTG' : 'Embroidery'}
-          </button>
-        ))}
-      </div>
-    </fieldset>
+    </div>
   )
 }
 
 export function SizeSelector({ size, onChange }: SizeSelectorProps) {
   return (
-    <fieldset>
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Size
-      </legend>
-      <div className="flex gap-1 flex-wrap">
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>
+        Size:{' '}
+        <span className="normal-case tracking-normal text-on-surface">{size ?? ''}</span>
+      </p>
+      <div className="flex flex-wrap gap-1.5">
         {SIZES.map((s) => (
           <button
             key={s}
@@ -353,316 +594,335 @@ export function SizeSelector({ size, onChange }: SizeSelectorProps) {
             aria-pressed={size === s}
             onClick={() => onChange(s)}
             className={cn(
-              'w-12 h-10 font-body text-xs tracking-[0.1em] uppercase transition-colors border',
+              'px-3 py-1.5 font-body text-[10px] tracking-[0.15em] border transition-colors',
               size === s
                 ? 'bg-on-surface text-surface border-on-surface'
-                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
+                : 'bg-surface text-on-surface border-border-subtle hover:border-on-surface',
             )}
           >
             {s}
           </button>
         ))}
       </div>
-    </fieldset>
-  )
-}
-
-export function DesignUpload({ hasDesign, onUpload, onRemove }: DesignUploadProps) {
-  return (
-    <div>
-      <p className={cn(LABEL_CLS, 'mb-2')}>
-        Your Design
-      </p>
-      <div className="flex items-center gap-3">
-        <label
-          htmlFor="design-upload"
-          className="inline-block px-4 py-2 font-body text-xs tracking-[0.12em] uppercase border border-border text-on-surface-muted hover:text-on-surface hover:border-on-surface transition-colors cursor-pointer"
-        >
-          {hasDesign ? 'Change design' : 'Upload design (PNG / SVG)'}
-          <input
-            id="design-upload"
-            type="file"
-            accept="image/png,image/svg+xml,image/jpeg"
-            className="sr-only"
-            onChange={onUpload}
-          />
-        </label>
-        {hasDesign && (
-          <button
-            type="button"
-            onClick={onRemove}
-            aria-label="Remove design"
-            className="font-body text-lg text-on-surface-muted hover:text-on-surface transition-colors leading-none"
-          >
-            ×
-          </button>
-        )}
-      </div>
     </div>
   )
 }
 
-export function PlacementSelector({
-  side,
-  frontPlacement,
-  backPlacement,
-  onFront,
-  onBack,
-}: PlacementSelectorProps) {
-  if (side === 'front') {
-    return (
-      <fieldset>
-        <legend className={cn(LABEL_CLS, 'mb-2')}>
-          Print Placement
-        </legend>
-        <div className="flex flex-col gap-1.5">
-          {(Object.entries(FRONT_ZONES) as [FrontPlacement, PlacementZone][]).map(([key, zone]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => onFront(key)}
-              aria-pressed={frontPlacement === key}
-              className={cn(
-                'flex items-center justify-between px-3 py-2 font-body text-xs tracking-[0.1em] uppercase border transition-colors text-left',
-                frontPlacement === key
-                  ? 'bg-on-surface text-surface border-on-surface'
-                  : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
-              )}
-            >
-              <span>{zone.label}</span>
-              <span className="text-[10px] normal-case tracking-normal opacity-60">{zone.size}</span>
-            </button>
-          ))}
-        </div>
-      </fieldset>
-    )
-  }
-
+export function FitSelector({ fit, onChange }: FitSelectorProps) {
   return (
-    <fieldset>
-      <legend className={cn(LABEL_CLS, 'mb-2')}>
-        Print Placement
-      </legend>
-      <div className="flex flex-col gap-1.5">
-        {(Object.entries(BACK_ZONES) as [BackPlacement, PlacementZone][]).map(([key, zone]) => (
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>Fit</p>
+      <div className="flex border border-on-surface">
+        {FIT_TYPES.map((f) => (
           <button
-            key={key}
+            key={f}
             type="button"
-            onClick={() => onBack(key)}
-            aria-pressed={backPlacement === key}
+            onClick={() => onChange(f)}
+            aria-pressed={fit === f}
             className={cn(
-              'flex items-center justify-between px-3 py-2 font-body text-xs tracking-[0.1em] uppercase border transition-colors text-left',
-              backPlacement === key
-                ? 'bg-on-surface text-surface border-on-surface'
-                : 'bg-transparent text-on-surface-muted border-border hover:text-on-surface hover:border-on-surface',
+              'flex-1 py-2.5 text-center transition-colors',
+              fit === f
+                ? 'bg-on-surface text-surface'
+                : 'bg-surface text-on-surface hover:bg-on-surface/10',
             )}
           >
-            <span>{zone.label}</span>
-            <span className="text-[10px] normal-case tracking-normal opacity-60">{zone.size}</span>
+            <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
+              {f === 'normal' ? 'Normal' : 'Oversized'}
+            </span>
+            <span className="block font-body text-[9px] opacity-50 mt-0.5">
+              {f === 'normal' ? 'True to size' : '+1–2 sizes up'}
+            </span>
           </button>
         ))}
       </div>
-    </fieldset>
-  )
-}
-
-export function PriceSummary({ price, size, canOrder, onAddToCart, onDesignOrder }: PriceSummaryProps) {
-  return (
-    <div className="mt-8 border-t border-border pt-6">
-      <div className="flex justify-between mb-4">
-        <span className="font-body text-sm text-on-surface-muted">Price</span>
-        <span className="font-display text-2xl text-on-surface">
-          {price != null ? `€${price.toFixed(2)}` : '—'}
-        </span>
-      </div>
-      <div className="flex flex-col gap-2">
-        <button
-          type="button"
-          onClick={onAddToCart}
-          disabled={!size}
-          aria-label="Add to cart"
-          className={cn(
-            'w-full py-4 font-body text-xs tracking-[0.2em] uppercase transition-opacity',
-            size
-              ? 'bg-on-surface text-surface hover:opacity-80'
-              : 'bg-on-surface/30 text-surface/60 cursor-not-allowed opacity-50',
-          )}
-        >
-          {size ? 'ADD TO CART' : 'SELECT A SIZE'}
-        </button>
-        {canOrder && (
-          <button
-            type="button"
-            onClick={onDesignOrder}
-            className="w-full py-3 font-body text-xs tracking-[0.2em] uppercase border border-on-surface text-on-surface hover:bg-on-surface hover:text-surface transition-colors"
-          >
-            DESIGN ORDER
-          </button>
-        )}
-      </div>
-      {/* sub-caption size: smaller than any scale step — intentional */}
-      <p className="mt-2 font-body text-[10px] text-on-surface-muted text-center">
-        DTG · custom printing · ships in 5–7 days
-      </p>
     </div>
   )
 }
 
-export function DownloadButton({ svgRef }: DownloadButtonProps) {
-  function handleDownload() {
-    const svg = svgRef.current
-    if (!svg) return
-    const serialized = new XMLSerializer().serializeToString(svg)
-    const blob = new Blob([serialized], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'norelia-design.svg'
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
+export function PrintMethodSelector({ printMethod, onChange }: PrintMethodSelectorProps) {
   return (
-    <button
-      type="button"
-      onClick={handleDownload}
-      className="font-body text-xs tracking-[0.12em] uppercase px-4 py-2 border border-border text-on-surface-muted hover:text-on-surface hover:border-on-surface transition-colors"
-    >
-      DOWNLOAD DESIGN
-    </button>
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Method</p>
+      <div className="flex border border-on-surface">
+        {PRINT_METHODS.map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => onChange(p)}
+            aria-pressed={printMethod === p}
+            className={cn(
+              'flex-1 py-2.5 text-center transition-colors',
+              printMethod === p
+                ? 'bg-on-surface text-surface'
+                : 'bg-surface text-on-surface hover:bg-on-surface/10',
+            )}
+          >
+            <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
+              {p === 'dtg' ? 'DTG' : 'Embroidery'}
+            </span>
+            <span className="block font-body text-[9px] opacity-50 mt-0.5">
+              {p === 'dtg' ? 'Photo-quality digital' : 'Premium stitched thread'}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }
 
-export function OrderForm({ onSubmit, onBack, isLoading }: OrderFormProps) {
+export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
+  return (
+    <div>
+      <p className={cn(LABEL_CLS, 'mb-2')}>Qty</p>
+      <div className="inline-flex items-center border border-on-surface">
+        <button
+          type="button"
+          onClick={() => onChange(Math.max(1, qty - 1))}
+          aria-label="Decrease quantity"
+          className={cn(
+            'w-9 h-9 flex items-center justify-center font-body text-lg leading-none transition-colors',
+            qty <= 1 ? 'text-on-surface-muted cursor-default' : 'text-on-surface hover:bg-on-surface/10',
+          )}
+        >
+          −
+        </button>
+        <input
+          type="text"
+          inputMode="numeric"
+          value={qty}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/[^0-9]/g, '')
+            if (!raw) { onChange(1); return }
+            onChange(Math.max(1, parseInt(raw, 10)))
+          }}
+          aria-label="Quantity"
+          className="w-11 h-9 text-center font-body text-sm font-bold text-on-surface bg-transparent border-none outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => onChange(qty + 1)}
+          aria-label="Increase quantity"
+          className="w-9 h-9 flex items-center justify-center font-body text-lg leading-none text-on-surface hover:bg-on-surface/10 transition-colors"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function PriceDisplay({ price, qty, fit, printMethod, size, onPlaceOrder }: PriceDisplayProps) {
+  const total = price !== null ? price * qty : null
+
+  return (
+    <div className="pt-5 border-t border-border-subtle">
+      <div className="flex items-baseline gap-2.5 mb-1">
+        <span className="font-display text-4xl text-on-surface">
+          {total !== null ? `€${total.toFixed(2)}` : '—'}
+        </span>
+        {fit === 'oversized'        && <span className="font-body text-[11px] text-on-surface-muted">+€4 oversized</span>}
+        {printMethod === 'embroidery' && <span className="font-body text-[11px] text-on-surface-muted">+€7 embroidery</span>}
+      </div>
+      {price !== null && qty > 1 && (
+        <p className="font-body text-[10px] text-on-surface-muted mb-1">
+          €{price.toFixed(2)} × {qty}
+        </p>
+      )}
+      <p className="font-body text-[10px] text-on-surface-muted tracking-[0.06em] mb-4">
+        Incl. printing · Free shipping over €60 · 5–7 day delivery
+      </p>
+      <button
+        type="button"
+        onClick={onPlaceOrder}
+        disabled={!size}
+        className={cn(
+          'w-full py-4 font-body text-[10px] tracking-[0.22em] uppercase font-bold transition-opacity',
+          size
+            ? 'bg-on-surface text-surface hover:opacity-80'
+            : 'bg-on-surface/30 text-surface/60 cursor-not-allowed',
+        )}
+      >
+        {size ? 'PLACE ORDER →' : 'SELECT A SIZE'}
+      </button>
+    </div>
+  )
+}
+
+export function OrderSummaryTable({
+  garmentType, color, size, fit, printMethod, hasDesign,
+  frontPreset, backPreset, price, qty,
+}: OrderSummaryProps) {
+  const frontP = FRONT_PRESETS.find(p => p.id === frontPreset) ?? FRONT_PRESETS[0]
+  const backP  = BACK_PRESETS.find(p => p.id === backPreset)   ?? BACK_PRESETS[0]
+  const total  = price !== null && qty > 0 ? price * qty : null
+
+  const sides = hasDesign.front && hasDesign.back
+    ? 'Front + Back'
+    : hasDesign.front ? 'Front only' : 'Back only'
+
+  const rows: [string, string][] = [
+    ['Garment',    GARMENT_LABELS[garmentType]],
+    ['Color',      color.name],
+    ['Size',       size ?? '—'],
+    ['Fit',        fit === 'oversized' ? 'Oversized Fit' : 'Normal Fit'],
+    ['Print',      printMethod === 'dtg' ? 'DTG Print' : 'Embroidery'],
+    ['Sides',      sides],
+    ...(hasDesign.front ? [[`Position (Front)`, `${frontP.label} — ${frontP.cm}`] as [string, string]] : []),
+    ...(hasDesign.back  ? [[`Position (Back)`,  `${backP.label} — ${backP.cm}`]  as [string, string]] : []),
+    ['Unit Price', price !== null ? `€${price.toFixed(2)}` : '—'],
+    ['Qty',        String(qty)],
+    ['Total',      total !== null ? `€${total.toFixed(2)}` : '—'],
+  ]
+
+  return (
+    <div className="bg-surface-raised px-4 py-3.5 mb-7">
+      {rows.map(([k, v], i, a) => (
+        <div
+          key={k}
+          className={cn(
+            'flex justify-between py-1.5 font-body text-sm',
+            i < a.length - 1 ? 'border-b border-border-subtle' : 'font-bold pt-3 mt-1',
+          )}
+        >
+          <span className="font-body text-[9px] tracking-[0.18em] uppercase text-on-surface-muted">
+            {k}
+          </span>
+          <span className="uppercase text-on-surface">{v}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<OrderFields>({
     resolver: zodResolver(orderSchema),
   })
 
+  const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-sm bg-surface border border-on-surface text-on-surface focus:outline-none'
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-      <div>
-        <label
-          htmlFor="order-name"
-          className={cn(LABEL_CLS, 'block mb-1')}
-        >
-          Name
-        </label>
-        <input
-          id="order-name"
-          {...register('name')}
-          className="w-full px-3 py-2 font-body text-sm bg-surface border border-border text-on-surface focus:outline-none focus:border-on-surface"
-          placeholder="Your name"
-        />
-        {errors.name && (
-          <p className="font-body text-xs text-destructive mt-1">{errors.name.message}</p>
-        )}
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <div className="grid grid-cols-2 gap-4 mb-3.5">
+        <div>
+          <label htmlFor="order-name" className={cn(LABEL_CLS, 'block mb-1')}>Full Name</label>
+          <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder="Maria Papadopoulos"/>
+          {errors.name && <p className="font-body text-xs text-destructive mt-1">{errors.name.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="order-phone" className={cn(LABEL_CLS, 'block mb-1')}>Phone</label>
+          <input id="order-phone" {...register('phone')} inputMode="tel" className={INPUT_CLS} placeholder="+30 6940000000"/>
+          {errors.phone && <p className="font-body text-xs text-destructive mt-1">{errors.phone.message}</p>}
+        </div>
       </div>
-      <div>
-        <label
-          htmlFor="order-email"
-          className={cn(LABEL_CLS, 'block mb-1')}
-        >
-          Email
-        </label>
-        <input
-          id="order-email"
-          type="email"
-          {...register('email')}
-          className="w-full px-3 py-2 font-body text-sm bg-surface border border-border text-on-surface focus:outline-none focus:border-on-surface"
-          placeholder="your@email.com"
-        />
-        {errors.email && (
-          <p className="font-body text-xs text-destructive mt-1">{errors.email.message}</p>
-        )}
+      <div className="mb-3.5">
+        <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>Email</label>
+        <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder="customer@email.com"/>
+        {errors.email && <p className="font-body text-xs text-destructive mt-1">{errors.email.message}</p>}
       </div>
-      <div>
-        <label
-          htmlFor="order-notes"
-          className={cn(LABEL_CLS, 'block mb-1')}
-        >
-          Notes (optional)
-        </label>
+      <div className="mb-3.5">
+        <label htmlFor="order-address" className={cn(LABEL_CLS, 'block mb-1')}>Street Address</label>
+        <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder="Street &amp; Number"/>
+        {errors.address && <p className="font-body text-xs text-destructive mt-1">{errors.address.message}</p>}
+      </div>
+      <div className="grid grid-cols-2 gap-4 mb-3.5">
+        <div>
+          <label htmlFor="order-city" className={cn(LABEL_CLS, 'block mb-1')}>City</label>
+          <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder="Athens"/>
+          {errors.city && <p className="font-body text-xs text-destructive mt-1">{errors.city.message}</p>}
+        </div>
+        <div>
+          <label htmlFor="order-zip" className={cn(LABEL_CLS, 'block mb-1')}>Zip / Postcode</label>
+          <input id="order-zip" {...register('zip')} className={INPUT_CLS} placeholder="10431"/>
+          {errors.zip && <p className="font-body text-xs text-destructive mt-1">{errors.zip.message}</p>}
+        </div>
+      </div>
+      <div className="mb-6">
+        <label htmlFor="order-notes" className={cn(LABEL_CLS, 'block mb-1')}>Notes (optional)</label>
         <textarea
           id="order-notes"
           {...register('notes')}
           rows={3}
-          className="w-full px-3 py-2 font-body text-sm bg-surface border border-border text-on-surface focus:outline-none focus:border-on-surface resize-none"
-          placeholder="Any special instructions..."
+          className={cn(INPUT_CLS, 'resize-none')}
+          placeholder="Special instructions…"
         />
       </div>
-      <div className="flex gap-2 mt-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex-1 py-3 font-body text-xs tracking-[0.2em] uppercase border border-border text-on-surface-muted hover:text-on-surface hover:border-on-surface transition-colors"
-        >
-          BACK
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="flex-1 py-3 font-body text-xs tracking-[0.2em] uppercase bg-on-surface text-surface hover:opacity-80 transition-opacity disabled:opacity-50"
-        >
-          {isLoading ? 'SENDING…' : 'PLACE ORDER'}
-        </button>
-      </div>
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-full py-4 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
+      >
+        {isLoading ? 'SENDING…' : 'SEND ORDER →'}
+      </button>
     </form>
   )
 }
 
-export function OrderSuccess({ svgRef, onReset }: OrderSuccessProps) {
+export function OrderSuccess({ orderId, onReset }: OrderSuccessProps) {
   return (
-    <div className="text-center py-8">
-      <p className="font-display text-4xl text-on-surface mb-4">ORDER RECEIVED</p>
-      <p className="font-body text-sm text-on-surface-muted mb-8">
-        We&apos;ll confirm your custom order by email within 24 hours.
-      </p>
-      <div className="flex gap-3 justify-center">
-        <DownloadButton svgRef={svgRef} />
-        <button
-          type="button"
-          onClick={onReset}
-          className="font-body text-xs tracking-[0.12em] uppercase px-4 py-2 bg-on-surface text-surface hover:opacity-80 transition-opacity"
-        >
-          DESIGN ANOTHER
-        </button>
+    <div className="text-center py-16">
+      {/* Black circle with checkmark */}
+      <div className="w-14 h-14 bg-on-surface flex items-center justify-center mx-auto mb-6">
+        <Check size={26} className="text-surface"/>
       </div>
+      <h3 className="font-display text-4xl tracking-[0.1em] text-on-surface mb-2.5">
+        ORDER RECEIVED
+      </h3>
+      <p className="font-body text-sm text-on-surface-muted mb-3 leading-relaxed">
+        Your order details have been sent. Print-ready files have been downloaded to your computer.
+      </p>
+      {orderId && (
+        <p className="font-body text-[11px] tracking-[0.14em] text-on-surface-muted mb-8">
+          ORDER {orderId}
+        </p>
+      )}
+      <button
+        type="button"
+        onClick={onReset}
+        className="px-8 py-3.5 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity"
+      >
+        DESIGN ANOTHER
+      </button>
     </div>
   )
 }
 
 export function StepIndicator({ step }: StepIndicatorProps) {
-  const steps = ['Design', 'Details', 'Confirmation'] as const
+  const STEPS: { key: DesignStep; label: string }[] = [
+    { key: 'design',  label: 'Design'       },
+    { key: 'form',    label: 'Details'      },
+    { key: 'success', label: 'Confirmation' },
+  ]
+  const activeIdx = STEPS.findIndex(s => s.key === step)
+
   return (
     <div className="flex items-center gap-2 mb-8" aria-label="Order steps">
-      {steps.map((label, i) => {
-        const n = STEP_NUMS[i]  // typed as 1 | 2 | 3 via as const
-        const isActive = n === step
-        const isDone   = n < step
+      {STEPS.map(({ key, label }, i) => {
+        const isActive = key === step
+        const isDone   = i < activeIdx
         return (
-          <React.Fragment key={label}>
+          <React.Fragment key={key}>
             <div className="flex items-center gap-2">
               <span
                 className={cn(
                   'w-6 h-6 rounded-full flex items-center justify-center font-body text-[10px]',
-                  isActive ? 'bg-on-surface text-surface' :
-                  isDone   ? 'bg-on-surface/30 text-on-surface' :
-                             'bg-surface-raised text-on-surface-muted border border-border',
+                  isActive ? 'bg-on-surface text-surface'           :
+                  isDone   ? 'bg-on-surface/30 text-on-surface'     :
+                             'bg-surface-raised text-on-surface-muted border border-border-subtle',
                 )}
               >
-                {n}
+                {i + 1}
               </span>
               <span
                 className={cn(
-                  LABEL_CLS,
-                  'tracking-[0.15em]',
+                  LABEL_CLS, 'tracking-[0.15em]',
                   isActive ? 'text-on-surface' : 'text-on-surface-muted',
                 )}
               >
                 {label}
               </span>
             </div>
-            {i < 2 && <div className="flex-1 h-px bg-border-subtle" />}
+            {i < 2 && <div className="flex-1 h-px bg-border-subtle"/>}
           </React.Fragment>
         )
       })}
@@ -670,146 +930,392 @@ export function StepIndicator({ step }: StepIndicatorProps) {
   )
 }
 
-// ─── Main GarmentDesigner component ──────────────────────────────────────────
+// ─── Main GarmentDesigner ─────────────────────────────────────────────────────
 
 export function GarmentDesigner() {
-  const [garmentType,     setGarmentType]     = useState<GarmentType>('tshirt')
-  const [color,           setColor]           = useState<GarmentColor>(GCOLORS[1]) // Black
-  const [fit,             setFit]             = useState<FitType>('normal')
-  const [printMethod,     setPrintMethod]     = useState<PrintMethod>('dtg')
-  const [size,            setSize]            = useState<SizeKey | null>(null)
-  const [side,            setSide]            = useState<'front' | 'back'>('front')
-  const [frontPlacement,  setFrontPlacement]  = useState<FrontPlacement | null>(null)
-  const [backPlacement,   setBackPlacement]   = useState<BackPlacement  | null>(null)
-  const [designImg,       setDesignImg]       = useState<HTMLImageElement | null>(null)
-  const [step,            setStep]            = useState<1 | 2 | 3>(1)
-  const [isSubmitting,    setIsSubmitting]    = useState(false)
+  // ── State ──────────────────────────────────────────────────────────────────
+  const [garmentType,    setGarmentType]    = useState<GarmentType>('tshirt')
+  const [color,          setColor]          = useState<GarmentColor>(GCOLORS[1]) // Black
+  const [fit,            setFit]            = useState<FitType>('normal')
+  const [printMethod,    setPrintMethod]    = useState<PrintMethod>('dtg')
+  const [size,           setSize]           = useState<SizeKey | null>(null)
+  const [side,           setSide]           = useState<'front' | 'back'>('front')
+  const [frontPreset,    setFrontPreset]    = useState<FrontPresetId>('standard')
+  const [backPreset,     setBackPreset]     = useState<BackPresetId>('standard')
+  const [hasDesign,      setHasDesign]      = useState<{ front: boolean; back: boolean }>({ front: false, back: false })
+  const [showMeasure,    setShowMeasure]    = useState(false)
+  const [measureGender,  setMeasureGender]  = useState<'men' | 'women'>('men')
+  const [qty,            setQty]            = useState(1)
+  const [step,           setStep]           = useState<DesignStep>('design')
+  const [orderId,        setOrderId]        = useState('')
+  const [isSubmitting,   setIsSubmitting]   = useState(false)
+  const [showEjs,        setShowEjs]        = useState(false)
+  const [sendErr,        setSendErr]        = useState('')
 
-  const svgRef = useRef<SVGSVGElement | null>(null)
+  // EmailJS credentials — read from env vars, overridable via the settings panel
+  const [ejsSvc,   setEjsSvc]   = useState(process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID   ?? '')
+  const [ejsTpl,   setEjsTpl]   = useState(process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID  ?? '')
+  const [ejsKey,   setEjsKey]   = useState(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY   ?? '')
+  const [ejsRecip, setEjsRecip] = useState(process.env.NEXT_PUBLIC_EMAILJS_RECIPIENT    ?? '')
 
-  const { setShowCheckoutModal } = useUIStore()
+  // ── Refs ────────────────────────────────────────────────────────────────────
+  const cvRef   = useRef<HTMLCanvasElement>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+  // Design image state — mutable ref avoids triggering re-renders on canvas draws
+  const iRef    = useRef<DesignImgState>({ el: null, x: 0, y: 0, w: 0, h: 0 })
+  // Per-side persistence — saves image state when switching front/back
+  const savedRef  = useRef<{ front: DesignImgState | null; back: DesignImgState | null }>({ front: null, back: null })
+  const viewRef   = useRef<'front' | 'back'>('front')
 
-  const price    = size ? getPrice(garmentType, size, fit, printMethod) : null
-  const canOrder = size !== null && (frontPlacement !== null || backPlacement !== null)
+  // ── Derived values ──────────────────────────────────────────────────────────
+  const price      = size ? getPrice(garmentType, size, fit, printMethod) : null
+  const activePreset = (side === 'front'
+    ? FRONT_PRESETS.find(p => p.id === frontPreset)
+    : BACK_PRESETS.find(p => p.id === backPreset)
+  ) ?? (side === 'front' ? FRONT_PRESETS[0] : BACK_PRESETS[0])
 
-  function handleDesignUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const url = URL.createObjectURL(file)
-    const img = new window.Image()
-    img.onload = () => setDesignImg(img)
-    img.src = url
+  const { showToast } = useUIStore()
+
+  // ── Canvas setup ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const cv = cvRef.current
+    if (cv) { cv.width = CW; cv.height = CH }
+  }, [])
+
+  // draw — clears canvas and redraws the current design image at its stored position
+  const draw = useCallback(() => {
+    const cv = cvRef.current
+    if (!cv) return
+    const ctx = cv.getContext('2d')
+    if (!ctx) return
+    ctx.clearRect(0, 0, CW, CH)
+    const img = iRef.current
+    if (!img.el) return
+    ctx.drawImage(img.el, img.x, img.y, img.w, img.h)
+  }, [])
+
+  // ── Design persistence (front / back switching) ─────────────────────────────
+  function saveD() {
+    const i = iRef.current
+    savedRef.current[viewRef.current] = { el: i.el, x: i.x, y: i.y, w: i.w, h: i.h }
   }
 
-  function handleRemoveDesign() {
-    setDesignImg(null)
+  function loadD(v: 'front' | 'back') {
+    const d = savedRef.current[v]
+    if (d) Object.assign(iRef.current, { el: d.el, x: d.x, y: d.y, w: d.w, h: d.h })
+    else   Object.assign(iRef.current, { el: null, x: 0, y: 0, w: 0, h: 0 })
+  }
+
+  function switchView(v: 'front' | 'back') {
+    saveD()
+    viewRef.current = v
+    setSide(v)
+    loadD(v)
+    requestAnimationFrame(draw)
+  }
+
+  // ── Image loading ────────────────────────────────────────────────────────────
+  function loadImg(file: File) {
+    const pa = {
+      x: activePreset.svgX * (CW / 400),
+      y: activePreset.svgY * (CH / 460),
+      w: activePreset.svgW * (CW / 400),
+      h: activePreset.svgH * (CH / 460),
+    }
+    const r = new FileReader()
+    r.onload = (ev) => {
+      const img = new window.Image()
+      img.onload = () => {
+        const sc = Math.min(pa.w / img.width, pa.h / img.height) * 0.85
+        Object.assign(iRef.current, {
+          el: img,
+          w:  img.width  * sc,
+          h:  img.height * sc,
+          x:  pa.x + (pa.w - img.width  * sc) / 2,
+          y:  pa.y + (pa.h - img.height * sc) / 2,
+        })
+        draw()
+        setHasDesign(p => ({ ...p, [viewRef.current]: true }))
+        if (fileRef.current) fileRef.current.value = ''
+      }
+      img.src = ev.target?.result as string
+    }
+    r.readAsDataURL(file)
+  }
+
+  function removeSide(s: 'front' | 'back') {
+    savedRef.current[s] = null
+    setHasDesign(p => ({ ...p, [s]: false }))
+    if (viewRef.current === s) {
+      iRef.current.el = null
+      draw()
+    }
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  // ── Print preset change with image reposition ───────────────────────────────
+  function applyPreset(s: 'front' | 'back', presetId: string) {
+    const presets = s === 'front' ? FRONT_PRESETS : BACK_PRESETS
+    const p = presets.find(pp => pp.id === presetId) ?? presets[0]
+    const sx = CW / 400, sy = CH / 460
+    const pa = { x: p.svgX * sx, y: p.svgY * sy, w: p.svgW * sx, h: p.svgH * sy }
+    const img = iRef.current
+    if (img.el) {
+      const sc = Math.min(pa.w / img.el.naturalWidth, pa.h / img.el.naturalHeight) * 0.85
+      img.w = img.el.naturalWidth  * sc
+      img.h = img.el.naturalHeight * sc
+      img.x = pa.x + (pa.w - img.w) / 2
+      img.y = pa.y + (pa.h - img.h) / 2
+      draw()
+    }
+  }
+
+  function handleFrontPresetChange(id: FrontPresetId) {
+    setFrontPreset(id)
+    if (side === 'front') applyPreset('front', id)
+  }
+
+  function handleBackPresetChange(id: BackPresetId) {
+    setBackPreset(id)
+    if (side === 'back') applyPreset('back', id)
+  }
+
+  // ── Order flow ───────────────────────────────────────────────────────────────
+  function handlePlaceOrder() {
+    if (!hasDesign.front && !hasDesign.back) {
+      showToast('Upload at least one design first.', 'remove')
+    }
+    saveD()
+    setStep('form')
   }
 
   async function handleOrderSubmit(data: OrderFields) {
     setIsSubmitting(true)
+    setSendErr('')
+    saveD()
+    const oid = '#' + Date.now().toString().slice(-6)
+    setOrderId(oid)
     try {
-      const serviceId  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID  ?? ''
-      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? ''
-      const publicKey  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY  ?? ''
-      if (serviceId && templateId && publicKey) {
+      if (ejsSvc && ejsTpl && ejsKey) {
         await emailjs.send(
-          serviceId,
-          templateId,
+          ejsSvc,
+          ejsTpl,
           {
-            from_name:       data.name,
-            from_email:      data.email,
-            garment_type:    garmentType,
-            color:           color.name,
-            size:            size ?? '',
-            fit:             fit,
-            print_method:    printMethod,
-            front_placement: frontPlacement ?? 'none',
-            back_placement:  backPlacement  ?? 'none',
-            notes:           data.notes ?? '',
+            order_id:       oid,
+            to_email:       ejsRecip,
+            customer_name:  data.name,
+            customer_email: data.email,
+            customer_phone: data.phone,
+            customer_address: `${data.address}, ${data.city}, ${data.zip}`,
+            order_garment:  GARMENT_LABELS[garmentType],
+            order_color:    color.name,
+            order_size:     size ?? '',
+            order_fit:      fit,
+            order_print:    printMethod,
+            order_qty:      String(qty),
+            order_total:    price !== null ? `€${(price * qty).toFixed(2)}` : '—',
+            notes:          data.notes ?? '',
           },
-          publicKey,
+          { publicKey: ejsKey },
         )
       }
-      setStep(3)
-    } catch {
-      // silently proceed to success — don't block UX on email failure
-      setStep(3)
+      setStep('success')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      setSendErr('Error: ' + msg)
     } finally {
       setIsSubmitting(false)
     }
   }
 
   function handleReset() {
-    setStep(1)
+    setStep('design')
     setSize(null)
-    setDesignImg(null)
-    setFrontPlacement(null)
-    setBackPlacement(null)
+    setHasDesign({ front: false, back: false })
+    setQty(1)
+    setOrderId('')
+    setSendErr('')
+    iRef.current = { el: null, x: 0, y: 0, w: 0, h: 0 }
+    savedRef.current = { front: null, back: null }
+    draw()
   }
 
+  // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <section aria-label="Garment customiser" className="w-full">
-      <StepIndicator step={step} />
+      <StepIndicator step={step}/>
 
-      {/* controls sidebar: 380px — matches design spec fixed panel width */}
-      {step === 1 && (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
-          {/* Left: SVG preview */}
-          <div>
+      {/* ── STEP: SUCCESS ── */}
+      {step === 'success' && (
+        <OrderSuccess orderId={orderId} onReset={handleReset}/>
+      )}
+
+      {/* ── STEP: FORM ── */}
+      {step === 'form' && (
+        <div className="max-w-[580px]">
+          <button
+            type="button"
+            onClick={() => setStep('design')}
+            className="flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-8 hover:opacity-70 transition-opacity"
+          >
+            <ArrowLeft size={14}/>
+            Back to Designer
+          </button>
+
+          <h3 className="font-display text-3xl tracking-[0.1em] text-on-surface border-b border-on-surface pb-3.5 mb-5">
+            ORDER SUMMARY
+          </h3>
+
+          <OrderSummaryTable
+            garmentType={garmentType}
+            color={color}
+            size={size}
+            fit={fit}
+            printMethod={printMethod}
+            hasDesign={hasDesign}
+            frontPreset={frontPreset}
+            backPreset={backPreset}
+            price={price}
+            qty={qty}
+          />
+
+          <h3 className="font-display text-2xl tracking-[0.1em] text-on-surface mb-4">
+            CUSTOMER DETAILS
+          </h3>
+
+          <OrderForm onSubmit={handleOrderSubmit} isLoading={isSubmitting}/>
+
+          {/* EmailJS settings — collapsed by default */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setShowEjs(!showEjs)}
+              className="w-full flex justify-between items-center border border-on-surface px-4 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase hover:bg-on-surface/5 transition-colors"
+            >
+              <span>EmailJS Settings</span>
+              <span className="text-lg leading-none">{showEjs ? '−' : '+'}</span>
+            </button>
+            {showEjs && (
+              <div className="border border-on-surface border-t-0 p-4 bg-surface-raised">
+                <p className="font-body text-[11px] text-on-surface-muted leading-relaxed mb-3">
+                  Sign up at emailjs.com → connect service → create template → paste credentials.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {([
+                    ['Recipient Email', 'shop@gmail.com',  ejsRecip, setEjsRecip],
+                    ['Public Key',      'xxxxxxxxxxxx',    ejsKey,   setEjsKey  ],
+                    ['Service ID',      'service_xxx',     ejsSvc,   setEjsSvc  ],
+                    ['Template ID',     'template_xxx',    ejsTpl,   setEjsTpl  ],
+                  ] as [string, string, string, (v: string) => void][]).map(([l, ph, v, s]) => (
+                    <div key={l}>
+                      <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{l}</p>
+                      <input
+                        type="text"
+                        placeholder={ph}
+                        value={v}
+                        onChange={(e) => s(e.target.value)}
+                        className="w-full px-2.5 py-2 font-body text-xs bg-surface border border-on-surface text-on-surface focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {sendErr && (
+            <p className="font-body text-xs text-destructive mt-3">{sendErr}</p>
+          )}
+        </div>
+      )}
+
+      {/* ── STEP: DESIGN ── */}
+      {step === 'design' && (
+        <div className="flex gap-13 flex-wrap items-start justify-center lg:justify-start">
+
+          {/* ── LEFT COLUMN: Preview ── */}
+          <div className="flex-shrink-0">
             <GarmentPreview
               garmentType={garmentType}
               color={color}
               side={side}
-              frontPlacement={frontPlacement}
-              backPlacement={backPlacement}
-              designImg={designImg}
-              svgRef={svgRef}
-            />
-            <SideToggle side={side} onToggle={setSide} />
-          </div>
-
-          {/* Right: controls panel */}
-          <div className="flex flex-col gap-6">
-            <GarmentTypeSelector garmentType={garmentType} onChange={setGarmentType} />
-            <ColorSwatches color={color} onChange={setColor} />
-            <FitToggle fit={fit} onChange={setFit} />
-            <PrintMethodToggle printMethod={printMethod} onChange={setPrintMethod} />
-            <SizeSelector size={size} onChange={setSize} />
-            <DesignUpload
-              hasDesign={designImg !== null}
-              onUpload={handleDesignUpload}
-              onRemove={handleRemoveDesign}
-            />
-            <PlacementSelector
-              side={side}
-              frontPlacement={frontPlacement}
-              backPlacement={backPlacement}
-              onFront={setFrontPlacement}
-              onBack={setBackPlacement}
-            />
-            <PriceSummary
-              price={price}
+              frontPreset={frontPreset}
+              backPreset={backPreset}
+              canvasRef={cvRef}
+              showMeasurements={showMeasure}
+              measureGender={measureGender}
               size={size}
-              canOrder={canOrder}
-              onAddToCart={() => setShowCheckoutModal(true)}
-              onDesignOrder={() => setStep(2)}
+            />
+
+            <SideToggle side={side} hasDesign={hasDesign} onToggle={switchView}/>
+
+            <PrintPresetSelector
+              side={side}
+              frontPreset={frontPreset}
+              backPreset={backPreset}
+              onFrontChange={handleFrontPresetChange}
+              onBackChange={handleBackPresetChange}
+            />
+
+            <RemoveLinks
+              hasDesign={hasDesign}
+              onRemoveFront={() => removeSide('front')}
+              onRemoveBack={() => removeSide('back')}
+            />
+
+            <MeasurementsPanel
+              show={showMeasure}
+              gender={measureGender}
+              garmentType={garmentType}
+              size={size}
+              onToggle={() => setShowMeasure(v => !v)}
+              onGenderChange={setMeasureGender}
             />
           </div>
-        </div>
-      )}
 
-      {step === 2 && (
-        <div className="max-w-md mx-auto">
-          <OrderForm
-            onSubmit={handleOrderSubmit}
-            onBack={() => setStep(1)}
-            isLoading={isSubmitting}
-          />
-        </div>
-      )}
+          {/* ── RIGHT COLUMN: Controls ── */}
+          <div className="flex-1 min-w-[260px] flex flex-col gap-4">
+            <GarmentTypeSelector value={garmentType} onChange={setGarmentType}/>
 
-      {step === 3 && (
-        <OrderSuccess svgRef={svgRef} onReset={handleReset} />
+            <DesignUploadZone
+              side={side}
+              fileRef={fileRef}
+              onFilePick={loadImg}
+            />
+
+            <hr className="border-border-subtle"/>
+
+            <ColorSwatches color={color} onChange={setColor}/>
+
+            <hr className="border-border-subtle"/>
+
+            <SizeSelector size={size} onChange={setSize}/>
+
+            <hr className="border-border-subtle"/>
+
+            <FitSelector fit={fit} onChange={setFit}/>
+
+            <hr className="border-border-subtle"/>
+
+            <PrintMethodSelector printMethod={printMethod} onChange={setPrintMethod}/>
+
+            <hr className="border-border-subtle"/>
+
+            <QuantityStepper qty={qty} onChange={setQty}/>
+
+            <hr className="border-border-subtle"/>
+
+            <PriceDisplay
+              price={price}
+              qty={qty}
+              fit={fit}
+              printMethod={printMethod}
+              size={size}
+              onPlaceOrder={handlePlaceOrder}
+            />
+          </div>
+
+        </div>
       )}
     </section>
   )
