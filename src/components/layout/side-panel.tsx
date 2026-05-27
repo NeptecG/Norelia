@@ -305,8 +305,8 @@ export function SidePanel() {
                         toggleFavorite(item.id)
                         showToast(
                           favorites.includes(item.id)
-                            ? `${item.name} removed from saved`
-                            : `${item.name} saved`,
+                            ? `${item.name} removed from favorites`
+                            : `${item.name} added to favorites`,
                           favorites.includes(item.id) ? 'remove' : 'add',
                         )
                       }}
@@ -314,7 +314,7 @@ export function SidePanel() {
                       onAdd={() => addToCart(item.id)}
                       onRemove={() => {
                         removeFromCart(item.id)
-                        showToast(`${item.name} removed`, 'remove')
+                        showToast(`${item.name} removed from cart`, 'remove')
                       }}
                       onNavigate={handleClose}
                     />
@@ -331,7 +331,7 @@ export function SidePanel() {
                     product={product}
                     onRemove={() => {
                       toggleFavorite(product.id)
-                      showToast(`${product.name} removed from saved`, 'remove')
+                      showToast(`${product.name} removed from favorites`, 'remove')
                     }}
                     onNavigate={handleClose}
                   />

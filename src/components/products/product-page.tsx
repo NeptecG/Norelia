@@ -349,7 +349,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           >
             <Heart
               size={14}
-              className={cn(isFav ? 'fill-on-surface' : 'fill-none')}
+              className={cn(isFav ? 'fill-destructive stroke-destructive' : 'fill-none')}
             />
             {isFav ? 'SAVED TO FAVORITES' : 'ADD TO FAVORITES'}
           </button>
