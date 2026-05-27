@@ -60,7 +60,7 @@ export default function OurStudioPage() {
 
           {/* Address */}
           <div className="mb-9">
-            <p className="font-display text-[16px] tracking-[0.18em] text-on-surface/40 mb-3">
+            <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
               Address
             </p>
             {['G. Gianniwth 216', 'Preveza 48100', 'Greece'].map(l => (
@@ -72,7 +72,7 @@ export default function OurStudioPage() {
 
           {/* Hours */}
           <div className="mb-9">
-            <p className="font-display text-[16px] tracking-[0.18em] text-on-surface/40 mb-3">
+            <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
               Studio Hours
             </p>
             {HOURS.map(({ day, hrs }) => (
@@ -88,7 +88,7 @@ export default function OurStudioPage() {
 
           {/* Contact */}
           <div>
-            <p className="font-display text-[16px] tracking-[0.18em] text-on-surface/40 mb-3">
+            <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
               Get in Touch
             </p>
             {['hello@norelia.com', '+30 26820 00000'].map(l => (

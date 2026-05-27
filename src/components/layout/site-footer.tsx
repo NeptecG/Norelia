@@ -109,7 +109,10 @@ function ContactColumn() {
         hello@norelia.com
       </p>
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        Mon–Fri, 9:00–17:00 CET
+        Mon–Fri, 9:00–17:00
+      </p>
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+        Saturday, 10:00–14:00
       </p>
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         Free shipping over €60
