@@ -36,7 +36,7 @@ export function ProductCard({ product, priority = false }: Props) {
     : null
 
   const { toggleFavorite, isFavorite } = useFavoritesStore()
-  const { addToCart } = useCartStore()
+  const { cartItems, addToCart } = useCartStore()
   const { showToast } = useUIStore()
 
   const lastToggleRef = useRef<Record<number, number>>({})
@@ -61,6 +61,13 @@ export function ProductCard({ product, priority = false }: Props) {
   }
 
   function handlePickSize(size: string) {
+    const sizeStock = getStock(product.id, size)
+    const cartQty   = cartItems[product.id] ?? 0
+    if (cartQty >= sizeStock) {
+      showToast(`No more ${size} left for ${product.name}`, 'remove')
+      setSizePickerOpen(false)
+      return
+    }
     addToCart(product.id, 1)
     showToast(`${product.name}, ${size} added`, 'add')
     setSizePickerOpen(false)
@@ -149,7 +156,7 @@ export function ProductCard({ product, priority = false }: Props) {
                 <div className="flex flex-wrap gap-1 justify-center">
                   {SIZES.map((size) => {
                     const sizeQty = getStock(product.id, size)
-                    const soldOut = sizeQty === 0
+                    const soldOut = sizeQty === 0 || (cartItems[product.id] ?? 0) >= sizeQty
                     return (
                       <button
                         key={size}
