@@ -52,7 +52,7 @@ export function NewsletterBar() {
     <div className={cn(
       'dark bg-surface-alt border-t border-b border-border',
     )}>
-      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
         {/* Left: editorial headline */}
         <div className="shrink-0">
@@ -96,7 +96,7 @@ export function NewsletterBar() {
                 aria-label="Subscribe to newsletter"
                 className="flex items-center gap-2 pl-5 py-2.5 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors duration-150 whitespace-nowrap shrink-0"
               >
-                Subscribe <span aria-hidden="true">→</span>
+                Subscribe
               </button>
             </div>
             {errors.email && (
