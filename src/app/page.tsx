@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 }
 
 export default function HomePage() {
-  const newProducts = PRODUCTS.filter((p) => p.tag === 'NEW')
+  const newProducts      = PRODUCTS.filter((p) => p.tag === 'NEW')
   const trendingProducts = PRODUCTS.slice(0, 8)
-  const saleProducts = PRODUCTS.filter((p) => p.salePrice !== undefined)
+  const saleProducts     = PRODUCTS.filter((p) => p.salePrice !== undefined)
 
   return (
     <main>

@@ -119,52 +119,6 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
 }
 
 // ---------------------------------------------------------------------------
-// BelowTableTotals — right-aligned subtotals below the cart table (NOIR pattern)
-// ---------------------------------------------------------------------------
-
-interface BelowTableTotalsProps {
-  exVat:         number
-  vatAmt:        number
-  grandTotal:    number   // items total, VAT incl.
-  afterDiscount: number   // for free-shipping threshold check
-}
-
-function BelowTableTotals({ exVat, vatAmt, grandTotal, afterDiscount }: BelowTableTotalsProps) {
-  const freeShipping = afterDiscount >= FREE_SHIPPING_THRESHOLD
-  const remaining    = (FREE_SHIPPING_THRESHOLD - afterDiscount).toFixed(2)
-
-  return (
-    <div className="mt-8 border-t border-border pt-6 flex justify-end">
-      <div className="w-full max-w-xs space-y-2">
-        {/* Subtotal w/o VAT */}
-        <div className="flex justify-between gap-8">
-          <span className="font-body text-sm text-on-surface/60">Subtotal w/o VAT:</span>
-          <span className="font-body text-sm text-on-surface">€{exVat.toFixed(2)}</span>
-        </div>
-        {/* VAT */}
-        <div className="flex justify-between gap-8 pb-4 border-b border-border">
-          <span className="font-body text-sm text-on-surface/60">VAT (24%):</span>
-          <span className="font-body text-sm text-on-surface">€{vatAmt.toFixed(2)}</span>
-        </div>
-        {/* Grand Total */}
-        <div className="flex justify-between gap-8 items-baseline pt-1">
-          <span className="font-body text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface">
-            Grand Total (with VAT):
-          </span>
-          <span className="font-display text-3xl text-on-surface">€{grandTotal.toFixed(2)}</span>
-        </div>
-        {/* Free shipping note */}
-        <p className="font-body text-[10px] text-on-surface/50 text-right">
-          {freeShipping
-            ? '✓ Free shipping included'
-            : `Add €${remaining} more for free shipping`}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // OrderSummary — right panel (dark box, kept per user request)
 // ---------------------------------------------------------------------------
 
@@ -256,9 +210,12 @@ export function OrderSummary({
 
         {/* ── Coupon code ── */}
         <div className="mb-5">
-          <p className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+          <label
+            htmlFor="coupon-code"
+            className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
+          >
             Coupon Code
-          </p>
+          </label>
           {appliedCoupon ? (
             <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
               <p className="font-body text-xs text-success tracking-wide">
@@ -421,7 +378,7 @@ export default function CheckoutPage() {
           {/* ← Continue Shopping — only shown when cart has items (NOIR pattern) */}
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface/50 hover:text-on-surface transition-colors mb-8"
+            className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors mb-8"
           >
             <span aria-hidden="true">←</span>
             Continue Shopping
@@ -441,7 +398,7 @@ export default function CheckoutPage() {
                           key={col}
                           scope="col"
                           className={[
-                            'pb-3 font-body text-[9px] tracking-[0.18em] uppercase text-on-surface/50',
+                            'pb-3 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface-muted',
                             i === 0 ? 'text-left pr-6'  : '',
                             i === 1 ? 'text-center px-4' : '',
                             i === 2 ? 'text-center px-4' : '',
@@ -472,13 +429,6 @@ export default function CheckoutPage() {
                 </table>
               </div>
 
-              {/* Below-table subtotals (NOIR pattern) */}
-              <BelowTableTotals
-                exVat={exVat}
-                vatAmt={vatAmt}
-                grandTotal={grandTotal}
-                afterDiscount={afterDiscount}
-              />
             </section>
 
             {/* Order summary column */}

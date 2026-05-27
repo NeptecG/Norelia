@@ -117,9 +117,16 @@ export function Nav() {
           <div className="flex gap-8 items-center">
 
             {/* Home */}
-            <Link href="/" className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors">
+            <Link
+              href="/"
+              aria-current={pathname === '/' ? 'page' : undefined}
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+            >
               Home
-              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
+              <span className={cn(
+                'absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]',
+                pathname === '/' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+              )} />
             </Link>
 
             {/* Men dropdown */}
@@ -128,15 +135,16 @@ export function Nav() {
               onMouseEnter={() => openMenu('men')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
-              aria-expanded={activeMenu === 'men'}
-              aria-haspopup="menu"
             >
               <Link
                 href="/men"
+                aria-expanded={activeMenu === 'men'}
+                aria-haspopup="menu"
+                aria-current={pathname.startsWith('/men') ? 'page' : undefined}
                 className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 Men
-                <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
+                <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' || pathname.startsWith('/men') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
               <AnimatePresence>
                 {activeMenu === 'men' && (
@@ -176,15 +184,16 @@ export function Nav() {
               onMouseEnter={() => openMenu('women')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
-              aria-expanded={activeMenu === 'women'}
-              aria-haspopup="menu"
             >
               <Link
                 href="/women"
+                aria-expanded={activeMenu === 'women'}
+                aria-haspopup="menu"
+                aria-current={pathname.startsWith('/women') ? 'page' : undefined}
                 className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 Women
-                <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
+                <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' || pathname.startsWith('/women') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
               <AnimatePresence>
                 {activeMenu === 'women' && (
@@ -219,9 +228,16 @@ export function Nav() {
             </div>
 
             {/* Studio */}
-            <Link href="/studio" className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors">
+            <Link
+              href="/studio"
+              aria-current={pathname.startsWith('/studio') ? 'page' : undefined}
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+            >
               Design Your Own
-              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
+              <span className={cn(
+                'absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]',
+                pathname.startsWith('/studio') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
+              )} />
             </Link>
 
           </div>

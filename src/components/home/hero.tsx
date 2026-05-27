@@ -38,7 +38,8 @@ function HeroHalf({
   }
 
   const eyebrowVariants = {
-    rest: { opacity: 0, y: prefersReduced ? 0 : 6 },
+    // Start at 0.3 opacity so it's discoverable; brightens to full on hover
+    rest: { opacity: 0.3, y: 0 },
     hover: { opacity: 1, y: 0 },
   }
 
@@ -121,6 +122,8 @@ export function Hero() {
 
   return (
     <section className="flex flex-col md:flex-row md:h-[88vh] border-b border-border">
+      {/* Visually hidden h1 for screen readers and SEO — visual title is in the hero halves */}
+      <h1 className="sr-only">NORELIA. Premium Streetwear</h1>
       <HeroHalf
         side="women"
         label="WOMEN"

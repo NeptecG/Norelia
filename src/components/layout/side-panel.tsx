@@ -57,7 +57,7 @@ function CartItemRow({
         </Link>
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="font-body text-[8px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
+          <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
             {catLabel(item.cat)}
           </p>
           <Link
@@ -158,7 +158,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
           </div>
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="font-body text-[8px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
+          <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
             {catLabel(product.cat)}
           </p>
           <Link
@@ -189,7 +189,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
           className="text-on-surface-muted hover:text-destructive transition-colors flex flex-col items-center gap-1 pt-1"
         >
           <Trash2 size={14} />
-          <span className="font-body text-[7px] tracking-[0.1em] uppercase">Remove</span>
+          <span className="font-body text-[9px] tracking-[0.1em] uppercase">Remove</span>
         </button>
       </div>
     </div>
@@ -271,7 +271,7 @@ export function SidePanel() {
             animate={panelVariants.animate}
             exit={panelVariants.exit}
             transition={{ duration: 0.28, ease: 'easeInOut' }}
-            className="dark bg-surface-alt fixed top-0 right-0 bottom-0 w-full max-w-[340px] z-[1000] flex flex-col shadow-2xl"
+            className="dark bg-surface-alt fixed top-0 right-0 bottom-0 w-full max-w-[380px] z-[1000] flex flex-col shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-6 border-b border-border">

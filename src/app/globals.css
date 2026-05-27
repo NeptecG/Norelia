@@ -118,7 +118,7 @@
     --color-surface-alt-val:      #212121;
     --color-surface-raised-val:   #f5f5f5;
     --color-on-surface-val:       #212121;
-    --color-on-surface-muted-val: #888888;
+    --color-on-surface-muted-val: #737373;  /* darkened from #888888 — now 4.75:1 on white (WCAG AA pass) */
     --color-accent-val:           #212121;
     --color-destructive-val:      #e11d48;
     --color-success-val:          #22c55e;

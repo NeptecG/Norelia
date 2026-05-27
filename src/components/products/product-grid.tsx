@@ -19,6 +19,7 @@ interface FilterTab {
 }
 
 const ALL_TABS: FilterTab[] = [
+  { key: 'ALL',      label: 'ALL' },
   { key: 'TSHIRTS',  label: 'T-SHIRTS' },
   { key: 'HOODIES',  label: 'HOODIES' },
   { key: 'ZIPPERS',  label: 'ZIPPERS' },
@@ -65,8 +66,9 @@ export function ProductGrid({
             className="no-scrollbar flex gap-1 overflow-x-auto sm:justify-end"
           >
             {tabs.map(tab => {
-              const isActive = activeFilter === tab.key
-              const href = `${filterBase}?filter=${tab.key}`
+              const isActive = tab.key === 'ALL' ? !activeFilter : activeFilter === tab.key
+              // ALL clears the filter (base URL); others append ?filter=KEY
+              const href = tab.key === 'ALL' ? filterBase || '.' : `${filterBase}?filter=${tab.key}`
               return (
                 <Link
                   key={tab.key}
@@ -89,7 +91,7 @@ export function ProductGrid({
 
       {/* Product grid or empty state */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 sm:gap-px lg:grid-cols-4">
           {products.map((product, index) => (
             <ProductCard
               key={product.id}

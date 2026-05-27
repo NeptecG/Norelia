@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { Heart, Check } from 'lucide-react'
+import { Heart, Check, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 
@@ -44,6 +44,9 @@ export function Toast() {
             )}
             {toast.type === 'add' && !isFav && (
               <Check size={13} className="text-success shrink-0" />
+            )}
+            {toast.type === 'remove' && !isFav && (
+              <X size={13} className="text-destructive shrink-0" />
             )}
             <span>{toast.msg}</span>
           </motion.div>

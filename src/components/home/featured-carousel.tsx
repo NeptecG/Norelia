@@ -39,22 +39,15 @@ interface Props {
 export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Props) {
   const reducedMotion = useReducedMotion()
   const isMobile = useIsMobile()
-  const [loading, setLoading] = useState(true)
+  // No artificial loading delay — data is static and available immediately
 
   const perPage = isMobile ? 2 : 4
   const totalPages = Math.ceil(products.length / perPage)
   const { page, setPage } = usePagination(totalPages)
 
-  // Skeleton loading state — show for 750ms on first mount
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 750)
-    return () => clearTimeout(timer)
-  }, [])
-
   if (products.length === 0) return null
 
   const visibleProducts = products.slice(page * perPage, page * perPage + perPage)
-  const skeletonCount = isMobile ? 2 : 4
 
   return (
     <section className="border-t border-border-subtle py-16 md:py-[60px]">
@@ -85,49 +78,45 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
 
         {/* Product grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {loading
-            ? Array.from({ length: skeletonCount }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="aspect-[3/4] bg-surface-raised animate-pulse"
-                />
-              ))
-            : visibleProducts.map((product, idx) => (
-                <motion.div
-                  key={product.id}
-                  initial={reducedMotion ? false : { opacity: 0, y: 22 }}
-                  animate={reducedMotion ? {} : { opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.4,
-                    delay: idx * 0.08,
-                    ease: EASE,
-                  }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
+          {visibleProducts.map((product, idx) => (
+            <motion.div
+              key={product.id}
+              initial={reducedMotion ? false : { opacity: 0, y: 22 }}
+              animate={reducedMotion ? {} : { opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.4,
+                delay: idx * 0.08,
+                ease: EASE,
+              }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
         </div>
 
         {/* Dot pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center gap-2.5 mt-7">
+          <div className="flex justify-center mt-7">
             {Array.from({ length: totalPages }).map((_, idx) => {
               const isActive = idx === page
               return (
-                <motion.button
+                // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
+                <button
                   key={idx}
                   type="button"
                   aria-label={`Go to page ${idx + 1}`}
                   onClick={() => setPage(idx)}
-                  animate={isActive ? { scale: reducedMotion ? 1 : 1.2 } : { scale: 1 }}
-                  transition={{ duration: 0.15 }}
-                  className={cn(
-                    'rounded-full transition-colors',
-                    isActive
-                      ? 'w-2.5 h-2.5 bg-on-surface'
-                      : 'w-2 h-2 bg-border-subtle',
-                  )}
-                />
+                  className="p-2"
+                >
+                  <motion.span
+                    animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
+                    transition={{ duration: 0.15 }}
+                    className={cn(
+                      'block rounded-full transition-colors',
+                      isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
+                    )}
+                  />
+                </button>
               )
             })}
           </div>
