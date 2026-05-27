@@ -147,16 +147,26 @@ export function ProductCard({ product, priority = false }: Props) {
             {sizePickerOpen ? (
               <div className="bg-on-surface py-2 px-2">
                 <div className="flex flex-wrap gap-1 justify-center">
-                  {SIZES.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={(e) => { e.preventDefault(); handlePickSize(size) }}
-                      className="px-2 py-1 font-body text-[0.6rem] tracking-widest uppercase text-surface border border-surface/30 hover:bg-surface/20 transition-colors"
-                    >
-                      {size}
-                    </button>
-                  ))}
+                  {SIZES.map((size) => {
+                    const sizeQty = getStock(product.id, size)
+                    const soldOut = sizeQty === 0
+                    return (
+                      <button
+                        key={size}
+                        type="button"
+                        disabled={soldOut}
+                        onClick={(e) => { e.preventDefault(); if (!soldOut) handlePickSize(size) }}
+                        className={cn(
+                          'px-2 py-1 font-body text-[0.6rem] tracking-widest uppercase border transition-colors',
+                          soldOut
+                            ? 'text-surface/25 border-surface/10 cursor-not-allowed line-through'
+                            : 'text-surface border-surface/30 hover:bg-surface/20',
+                        )}
+                      >
+                        {size}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             ) : (
@@ -183,8 +193,8 @@ export function ProductCard({ product, priority = false }: Props) {
           />
         </div>
 
-        {/* Info — padded block matching NOIR card layout */}
-        <div className="bg-surface px-4 pt-4 pb-5 space-y-[5px]">
+        {/* Info — padded block matching NOIR card layout; pl-5 gives 20px left breathing room */}
+        <div className="bg-surface pl-5 pr-4 pt-4 pb-5 space-y-[5px]">
           <p className="font-body text-[11px] uppercase tracking-[0.12em] text-on-surface-muted">
             {catLabel(product.cat)}
           </p>

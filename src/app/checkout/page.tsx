@@ -155,22 +155,41 @@ export function CartItemRow({ item, variants, stock, onDecrement, onIncrement, o
 // ---------------------------------------------------------------------------
 
 interface OrderSummaryProps {
-  subtotal:     number
-  shipping:     number
-  total:        number
-  orderNotes:   string
-  onNotesChange: (val: string) => void
-  onPlaceOrder: () => void
+  subtotal:       number
+  discountAmt:    number
+  discountRate:   number
+  appliedCoupon:  string | null
+  vatAmount:      number
+  shipping:       number
+  total:          number
+  couponInput:    string
+  couponError:    string
+  orderNotes:     string
+  onCouponChange: (val: string) => void
+  onCouponApply:  () => void
+  onCouponRemove: () => void
+  onNotesChange:  (val: string) => void
+  onPlaceOrder:   () => void
 }
 
 export function OrderSummary({
   subtotal,
+  discountAmt,
+  discountRate,
+  appliedCoupon,
+  vatAmount,
   shipping,
   total,
+  couponInput,
+  couponError,
   orderNotes,
+  onCouponChange,
+  onCouponApply,
+  onCouponRemove,
   onNotesChange,
   onPlaceOrder,
 }: OrderSummaryProps) {
+  // Progress bar is based on the already-discounted subtotal
   const progressPct  = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
   const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD
   const remaining    = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)
@@ -181,10 +200,75 @@ export function OrderSummary({
     <aside className="dark lg:sticky lg:top-24 h-fit bg-surface-alt p-6 border border-border">
       <h2 className="font-display text-2xl text-on-surface tracking-widest mb-6">YOUR ORDER</h2>
 
+      {/* ── Coupon code ── */}
+      <div className="mb-5">
+        <label
+          htmlFor="coupon-code"
+          className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
+        >
+          Coupon Code
+        </label>
+        {appliedCoupon ? (
+          <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
+            <p className="font-body text-xs text-success tracking-wide">
+              {appliedCoupon} · {Math.round(discountRate * 100)}% off ✓
+            </p>
+            <button
+              type="button"
+              aria-label="Remove coupon"
+              onClick={onCouponRemove}
+              className="font-body text-[10px] text-on-surface/40 hover:text-on-surface transition-colors ml-2 uppercase tracking-widest"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <input
+              id="coupon-code"
+              type="text"
+              value={couponInput}
+              onChange={e => onCouponChange(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && onCouponApply()}
+              placeholder="Enter code"
+              className="flex-1 min-w-0 px-3 py-2 bg-on-surface/10 border border-border text-on-surface font-body text-[11px] uppercase tracking-widest placeholder:text-on-surface/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-on-surface/50"
+            />
+            <button
+              type="button"
+              onClick={onCouponApply}
+              className="px-4 bg-on-surface/20 hover:bg-on-surface/30 text-on-surface font-body text-[10px] tracking-[0.18em] uppercase transition-colors border border-border whitespace-nowrap"
+            >
+              Apply
+            </button>
+          </div>
+        )}
+        {couponError && (
+          <p className="font-body text-[10px] text-destructive mt-1.5 tracking-wide">
+            {couponError}
+          </p>
+        )}
+      </div>
+
+      {/* ── Line items ── */}
+
       {/* Subtotal */}
-      <div className="flex justify-between font-body text-sm text-on-surface mb-4">
+      <div className="flex justify-between font-body text-sm text-on-surface mb-2.5">
         <span>Subtotal</span>
-        <span>€{subtotal.toFixed(2)}</span>
+        <span>€{(subtotal + discountAmt).toFixed(2)}</span>
+      </div>
+
+      {/* Discount — only shown when a coupon is applied */}
+      {discountAmt > 0 && (
+        <div className="flex justify-between font-body text-sm text-success mb-2.5">
+          <span>Discount ({Math.round(discountRate * 100)}%)</span>
+          <span>-€{discountAmt.toFixed(2)}</span>
+        </div>
+      )}
+
+      {/* VAT informational line — Greek standard VAT 24% included in prices */}
+      <div className="flex justify-between font-body text-xs text-on-surface/45 mb-4 pb-4 border-b border-border">
+        <span>VAT incl. (24%)</span>
+        <span>€{vatAmount.toFixed(2)}</span>
       </div>
 
       {/* Free shipping progress */}
@@ -222,9 +306,9 @@ export function OrderSummary({
         <span>{shipping === 0 ? 'Free' : '€4.99'}</span>
       </div>
 
-      {/* Total */}
+      {/* Grand Total */}
       <div className="flex justify-between font-display text-2xl text-on-surface mb-6">
-        <span>TOTAL</span>
+        <span>GRAND TOTAL</span>
         <span>€{total.toFixed(2)}</span>
       </div>
 
@@ -263,24 +347,56 @@ export function OrderSummary({
 // CheckoutPage — default export (page.tsx convention)
 // ---------------------------------------------------------------------------
 
+// Demo coupons — in production these would be server-validated
+const VALID_COUPONS: Record<string, number> = {
+  NORELIA10: 0.10,
+  NORELIA20: 0.20,
+}
+
 export default function CheckoutPage() {
   const { cartLines, removeFromCart, decrementCart, addToCart } = useCartStore()
   const { setShowCheckoutModal } = useUIStore()
   const reduced = useReducedMotion() ?? false
 
-  const [orderNotes, setOrderNotes] = useState('')
+  const [orderNotes,    setOrderNotes]    = useState('')
+  const [couponInput,   setCouponInput]   = useState('')
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null)
+  const [couponError,   setCouponError]   = useState('')
 
   const lines   = cartLines()
   const isEmpty = lines.length === 0
 
-  const subtotal = lines.reduce((sum, item) => {
+  const rawSubtotal = lines.reduce((sum, item) => {
     const unitPrice = item.salePrice != null ? item.salePrice : parsePriceNumber(item.price)
     return sum + unitPrice * item.qty
   }, 0)
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99
-  const total    = subtotal + shipping
+
+  const discountRate  = appliedCoupon ? (VALID_COUPONS[appliedCoupon] ?? 0) : 0
+  const discountAmt   = rawSubtotal * discountRate
+  const subtotal      = rawSubtotal - discountAmt           // after coupon
+  const shipping      = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99
+  const vatAmount     = subtotal * (0.24 / 1.24)           // 24% Greek VAT included in prices
+  const total         = subtotal + shipping
 
   const variants = makeItemVariants(reduced)
+
+  function handleCouponApply() {
+    const code = couponInput.trim().toUpperCase()
+    if (VALID_COUPONS[code]) {
+      setAppliedCoupon(code)
+      setCouponError('')
+      setCouponInput('')
+    } else {
+      setCouponError('Invalid coupon code')
+      setAppliedCoupon(null)
+    }
+  }
+
+  function handleCouponRemove() {
+    setAppliedCoupon(null)
+    setCouponError('')
+    setCouponInput('')
+  }
 
   return (
     <main className="min-h-screen pt-20 bg-surface">
@@ -328,9 +444,18 @@ export default function CheckoutPage() {
             {/* Summary column */}
             <OrderSummary
               subtotal={subtotal}
+              discountAmt={discountAmt}
+              discountRate={discountRate}
+              appliedCoupon={appliedCoupon}
+              vatAmount={vatAmount}
               shipping={shipping}
               total={total}
+              couponInput={couponInput}
+              couponError={couponError}
               orderNotes={orderNotes}
+              onCouponChange={setCouponInput}
+              onCouponApply={handleCouponApply}
+              onCouponRemove={handleCouponRemove}
               onNotesChange={setOrderNotes}
               onPlaceOrder={() => setShowCheckoutModal(true)}
             />

@@ -39,7 +39,11 @@ export function ProductPage({ product, initialColor, from }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const stock  = getStock(product.id) - (cartItems[product.id] ?? 0)
+  // When a size is selected show that size's stock; otherwise show overall remaining stock.
+  // Cart qty subtraction is product-level (cart doesn't track sizes yet) — only applied without size.
+  const stock = selectedSize
+    ? getStock(product.id, selectedSize)
+    : getStock(product.id) - (cartItems[product.id] ?? 0)
   const isFav  = favorites.includes(product.id)
 
   // Breadcrumb helpers — for unisex products use the `from` param to show the
@@ -233,22 +237,30 @@ export function ProductPage({ product, initialColor, from }: Props) {
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {SIZES.map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  aria-pressed={selectedSize === size}
-                  onClick={() => setSelectedSize(size)}
-                  className={cn(
-                    'w-12 h-10 font-body text-[11px] tracking-wide transition-colors',
-                    selectedSize === size
-                      ? 'bg-on-surface text-surface'
-                      : 'border border-border text-on-surface hover:border-on-surface/60',
-                  )}
-                >
-                  {size}
-                </button>
-              ))}
+              {SIZES.map((size) => {
+                const sizeQty      = getStock(product.id, size)
+                const sizeUnavail  = sizeQty === 0
+                const sizeSelected = selectedSize === size
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    aria-pressed={sizeSelected}
+                    disabled={sizeUnavail}
+                    onClick={() => { if (!sizeUnavail) setSelectedSize(size) }}
+                    className={cn(
+                      'w-12 h-10 font-body text-[11px] tracking-wide transition-colors',
+                      sizeUnavail
+                        ? 'border border-border text-on-surface/25 cursor-not-allowed line-through'
+                        : sizeSelected
+                          ? 'bg-on-surface text-surface'
+                          : 'border border-border text-on-surface hover:border-on-surface/60',
+                    )}
+                  >
+                    {size}
+                  </button>
+                )
+              })}
             </div>
           </div>
 

@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { PRODUCTS } from '@/data/products'
-import { STOCK, DEFAULT_STOCK } from '@/data/stock'
+import { STOCK, STOCK_BY_SIZE, DEFAULT_STOCK } from '@/data/stock'
 import { BP, FIT_SURCHARGE, EMBROIDERY_SURCHARGE } from '@/data/pricing'
 import type { Product, Gender, GarmentType, SizeKey, FitType, PrintMethod } from '@/types'
 
@@ -13,7 +13,13 @@ export function byGender(gender: Gender, pool: Product[] = PRODUCTS): Product[] 
   return pool.filter(p => p.gender === gender || p.gender === 'unisex')
 }
 
-export function getStock(id: number): number {
+export function getStock(id: number, size?: string): number {
+  const bySize = STOCK_BY_SIZE[id]
+  if (bySize) {
+    if (size !== undefined) return bySize[size] ?? 0
+    // No size given: sum all size quantities (total remaining stock)
+    return Object.values(bySize).reduce((sum, n) => sum + n, 0)
+  }
   return STOCK[id] ?? DEFAULT_STOCK
 }
 
