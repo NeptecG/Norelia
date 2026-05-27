@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, Truck, Shield, RotateCcw, Ruler } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Heart, Truck, Shield, RotateCcw, Ruler, ChevronLeft } from 'lucide-react'
 import { cn, catLabel, catLabelPlural, getStock } from '@/lib/utils'
 import { NAV_CAT_TO_SLUG } from '@/lib/constants'
 import { SIZES } from '@/data/sizes'
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export function ProductPage({ product, initialColor, from }: Props) {
+  const router = useRouter()
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
@@ -91,6 +93,18 @@ export function ProductPage({ product, initialColor, from }: Props) {
 
   return (
     <section className="min-h-screen pt-20 bg-surface">
+      {/* Back button */}
+      <div className="mx-auto max-w-6xl px-4 md:px-8 pt-8 pb-0">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="flex items-center gap-1 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
+        >
+          <ChevronLeft size={13} strokeWidth={1.5} />
+          Back
+        </button>
+      </div>
+
       <div className="mx-auto max-w-6xl px-4 md:px-8 py-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
 
         {/* ── Left: thumbnail strip + main image ── */}

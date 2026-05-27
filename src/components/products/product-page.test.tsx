@@ -2,6 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 
+vi.mock('next/navigation', () => ({ useRouter: () => ({ back: vi.fn() }) }))
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@/stores/cart-store', () => ({ useCartStore: vi.fn() }))
 vi.mock('@/stores/favorites-store', () => ({ useFavoritesStore: vi.fn() }))
