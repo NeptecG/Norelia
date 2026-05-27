@@ -31,11 +31,9 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
 function BrandColumn() {
   return (
     <div>
-      <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-2')}>
+      <FooterHeading>Premium Streetwear</FooterHeading>
+      <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-7')}>
         {BRAND}
-      </p>
-      <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/55 mb-7">
-        Premium Streetwear
       </p>
       <div className="flex gap-4">
         {/* Instagram — inline SVG (lucide-react does not export Instagram in this version) */}

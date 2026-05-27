@@ -190,7 +190,7 @@ export function ProductCard({ product, priority = false }: Props) {
             hover: { opacity: reducedMotion ? 0 : 1 },
           }}
           transition={{ duration: 0.2 }}
-          className="mt-2 flex gap-1.5 px-0.5"
+          className="mt-2 flex gap-1.5 px-3"
         >
           {GCOLORS.map((c) => (
             <button
@@ -212,7 +212,7 @@ export function ProductCard({ product, priority = false }: Props) {
         </motion.div>
 
         {/* Info */}
-        <div className="mt-2 space-y-0.5 px-0.5">
+        <div className="mt-2 space-y-0.5 px-3">
           <p className="font-body text-xs uppercase tracking-wider text-on-surface-muted">
             {catLabel(product.cat)}
           </p>
