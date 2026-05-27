@@ -15,13 +15,13 @@ describe('ShippingPage', () => {
     expect(screen.getByText('SHIPPING')).toBeTruthy()
   })
 
-  it('renders Standard Delivery section', async () => {
+  it('renders Standard Shipping section', async () => {
     render(await ShippingPage())
-    expect(screen.getByText('Standard Delivery')).toBeTruthy()
+    expect(screen.getByText('Standard Shipping')).toBeTruthy()
   })
 
-  it('renders Express Delivery section', async () => {
+  it('renders Express Shipping section', async () => {
     render(await ShippingPage())
-    expect(screen.getByText('Express Delivery')).toBeTruthy()
+    expect(screen.getByText('Express Shipping')).toBeTruthy()
   })
 })

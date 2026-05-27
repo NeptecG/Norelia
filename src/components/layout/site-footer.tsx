@@ -92,7 +92,8 @@ function InfoColumn() {
       <div className="flex flex-col items-start">
         <FooterLink href="/about">About Us</FooterLink>
         <FooterLink href="/size-guide">Size Guide</FooterLink>
-        <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
+        <FooterLink href="/shipping">Shipping</FooterLink>
+        <FooterLink href="/returns">Returns &amp; Exchanges</FooterLink>
         <FooterLink href="/privacy">Privacy Policy</FooterLink>
         <FooterLink href="/terms">Terms of Service</FooterLink>
       </div>

@@ -9,28 +9,22 @@ export const metadata: Metadata = {
 
 const METHODS = [
   {
-    title:  'Standard Delivery',
-    time:   '3–5 business days',
-    price:  `Free over €${FREE_SHIPPING_THRESHOLD} · otherwise €4.90`,
-    detail: 'All standard orders are packed and dispatched within 24 hours of payment confirmation. You\'ll receive a tracking link by email the moment your parcel leaves our studio in Preveza.',
+    title:  'Standard Shipping',
+    time:   '3–5 Business Days',
+    price:  `Free on orders over €${FREE_SHIPPING_THRESHOLD} · €4.90 below`,
+    detail: 'Available for all destinations within Greece. Orders are processed within 1–2 business days and dispatched via ACS Courier or ELTA. You\'ll receive a tracking number by email once your order ships.',
   },
   {
-    title:  'Express Delivery',
-    time:   '1–2 business days',
-    price:  '+€9.90',
-    detail: 'Need it fast? Select Express at checkout and we\'ll prioritise your order. Available for all EU destinations. Dispatch cut-off is 13:00 CET on business days.',
+    title:  'Express Shipping',
+    time:   '1–2 Business Days',
+    price:  '€8.90',
+    detail: 'Need it faster? Select express at checkout for next-day or 2-day delivery within Greece. Orders placed before 13:00 are dispatched same day.',
   },
   {
     title:  'International Shipping',
-    time:   '7–14 business days',
-    price:  'Calculated at checkout',
-    detail: 'We ship worldwide. Customs duties and import taxes for destinations outside the EU are the sole responsibility of the recipient. We declare all shipments at full value.',
-  },
-  {
-    title:  'Custom & Studio Orders',
-    time:   '5–7 days production + delivery',
-    price:  'Free shipping on all custom orders',
-    detail: 'Garments designed through our studio go through a dedicated production run. Every piece is hand-checked before dispatch. Production time begins after order confirmation.',
+    time:   '5–12 Business Days',
+    price:  'From €12.90',
+    detail: 'We ship to all EU countries and select international destinations. Delivery times and rates vary by destination. Customs duties and import taxes may apply and are the responsibility of the recipient.',
   },
 ] as const
 
@@ -57,9 +51,8 @@ export default function ShippingPage() {
 
           {/* Intro */}
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
-            Every order ships from our studio in Preveza, Greece. We partner with DHL and Speedex for
-            reliable tracking across all destinations. Free standard shipping applies automatically when
-            your cart exceeds <strong className="text-on-surface">€{FREE_SHIPPING_THRESHOLD}</strong>.
+            We ship every NORELIA. order with care. Whether you&apos;re across town or across borders,
+            here&apos;s everything you need to know before and after you place your order.
           </p>
 
           {/* Numbered sections */}
@@ -86,7 +79,8 @@ export default function ShippingPage() {
             <p className="font-body text-[12px] text-on-surface-muted leading-[1.8]">
               <strong className="text-on-surface">Please note: </strong>
               Delivery times are estimates and may vary during peak periods, public holidays, or due to
-              carrier delays beyond our control. We&apos;ll always keep you updated if something changes.
+              circumstances beyond our control. Once an order has been dispatched, NORELIA. is not
+              responsible for delays caused by the courier.
             </p>
           </div>
 

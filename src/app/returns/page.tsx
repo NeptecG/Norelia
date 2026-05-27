@@ -3,25 +3,25 @@ import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
   title: 'Returns & Exchanges',
-  description: 'Our returns and exchange policy, hassle-free within 30 days.',
+  description: 'Our returns and exchange policy.',
 }
 
 const SECTIONS = [
   {
     title:  'Return Policy',
-    detail: 'We accept returns and exchanges within 30 days of delivery. Items must be unworn, unwashed, and in their original condition with all tags attached. We inspect every return on receipt. Items that don\'t meet these conditions will be sent back.',
+    detail: 'You have 14 days from the date of delivery to request a return. Items must be unworn, unwashed, and in their original condition with all tags attached. Sale items and customised pieces from our Design Your Own studio are final sale and cannot be returned.',
   },
   {
-    title:  'How to Start a Return',
-    detail: 'Email us at returns@norelia.com with your order number and the reason for your return. We\'ll reply within 24 hours with a prepaid DHL return label. Drop your parcel at any DHL ServicePoint, no printer needed if you use the QR code option.',
+    title:  'How to Return',
+    detail: 'Email us at hello@norelia.com with your order number and reason for return. We\'ll respond within 1–2 business days with a return authorisation and instructions. Once we receive and inspect the item, your refund will be processed within 5–7 business days to your original payment method.',
   },
   {
-    title:  'Refunds & Exchanges',
-    detail: 'Once we receive and inspect your return, we\'ll process your refund to the original payment method within 3–5 business days. For exchanges, we dispatch the replacement as soon as the return is confirmed, no waiting for the refund to clear. First exchange ships free.',
+    title:  'Exchanges',
+    detail: 'Want a different size or colour? We offer free exchanges on full-price items within 14 days of delivery. Simply contact us at hello@norelia.com and we\'ll sort it out. Exchanges are subject to stock availability.',
   },
   {
-    title:  'Custom & Printed Orders',
-    detail: 'Garments created through our Design Your Own studio are made specifically for you and cannot be returned unless the item is faulty or we made a production error. If your custom order arrives damaged or incorrect, contact us within 7 days and we\'ll remake it at no cost.',
+    title:  'Damaged or Incorrect Items',
+    detail: 'If your order arrives damaged or you received the wrong item, please contact us within 48 hours of delivery with photos. We\'ll arrange a replacement or full refund at no cost to you. No questions asked.',
   },
 ] as const
 
@@ -48,9 +48,8 @@ export default function ReturnsPage() {
 
           {/* Intro */}
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
-            We want you to love what you wear. If something isn&apos;t right,
-            we make it easy to send it back, no questions asked, within{' '}
-            <strong className="text-on-surface">30 days</strong> of delivery.
+            We want you to love what you ordered. If something isn&apos;t right,
+            here&apos;s how we make it right.
           </p>
 
           {/* Numbered sections */}
@@ -71,9 +70,10 @@ export default function ReturnsPage() {
           {/* Note box */}
           <div className="bg-surface-raised px-6 py-5 mt-4">
             <p className="font-body text-[12px] text-on-surface-muted leading-[1.8]">
-              <strong className="text-on-surface">Return shipping costs: </strong>
-              Return labels are prepaid and free of charge on all eligible returns within the EU.
-              For returns from outside the EU, the customer covers the return shipping cost.
+              <strong className="text-on-surface">Return shipping costs </strong>
+              are the responsibility of the customer unless the item is faulty or incorrect.
+              We recommend using a tracked service as we cannot be held responsible for
+              returns lost in transit.
             </p>
           </div>
 

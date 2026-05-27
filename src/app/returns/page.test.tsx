@@ -22,8 +22,8 @@ describe('ReturnsPage', () => {
     expect(screen.getByText('Return Policy')).toBeTruthy()
   })
 
-  it('renders Refunds & Exchanges section', async () => {
+  it('renders Exchanges section', async () => {
     render(await ReturnsPage())
-    expect(screen.getByText('Refunds & Exchanges')).toBeTruthy()
+    expect(screen.getByText('Exchanges')).toBeTruthy()
   })
 })
