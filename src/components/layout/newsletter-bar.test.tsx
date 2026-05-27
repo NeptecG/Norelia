@@ -12,6 +12,6 @@ describe('NewsletterBar', () => {
     render(<NewsletterBar />)
     fireEvent.change(screen.getByPlaceholderText(/email/i), { target: { value: 'test@example.com' } })
     fireEvent.click(screen.getByRole('button', { name: /subscribe/i }))
-    expect(await screen.findByText(/you're on the list/i)).toBeTruthy()
+    expect(await screen.findByText(/you're in/i)).toBeTruthy()
   })
 })

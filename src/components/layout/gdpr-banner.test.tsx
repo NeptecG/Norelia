@@ -16,7 +16,7 @@ describe('GDPRBanner', () => {
   })
   it('renders banner when no consent stored', async () => {
     await act(async () => { render(<GDPRBanner />) })
-    expect(screen.getByText(/cookies/i)).toBeTruthy()
+    expect(screen.getByText('We use cookies')).toBeTruthy()
   })
   it('does not render when consent already stored', async () => {
     localStorage.setItem('norelia_gdpr_consent', 'accepted')

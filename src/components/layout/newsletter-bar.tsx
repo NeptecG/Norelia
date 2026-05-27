@@ -36,7 +36,7 @@ export function NewsletterBar() {
     return () => clearTimeout(id)
   }, [submitted])
 
-  // Auto-clear validation errors after ~2 s (same feel as toast duration)
+  // Auto-clear validation errors after ~2 s
   useEffect(() => {
     if (!errors.email) return
     const id = setTimeout(() => clearErrors('email'), 2200)
@@ -54,58 +54,56 @@ export function NewsletterBar() {
     )}>
       <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
 
-        {/* Left: copy */}
+        {/* Left: editorial headline */}
         <div className="shrink-0">
-          <p className="font-body text-[11px] tracking-[0.22em] uppercase text-on-surface mb-1.5">
-            Stay in the loop
+          <p className="font-display text-[28px] tracking-[0.18em] text-on-surface/85 leading-none mb-1">
+            Stay in the loop.
           </p>
-          <p className="font-body text-[12px] text-on-surface/50">
-            New drops, exclusive offers, straight to your inbox.
+          <p className="font-body text-[11px] tracking-[0.16em] uppercase text-on-surface/40">
+            Early access to drops &amp; exclusive offers
           </p>
         </div>
 
         {/* Right: form or thank-you */}
         {submitted ? (
-          <p role="status" aria-live="polite" className="font-body text-[12px] tracking-[0.1em] text-on-surface/80">
-            You&apos;re on the list. ✓
+          <p role="status" aria-live="polite" className="font-body text-[12px] tracking-[0.06em] text-success">
+            ✓ You&apos;re in.
           </p>
         ) : (
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="flex flex-col sm:flex-row gap-2 w-full md:w-auto md:max-w-[420px]"
+            className="flex flex-col gap-1.5 w-full md:w-auto"
           >
-            <div className="flex-1 flex flex-col gap-1">
+            <div className="flex items-center">
               <input
                 {...register('email')}
                 type="email"
-                placeholder="Your email address"
+                placeholder="your@email.com"
                 aria-label="Email address"
                 className={cn(
-                  'w-full px-4 py-2.5',
-                  'bg-on-surface/10 border-none outline-none',
-                  'font-body text-[12px] tracking-[0.08em] text-on-surface placeholder:text-on-surface/40',
-                  errors.email && 'ring-1 ring-destructive',
+                  'flex-1 md:w-[220px] bg-transparent py-2 pr-2',
+                  'font-body text-[12px] tracking-[0.04em] text-on-surface',
+                  'placeholder:text-on-surface/40 outline-none',
+                  'border-b transition-colors duration-150',
+                  errors.email
+                    ? 'border-destructive'
+                    : 'border-on-surface/35 focus:border-on-surface/90',
                 )}
               />
-              {errors.email && (
-                <p className="font-body text-[10px] text-destructive tracking-[0.08em]">
-                  {errors.email.message}
-                </p>
-              )}
+              <button
+                type="submit"
+                aria-label="Subscribe to newsletter"
+                className="flex items-center gap-2 pl-5 py-2.5 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors duration-150 whitespace-nowrap shrink-0"
+              >
+                Subscribe <span aria-hidden="true">→</span>
+              </button>
             </div>
-            <button
-              type="submit"
-              aria-label="Subscribe to newsletter"
-              className={cn(
-                'shrink-0 px-6 py-2.5',
-                'bg-on-surface text-surface',
-                'font-body text-[10px] tracking-[0.2em] uppercase',
-                'hover:opacity-90 transition-opacity duration-200',
-              )}
-            >
-              Subscribe
-            </button>
+            {errors.email && (
+              <p className="font-body text-[10px] text-destructive tracking-[0.06em]">
+                {errors.email.message}
+              </p>
+            )}
           </form>
         )}
 
