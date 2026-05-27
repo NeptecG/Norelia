@@ -191,16 +191,15 @@ export function ProductCard({ product, priority = false }: Props) {
           <p className="font-body text-[13px] font-semibold uppercase tracking-[0.06em] text-on-surface">
             {product.name}
           </p>
-          <PriceTag price={product.price} salePrice={product.salePrice} />
 
-          {/* Color swatches — Norelia addition, fade in on hover */}
+          {/* Color swatches — between name and price, fade in on hover */}
           <motion.div
             variants={{
               rest:  { opacity: 0 },
               hover: { opacity: reducedMotion ? 0 : 1 },
             }}
             transition={{ duration: 0.2 }}
-            className="flex gap-1.5 pt-1"
+            className="flex gap-1.5"
           >
             {GCOLORS.map((c) => (
               <button
@@ -220,6 +219,8 @@ export function ProductCard({ product, priority = false }: Props) {
               />
             ))}
           </motion.div>
+
+          <PriceTag price={product.price} salePrice={product.salePrice} />
         </div>
       </Link>
     </motion.div>
