@@ -41,9 +41,9 @@ export function ScrollToTop() {
           className={cn(
             'fixed bottom-6 right-6 z-40 group',
             'w-10 h-10 flex items-center justify-center',
-            'border border-on-surface bg-surface-alt text-on-surface',
-            'hover:bg-on-surface hover:text-surface transition-colors duration-200',
-            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface focus-visible:outline-offset-2',
+            'border border-black bg-white text-black',
+            'hover:bg-black hover:text-white transition-colors duration-200',
+            'focus-visible:outline focus-visible:outline-2 focus-visible:outline-black focus-visible:outline-offset-2',
           )}
         >
           {/* Arrow — always visible */}
@@ -53,7 +53,7 @@ export function ScrollToTop() {
           <span className={cn(
             'absolute bottom-full mb-2 left-1/2 -translate-x-1/2',
             'font-body text-[8px] tracking-[0.25em] uppercase whitespace-nowrap pointer-events-none',
-            'text-on-surface/70',
+            'text-black/70',
             'opacity-0 group-hover:opacity-100 transition-opacity duration-150',
           )}>
             TOP

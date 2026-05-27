@@ -90,7 +90,7 @@ export function ProductCard({ product, priority = false }: Props) {
   return (
     // border border-on-surface/20: visible black box outline; darkens on hover
     <motion.div
-      className="group relative flex flex-col border border-on-surface/20 hover:border-on-surface/50 transition-colors"
+      className="group relative flex flex-col border border-on-surface/70 hover:border-on-surface transition-colors"
       initial="rest"
       animate={hovering || sizePickerOpen ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}
