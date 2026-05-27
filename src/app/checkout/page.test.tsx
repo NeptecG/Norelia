@@ -17,6 +17,7 @@ vi.mock('motion/react', () => ({
   motion: {
     li:  ({ children }: { children?: React.ReactNode }) => <li>{children}</li>,
     div: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    tr:  ({ children }: { children?: React.ReactNode }) => <tr>{children}</tr>,
   },
   AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useReducedMotion: () => false,
@@ -110,7 +111,7 @@ describe('CheckoutPage', () => {
     )
     await renderPage()
     expect(screen.getByRole('progressbar')).toBeTruthy()
-    expect(screen.getByText(/away from free shipping/i)).toBeTruthy()
+    expect(screen.getAllByText(/more for free shipping/i).length).toBeGreaterThan(0)
   })
 
   it('shows "Free shipping applied" when subtotal >= 60', async () => {
@@ -119,7 +120,7 @@ describe('CheckoutPage', () => {
       makeCartMock({ cartLines: vi.fn(() => [mockLine]) }) as ReturnType<typeof useCartStore>,
     )
     await renderPage()
-    expect(screen.getByText(/free shipping applied/i)).toBeTruthy()
+    expect(screen.getAllByText(/free shipping included/i).length).toBeGreaterThan(0)
   })
 
   it('clicking "PLACE ORDER" calls setShowCheckoutModal(true)', async () => {
