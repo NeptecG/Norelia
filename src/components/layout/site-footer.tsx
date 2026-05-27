@@ -19,9 +19,10 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/80 hover:text-on-surface transition-colors duration-200 mb-2.5"
+      className="relative group inline-block font-body text-[11px] tracking-[0.12em] text-on-surface/80 hover:text-on-surface transition-colors duration-200 mb-2.5"
     >
       {children}
+      <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
     </Link>
   )
 }
