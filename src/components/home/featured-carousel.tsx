@@ -76,7 +76,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
           {viewAllHref && (
             <Link href={viewAllHref} className="group relative shrink-0 ml-4">
               <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
-                View All →
+                View All
               </span>
               {/* Animated underline — using transform/opacity per CLAUDE.md */}
               <motion.span
