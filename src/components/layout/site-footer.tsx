@@ -89,11 +89,13 @@ function InfoColumn() {
   return (
     <div>
       <FooterHeading>Information</FooterHeading>
-      <FooterLink href="/about">About Us</FooterLink>
-      <FooterLink href="/size-guide">Size Guide</FooterLink>
-      <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
-      <FooterLink href="/privacy">Privacy Policy</FooterLink>
-      <FooterLink href="/terms">Terms of Service</FooterLink>
+      <div className="flex flex-col items-start">
+        <FooterLink href="/about">About Us</FooterLink>
+        <FooterLink href="/size-guide">Size Guide</FooterLink>
+        <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
+        <FooterLink href="/privacy">Privacy Policy</FooterLink>
+        <FooterLink href="/terms">Terms of Service</FooterLink>
+      </div>
     </div>
   )
 }
