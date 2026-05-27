@@ -1,29 +1,10 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { BRAND } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Our Studio',
   description: `Visit the ${BRAND} studio in Preveza, Greece — where we design, print, and ship.`,
 }
-
-const PILLARS = [
-  {
-    num:    '01',
-    title:  'Designed In-House',
-    body:   'Every garment starts as a sketch in our studio. No third-party designers, no trend-chasing. We build collections around what we actually want to wear — and stand behind every cut.',
-  },
-  {
-    num:    '02',
-    title:  'Printed On-Site',
-    body:   'Our DTG press and embroidery machine sit ten metres from where we pack orders. That means we control quality at every step — from the first ink pull to the final fold.',
-  },
-  {
-    num:    '03',
-    title:  'Small Runs, Zero Waste',
-    body:   'We don\'t overproduce. Each drop is limited. When stock is gone, it\'s gone. This isn\'t marketing — it\'s how we keep quality high and waste low.',
-  },
-] as const
 
 export default function OurStudioPage() {
   return (
@@ -42,19 +23,6 @@ export default function OurStudioPage() {
             A small space in the west of Greece where everything gets made, checked, and shipped.
             No warehouses, no middlemen — just the work.
           </p>
-        </div>
-      </section>
-
-      {/* ── Three pillars ── */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-20 border-b border-border-subtle">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-border-subtle">
-          {PILLARS.map(({ num, title, body }) => (
-            <div key={num} className="md:px-10 first:pl-0 last:pr-0 py-6 md:py-0">
-              <p className="font-display text-[11px] tracking-[0.3em] text-on-surface/25 mb-4">{num}</p>
-              <h2 className="font-display text-xl tracking-[0.06em] text-on-surface mb-3">{title}</h2>
-              <p className="font-body text-[13px] text-on-surface-muted leading-[1.8]">{body}</p>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -120,13 +88,6 @@ export default function OurStudioPage() {
               <p className="font-body text-sm text-on-surface mb-1.5">hello@norelia.com</p>
               <p className="font-body text-sm text-on-surface-muted">+30 26820 00000</p>
             </div>
-
-            <Link
-              href="/studio"
-              className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.2em] uppercase border border-on-surface px-5 py-3 text-on-surface hover:bg-on-surface hover:text-surface transition-colors w-fit"
-            >
-              Design Your Own &rarr;
-            </Link>
 
           </div>
         </div>

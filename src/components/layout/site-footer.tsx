@@ -7,7 +7,7 @@ import { BRAND } from '@/lib/constants'
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-5">
+    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/50 mb-5">
       {children}
     </p>
   )
@@ -19,7 +19,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/60 hover:text-on-surface transition-colors duration-200 mb-2.5"
+      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/70 hover:text-on-surface transition-colors duration-200 mb-2.5"
     >
       {children}
     </Link>
@@ -191,13 +191,18 @@ export function SiteFooter() {
 
       {/* Divider + copyright */}
       <div className="border-t border-border">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/35 uppercase">
             &copy; {new Date().getFullYear()} Norelia. All rights reserved.
           </p>
-          <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/25 uppercase">
-            Made with craft &amp; care
-          </p>
+          <div className="flex flex-col items-end gap-1">
+            <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/60 uppercase">
+              Premium Streetwear · Preveza, Greece
+            </p>
+            <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/35 uppercase">
+              Secure Payments · SSL Encrypted
+            </p>
+          </div>
         </div>
       </div>
     </footer>

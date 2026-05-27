@@ -40,13 +40,14 @@ export function ScrollToTop() {
           aria-label="Scroll to top"
           className={cn(
             'fixed bottom-6 right-6 z-40',
-            'w-10 h-10 flex items-center justify-center',
-            'bg-on-surface text-surface',
-            'hover:opacity-80 transition-opacity',
+            'flex items-center gap-2 px-4 h-10',
+            'border border-on-surface bg-surface-alt text-on-surface',
+            'hover:bg-on-surface hover:text-surface transition-colors duration-200',
             'focus-visible:outline focus-visible:outline-2 focus-visible:outline-on-surface focus-visible:outline-offset-2',
           )}
         >
-          <ChevronUp size={18} strokeWidth={1.5} />
+          <ChevronUp size={15} strokeWidth={1.5} />
+          <span className="font-body text-[9px] tracking-[0.2em] uppercase">Top</span>
         </motion.button>
       )}
     </AnimatePresence>
