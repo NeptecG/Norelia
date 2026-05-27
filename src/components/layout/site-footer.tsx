@@ -7,7 +7,7 @@ import { BRAND } from '@/lib/constants'
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/50 mb-5">
+    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/65 mb-5">
       {children}
     </p>
   )
@@ -19,7 +19,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/70 hover:text-on-surface transition-colors duration-200 mb-2.5"
+      className="block font-body text-[11px] tracking-[0.12em] text-on-surface/80 hover:text-on-surface transition-colors duration-200 mb-2.5"
     >
       {children}
     </Link>
@@ -34,7 +34,7 @@ function BrandColumn() {
       <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-2')}>
         {BRAND}
       </p>
-      <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-7">
+      <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/55 mb-7">
         Premium Streetwear
       </p>
       <div className="flex gap-4">
@@ -44,7 +44,7 @@ function BrandColumn() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Norelia on Instagram"
-          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -59,7 +59,7 @@ function BrandColumn() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Norelia on X"
-          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M4 4l16 16M4 20L20 4" />
@@ -72,7 +72,7 @@ function BrandColumn() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Norelia on YouTube"
-          className="text-on-surface/40 hover:text-on-surface transition-colors duration-200"
+          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
@@ -104,13 +104,13 @@ function ContactColumn() {
   return (
     <div>
       <FooterHeading>Contact</FooterHeading>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/80 mb-2.5">
         hello@norelia.com
       </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40 mb-2.5">
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         Mon–Fri, 9:00–17:00 CET
       </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/40 mb-2.5">
+      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         Free shipping over €60
       </p>
       <FooterLink href="/our-studio">Our Studio</FooterLink>
@@ -191,18 +191,16 @@ export function SiteFooter() {
 
       {/* Divider + copyright */}
       <div className="border-t border-border">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 grid grid-cols-1 sm:grid-cols-3 items-center gap-y-2 text-center sm:text-left">
           <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/35 uppercase">
             &copy; {new Date().getFullYear()} Norelia. All rights reserved.
           </p>
-          <div className="flex flex-col items-end gap-1">
-            <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/60 uppercase">
-              Premium Streetwear · Preveza, Greece
-            </p>
-            <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/35 uppercase">
-              Secure Payments · SSL Encrypted
-            </p>
-          </div>
+          <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/55 uppercase text-center">
+            Premium Streetwear · Preveza, Greece
+          </p>
+          <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/35 uppercase sm:text-right">
+            Secure Payments · SSL Encrypted
+          </p>
         </div>
       </div>
     </footer>
