@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, Truck, Shield, RotateCcw, Ruler } from 'lucide-react'
@@ -39,12 +39,16 @@ export function ProductPage({ product, initialColor, from }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // When a size is selected show that size's stock; otherwise show overall remaining stock.
-  // Cart qty subtraction is product-level (cart doesn't track sizes yet) — only applied without size.
+  // Cart tracks by product ID only — size-aware cart tracking arrives with Supabase.
+  // Subtracting the total cart qty from the selected size's stock is conservative:
+  // if you have 1 Medium in the cart and switch to Small, Small will also show 0.
+  // This is the correct trade-off for v1 — prevents over-adding, never over-promises.
+  const cartQty = cartItems[product.id] ?? 0
   const stock = selectedSize
-    ? getStock(product.id, selectedSize)
-    : getStock(product.id) - (cartItems[product.id] ?? 0)
-  const isFav  = favorites.includes(product.id)
+    ? Math.max(0, getStock(product.id, selectedSize) - cartQty)
+    : 0  // not rendered when no size is selected
+  const isFav     = favorites.includes(product.id)
+  const addingRef = useRef(false)  // prevents rapid double-click from firing twice
 
   // Breadcrumb helpers — for unisex products use the `from` param to show the
   // correct gender context (the page the user navigated from)
@@ -61,10 +65,12 @@ export function ProductPage({ product, initialColor, from }: Props) {
   const activeImg = activeImageSide === 'back' && product.imgBack ? product.imgBack : product.img
 
   function handleAddToCart() {
-    if (!selectedSize || stock <= 0) return
+    if (!selectedSize || stock <= 0 || addingRef.current) return
+    addingRef.current = true
     addToCart(product.id, qty)
     showToast(`${product.name} added to cart`, 'add')
-    // Cart side panel no longer auto-opens — user opens it via the cart icon
+    // Release the gate after Zustand + React have flushed — prevents rapid double-click
+    requestAnimationFrame(() => { addingRef.current = false })
   }
 
   function handleToggleFavorite() {
@@ -294,14 +300,16 @@ export function ProductPage({ product, initialColor, from }: Props) {
             </div>
           </div>
 
-          {/* Stock indicator */}
-          <div className="mt-3 font-body text-[11px] tracking-wide">
-            {stock <= 0 ? (
-              <span className="text-destructive">Out of Stock</span>
-            ) : stock <= 5 ? (
-              <span className="text-destructive">Only {stock} left in stock</span>
-            ) : (
-              <span className="text-success">In Stock</span>
+          {/* Stock indicator — hidden until a size is selected */}
+          <div className="mt-3 font-body text-[11px] tracking-wide min-h-[1rem]">
+            {selectedSize && (
+              stock <= 0 ? (
+                <span className="text-destructive">Out of Stock</span>
+              ) : stock <= 5 ? (
+                <span className="text-destructive">Only {stock} left in stock</span>
+              ) : (
+                <span className="text-success">In Stock</span>
+              )
             )}
           </div>
 
