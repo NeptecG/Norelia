@@ -991,10 +991,6 @@ export function GarmentDesigner() {
     if (cv) { cv.width = CW; cv.height = CH }
   }, [])
 
-  // Auto-reveal measurements the first time a size is chosen
-  useEffect(() => {
-    if (size !== null) setShowMeasure(true)
-  }, [size])
 
   // draw — clears canvas and redraws the current design image at its stored position
   const draw = useCallback(() => {
