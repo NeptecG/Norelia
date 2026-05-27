@@ -91,7 +91,6 @@ function InfoColumn() {
     <div>
       <FooterHeading>Information</FooterHeading>
       <FooterLink href="/about">About Us</FooterLink>
-      <FooterLink href="/our-studio">Our Studio</FooterLink>
       <FooterLink href="/size-guide">Size Guide</FooterLink>
       <FooterLink href="/shipping">Shipping &amp; Returns</FooterLink>
       <FooterLink href="/privacy">Privacy Policy</FooterLink>
@@ -115,6 +114,7 @@ function ContactColumn() {
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         Free shipping over €60
       </p>
+      <FooterLink href="/our-studio">Our Studio</FooterLink>
     </div>
   )
 }

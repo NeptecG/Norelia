@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+
+vi.mock('next/navigation', () => ({
+  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+  usePathname: () => '/',
+}))
 
 import ShippingPage from './page'
 

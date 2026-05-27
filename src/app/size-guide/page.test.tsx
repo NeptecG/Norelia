@@ -5,6 +5,11 @@ import { render, screen } from '@testing-library/react'
 // Mocks
 // ---------------------------------------------------------------------------
 
+vi.mock('next/navigation', () => ({
+  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+  usePathname: () => '/',
+}))
+
 vi.mock('@/data/sizes', () => ({
   SIZE_DATA: {
     tshirt: {

@@ -4,6 +4,7 @@ import { SIZE_DATA } from '@/data/sizes'
 import { SizeTable } from '@/components/size-guide/size-table'
 import { MaleFigure } from '@/components/size-guide/male-figure'
 import { FemaleFigure } from '@/components/size-guide/female-figure'
+import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = { title: 'Size Guide' }
 
@@ -40,6 +41,7 @@ export default async function SizeGuidePage({ searchParams }: Props) {
   return (
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
+        <BackButton />
         <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-8">
           SIZE GUIDE
         </h1>

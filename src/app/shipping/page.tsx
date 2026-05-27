@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
+import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
   title: 'Shipping',
@@ -40,6 +41,7 @@ export default function ShippingPage() {
       {/* Dark hero band */}
       <section className="dark bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
+          <BackButton />
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
             Delivery
           </p>
