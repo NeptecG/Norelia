@@ -18,9 +18,10 @@ import type { Product, GarmentColor } from '@/types'
 interface Props {
   product:       Product
   initialColor?: string   // pre-select color from card swatch ?color= param
+  from?:         string   // gender context for unisex breadcrumbs (?from=women|men)
 }
 
-export function ProductPage({ product, initialColor }: Props) {
+export function ProductPage({ product, initialColor, from }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
@@ -41,9 +42,13 @@ export function ProductPage({ product, initialColor }: Props) {
   const stock  = getStock(product.id) - (cartItems[product.id] ?? 0)
   const isFav  = favorites.includes(product.id)
 
-  // Breadcrumb helpers
-  const genderHref  = product.gender === 'women' ? '/women' : '/men'
-  const genderLabel = product.gender === 'women' ? 'Women' : 'Men'
+  // Breadcrumb helpers — for unisex products use the `from` param to show the
+  // correct gender context (the page the user navigated from)
+  const effectiveGender = product.gender === 'unisex'
+    ? (from === 'women' ? 'women' : 'men')
+    : product.gender
+  const genderHref  = effectiveGender === 'women' ? '/women' : '/men'
+  const genderLabel = effectiveGender === 'women' ? 'Women' : 'Men'
   const catKey      = catLabelPlural(product.cat)
   const catSlug     = NAV_CAT_TO_SLUG[catKey] ?? ''
   const catHref     = `${genderHref}/${catSlug}`

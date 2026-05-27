@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Heart } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn, catLabel, getStock } from '@/lib/utils'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -25,8 +25,15 @@ const COOLDOWN_MS = 1000
 export function ProductCard({ product, priority = false }: Props) {
   const reducedMotion  = useReducedMotion()
   const router         = useRouter()
+  const pathname       = usePathname()
   const [hovering, setHovering]           = useState(false)
   const [sizePickerOpen, setSizePickerOpen] = useState(false)
+
+  // For unisex products, pass the browsing-gender context so the product page
+  // can show the correct breadcrumb (e.g. Women > Hoodies instead of Men > Hoodies)
+  const genderCtx = product.gender === 'unisex' && pathname.startsWith('/women')
+    ? 'women'
+    : null
 
   const { toggleFavorite, isFavorite } = useFavoritesStore()
   const { addToCart } = useCartStore()
@@ -89,7 +96,7 @@ export function ProductCard({ product, priority = false }: Props) {
       onHoverStart={() => setHovering(true)}
       onHoverEnd={() => { setHovering(false); setSizePickerOpen(false) }}
     >
-      <Link href={`/product/${product.code}`} aria-label={product.name} className="flex flex-col">
+      <Link href={`/product/${product.code}${genderCtx ? `?from=${genderCtx}` : ''}`} aria-label={product.name} className="flex flex-col">
         {/* Image container */}
         <div className="relative aspect-[3/4] overflow-hidden bg-surface-alt">
           <motion.div
@@ -193,7 +200,7 @@ export function ProductCard({ product, priority = false }: Props) {
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}`)
+                router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}${genderCtx ? `&from=${genderCtx}` : ''}`)
               }}
               style={{ '--swatch-color': c.hex } as React.CSSProperties}
               className={cn(

@@ -151,6 +151,7 @@ interface PriceDisplayProps {
   fit:          FitType
   printMethod:  PrintMethod
   size:         SizeKey | null
+  hasDesign:    { front: boolean; back: boolean }
   onPlaceOrder: () => void
 }
 
@@ -711,8 +712,16 @@ export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
   )
 }
 
-export function PriceDisplay({ price, qty, fit, printMethod, size, onPlaceOrder }: PriceDisplayProps) {
-  const total = price !== null ? price * qty : null
+export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, onPlaceOrder }: PriceDisplayProps) {
+  const total      = price !== null ? price * qty : null
+  const noDesign   = !hasDesign.front && !hasDesign.back
+  // Button is ready only when both a size and at least one design side are present
+  const canOrder   = !!size && !noDesign
+  const btnLabel   = !size
+    ? 'SELECT A SIZE'
+    : noDesign
+    ? 'UPLOAD A DESIGN'
+    : 'PLACE ORDER →'
 
   return (
     <div className="pt-5 border-t border-border-subtle">
@@ -734,15 +743,15 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, onPlaceOrder 
       <button
         type="button"
         onClick={onPlaceOrder}
-        disabled={!size}
+        disabled={!canOrder}
         className={cn(
           'w-full py-4 font-body text-[10px] tracking-[0.22em] uppercase font-bold transition-opacity',
-          size
+          canOrder
             ? 'bg-on-surface text-surface hover:opacity-80'
             : 'bg-on-surface/30 text-surface/60 cursor-not-allowed',
         )}
       >
-        {size ? 'PLACE ORDER →' : 'SELECT A SIZE'}
+        {btnLabel}
       </button>
     </div>
   )
@@ -982,6 +991,11 @@ export function GarmentDesigner() {
     if (cv) { cv.width = CW; cv.height = CH }
   }, [])
 
+  // Auto-reveal measurements the first time a size is chosen
+  useEffect(() => {
+    if (size !== null) setShowMeasure(true)
+  }, [size])
+
   // draw — clears canvas and redraws the current design image at its stored position
   const draw = useCallback(() => {
     const cv = cvRef.current
@@ -1084,6 +1098,7 @@ export function GarmentDesigner() {
   function handlePlaceOrder() {
     if (!hasDesign.front && !hasDesign.back) {
       showToast('Upload at least one design first.', 'remove')
+      return
     }
     saveD()
     setStep('form')
@@ -1311,6 +1326,7 @@ export function GarmentDesigner() {
               fit={fit}
               printMethod={printMethod}
               size={size}
+              hasDesign={hasDesign}
               onPlaceOrder={handlePlaceOrder}
             />
           </div>

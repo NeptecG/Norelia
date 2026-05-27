@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
@@ -68,9 +68,46 @@ function setupStore() {
   })
 }
 
+/** Simulate a design file upload so the PLACE ORDER button becomes active. */
+function uploadDesign() {
+  const input = document.querySelector('input[type="file"]') as HTMLInputElement
+  if (!input) return
+  const file = new File(['fake'], 'design.png', { type: 'image/png' })
+  fireEvent.change(input, { target: { files: [file] } })
+}
+
+// Synchronous FileReader — fires onload immediately when readAsDataURL is called
+class MockFileReader {
+  onload: ((e: ProgressEvent<FileReader>) => void) | null = null
+  readAsDataURL(_file: Blob) {
+    this.onload?.({ target: { result: 'data:image/png;base64,abc' } } as unknown as ProgressEvent<FileReader>)
+  }
+}
+
+// Synchronous Image — fires onload immediately when src is set
+class MockImage {
+  onload:        (() => void) | null = null
+  naturalWidth  = 100
+  naturalHeight = 100
+  width         = 100
+  height        = 100
+  private _src  = ''
+  get src() { return this._src }
+  set src(v: string) { this._src = v; this.onload?.() }
+}
+
 beforeEach(() => {
   vi.mocked(emailjs.send).mockClear()
   setupStore()
+  // Replace FileReader and Image globally so loadImg() resolves synchronously in tests
+  // @ts-expect-error — intentional class override for test synchrony
+  global.FileReader = MockFileReader
+  // @ts-expect-error — intentional class override for test synchrony
+  window.Image = MockImage
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
 })
 
 describe('GarmentDesigner', () => {
@@ -106,7 +143,7 @@ describe('GarmentDesigner', () => {
     expect(screen.getByText('SELECT A SIZE')).toBeTruthy()
   })
 
-  it('clicking a size button updates the displayed price and shows PLACE ORDER', () => {
+  it('clicking a size button updates price and changes CTA to UPLOAD A DESIGN', () => {
     render(<GarmentDesigner />)
     // Price shows "—" initially
     expect(screen.getByText('—')).toBeTruthy()
@@ -114,7 +151,14 @@ describe('GarmentDesigner', () => {
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
     // Price now shows the mocked getPrice value (24.99)
     expect(screen.getByText('€24.99')).toBeTruthy()
-    // CTA changes from "SELECT A SIZE" to "PLACE ORDER →"
+    // CTA changes to "UPLOAD A DESIGN" (size chosen but no design yet)
+    expect(screen.getByText('UPLOAD A DESIGN')).toBeTruthy()
+  })
+
+  it('CTA shows PLACE ORDER after size selected AND design uploaded', () => {
+    render(<GarmentDesigner />)
+    fireEvent.click(screen.getByRole('button', { name: 'S' }))
+    uploadDesign()
     expect(screen.getByText('PLACE ORDER →')).toBeTruthy()
   })
 
@@ -174,6 +218,7 @@ describe('GarmentDesigner', () => {
   it('clicking PLACE ORDER advances to the form step', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'L' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
     // Form step — customer fields visible
     expect(screen.getByLabelText(/full name/i)).toBeTruthy()
@@ -183,6 +228,7 @@ describe('GarmentDesigner', () => {
   it('order form renders all required customer fields', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
     expect(screen.getByLabelText(/full name/i)).toBeTruthy()
     expect(screen.getByLabelText(/phone/i)).toBeTruthy()
@@ -195,6 +241,7 @@ describe('GarmentDesigner', () => {
   it('"Back to Designer" button returns to the design step', () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
     fireEvent.click(screen.getByRole('button', { name: /back to designer/i }))
     // Design step controls are visible again
@@ -206,6 +253,7 @@ describe('GarmentDesigner', () => {
   it('submitting the order form advances to the success step showing ORDER RECEIVED', async () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Jane Doe' } })
@@ -228,6 +276,7 @@ describe('GarmentDesigner', () => {
 
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Test User' } })
@@ -249,6 +298,7 @@ describe('GarmentDesigner', () => {
   it('"DESIGN ANOTHER" button resets back to the design step', async () => {
     render(<GarmentDesigner />)
     fireEvent.click(screen.getByRole('button', { name: 'M' }))
+    uploadDesign()
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Jane Doe' } })

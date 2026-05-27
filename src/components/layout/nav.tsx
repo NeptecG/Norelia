@@ -246,6 +246,9 @@ export function Nav() {
                 className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 <Search size={16} />
+                <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[50px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+                  Search
+                </span>
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
               </button>
 
@@ -290,7 +293,7 @@ export function Nav() {
             <button
               aria-label={`Favorites${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
               onClick={() => toggleSidePanel('favorites')}
-              className="group relative flex items-center gap-1.5 text-on-surface/82 hover:text-on-surface transition-colors"
+              className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
             >
               <span className="relative shrink-0">
                 <Heart size={17} className={totalFavCount > 0 ? 'fill-destructive stroke-destructive' : ''} />
@@ -300,6 +303,9 @@ export function Nav() {
                   </span>
                 )}
               </span>
+              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[62px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+                Favorites
+              </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </button>
 
@@ -307,7 +313,7 @@ export function Nav() {
             <button
               aria-label={`Cart${totalCartCount > 0 ? ` (${totalCartCount} items)` : ''}`}
               onClick={() => toggleSidePanel('cart')}
-              className="group relative flex items-center gap-1.5 text-on-surface/82 hover:text-on-surface transition-colors"
+              className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
             >
               <span className="relative shrink-0">
                 <ShoppingBag size={17} />
@@ -316,6 +322,9 @@ export function Nav() {
                     {totalCartCount}
                   </span>
                 )}
+              </span>
+              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[36px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+                Cart
               </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </button>

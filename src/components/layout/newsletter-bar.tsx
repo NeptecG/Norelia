@@ -26,6 +26,7 @@ export function NewsletterBar() {
     register,
     handleSubmit,
     reset,
+    clearErrors,
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
@@ -34,6 +35,13 @@ export function NewsletterBar() {
     const id = setTimeout(() => setSubmitted(false), 3000)
     return () => clearTimeout(id)
   }, [submitted])
+
+  // Auto-clear validation errors after ~2 s (same feel as toast duration)
+  useEffect(() => {
+    if (!errors.email) return
+    const id = setTimeout(() => clearErrors('email'), 2200)
+    return () => clearTimeout(id)
+  }, [errors.email, clearErrors])
 
   function onSubmit(_data: FormValues) {
     setSubmitted(true)
@@ -49,7 +57,7 @@ export function NewsletterBar() {
         {/* Left: copy */}
         <div className="shrink-0">
           <p className="font-body text-[11px] tracking-[0.22em] uppercase text-on-surface mb-1.5">
-            Stay in the know
+            Stay in the loop
           </p>
           <p className="font-body text-[12px] text-on-surface/50">
             New drops, exclusive offers, straight to your inbox.

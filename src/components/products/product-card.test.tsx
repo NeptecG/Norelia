@@ -13,9 +13,10 @@ vi.mock('next/image', () => ({
     React.createElement('img', { src, alt, className, sizes }),
 }))
 
-// Mock next/navigation (useRouter used for color swatch routing)
+// Mock next/navigation (useRouter used for color swatch routing, usePathname for gender context)
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter:   () => ({ push: vi.fn() }),
+  usePathname: () => '/',
 }))
 
 // Mock next/link

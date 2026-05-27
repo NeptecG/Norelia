@@ -8,7 +8,7 @@ import { RecentlyViewedStrip } from '@/components/products/recently-viewed-strip
 
 interface Props {
   params:       Promise<{ id: string }>
-  searchParams: Promise<{ color?: string }>
+  searchParams: Promise<{ color?: string; from?: string }>
 }
 
 export function generateStaticParams() {
@@ -30,13 +30,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailPage({ params, searchParams }: Props) {
-  const { id }    = await params
-  const { color } = await searchParams
-  const product   = PRODUCTS.find(p => p.code === id)
+  const { id }         = await params
+  const { color, from } = await searchParams
+  const product        = PRODUCTS.find(p => p.code === id)
   if (!product) notFound()
   return (
     <>
-      <ProductPage product={product} initialColor={color} />
+      <ProductPage product={product} initialColor={color} from={from} />
       <RelatedProducts product={product} />
       <RecentlyViewedStrip />
     </>

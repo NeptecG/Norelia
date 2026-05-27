@@ -64,6 +64,14 @@ export function SignInModal() {
                 autoComplete="current-password"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
+              <div className="flex justify-end -mt-1">
+                <button
+                  type="button"
+                  className="font-body text-[10px] tracking-[0.08em] text-on-surface/40 hover:text-on-surface/70 transition-colors"
+                >
+                  Forgot your password?
+                </button>
+              </div>
               <button
                 type="submit"
                 className="mt-1 bg-on-surface text-surface w-full py-3 font-body text-[10px] tracking-[0.2em] uppercase hover:opacity-90 transition-opacity"

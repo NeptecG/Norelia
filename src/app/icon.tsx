@@ -8,7 +8,7 @@ export const contentType = 'image/png'
 export default function Icon() {
   // Read Bebas Neue latin subset from public/fonts — same typeface used in the site
   const font = fs.readFileSync(
-    path.join(process.cwd(), 'public', 'fonts', 'bebas-neue.woff2'),
+    path.join(process.cwd(), 'public', 'fonts', 'bebas-neue.ttf'),
   )
 
   return new ImageResponse(
