@@ -1,23 +1,36 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+
+vi.mock('next/navigation', () => ({
+  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+  usePathname: () => '/',
+}))
 
 import AboutPage from './page'
 
 describe('AboutPage', () => {
-  it('renders the WHO WE ARE heading', async () => {
+  it('renders the About NORELIA heading', async () => {
     render(await AboutPage())
-    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
-    expect(screen.getByText('WHO WE ARE')).toBeTruthy()
+    const h1 = screen.getByRole('heading', { level: 1 })
+    expect(h1).toBeTruthy()
+    expect(h1.textContent).toMatch(/About/i)
+    expect(h1.textContent).toMatch(/NORELIA/i)
   })
 
-  it('renders two content sections', async () => {
+  it('renders the Born in the West of Greece intro', async () => {
     render(await AboutPage())
-    expect(screen.getByText('The Brand')).toBeTruthy()
-    expect(screen.getByText('Our Process')).toBeTruthy()
+    expect(screen.getByText('Born in the West of Greece.')).toBeTruthy()
   })
 
-  it('renders map iframe', async () => {
+  it('renders the three pillars', async () => {
     render(await AboutPage())
-    expect(document.querySelector('iframe')).toBeTruthy()
+    expect(screen.getByText('Design First')).toBeTruthy()
+    expect(screen.getByText('Made to Last')).toBeTruthy()
+    expect(screen.getByText('Your Way')).toBeTruthy()
+  })
+
+  it('renders the closing section', async () => {
+    render(await AboutPage())
+    expect(screen.getByText('Still just getting started.')).toBeTruthy()
   })
 })

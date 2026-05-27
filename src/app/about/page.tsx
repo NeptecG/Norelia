@@ -1,73 +1,94 @@
 import type { Metadata } from 'next'
 import { BRAND } from '@/lib/constants'
+import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
-  title: 'About Us',
-  description: `The story behind ${BRAND} — premium minimalist streetwear.`,
+  title: 'About',
+  description: `The story behind ${BRAND} — premium streetwear from Preveza, Greece.`,
 }
+
+const PILLARS = [
+  {
+    num:   '01',
+    title: 'Design First',
+    body:  'Every piece starts with a sketch, not a sales target. We design for the garment, then figure out the rest.',
+  },
+  {
+    num:   '02',
+    title: 'Made to Last',
+    body:  "We use heavyweight, high-quality fabrics because fast fashion isn't something we believe in. Buy less, wear more.",
+  },
+  {
+    num:   '03',
+    title: 'Your Way',
+    body:  "Our studio lets you customise any piece — colours, prints, placement. If you're going to wear something, it should be yours.",
+  },
+] as const
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-surface">
-      {/* Dark hero band */}
-      {/* max-w-[1440px] / md:px-[60px] — project-wide content container; tracking-[0.3em] — editorial label spacing */}
-      <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
+
+      {/* ── Dark hero band ── */}
+      <section className="bg-surface-alt pt-32 pb-[72px] px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
-          <p className="font-body text-xs tracking-[0.3em] uppercase text-on-surface-muted mb-4">
-            Est. 2024
+          <BackButton />
+          <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-3">
+            Est. 2024 · Preveza, Greece
           </p>
-          <h1 className="font-display text-7xl md:text-9xl text-on-surface leading-none">
-            WHO WE ARE
+          <h1 className="font-display text-7xl md:text-[88px] tracking-[0.04em] text-on-surface leading-[0.95]">
+            About<br />{BRAND}.
           </h1>
         </div>
       </section>
 
-      {/* Content */}
+      {/* ── Content ── */}
       <section className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <h2 className="font-display text-3xl text-on-surface mb-6">The Brand</h2>
-            <p className="font-body text-base text-on-surface-muted leading-relaxed mb-4">
-              Norelia was born from a simple conviction: premium quality should not require loud branding.
-              We design garments that let the wearer speak — minimal graphics, exceptional fabric, considered cuts.
-            </p>
-            <p className="font-body text-base text-on-surface-muted leading-relaxed">
-              Every piece in our range starts with the fabric. We source heavyweight cotton from certified
-              European mills, then cut and sew in small batches to maintain quality and reduce waste.
-            </p>
-          </div>
-          <div>
-            <h2 className="font-display text-3xl text-on-surface mb-6">Our Process</h2>
-            <p className="font-body text-base text-on-surface-muted leading-relaxed mb-4">
-              Design happens in-house. Printing happens on-demand — no dead stock, no landfill. Our
-              garment designer lets you commission a piece printed exactly as you want it, on the fabric
-              you choose, in the fit that works for you.
-            </p>
-            <p className="font-body text-base text-on-surface-muted leading-relaxed">
-              We ship from our studio in Helsinki. Standard delivery takes 3–5 business days across Europe.
-              Custom orders ship in 5–7 days.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      {/* Map */}
-      <section className="max-w-[1440px] mx-auto px-4 md:px-[60px] pb-20">
-        <h2 className="font-display text-3xl text-on-surface mb-6">Find Us</h2>
-        <p className="font-body text-sm text-on-surface-muted mb-4">
-          Norelia Studio · Punavuorenkatu 12, Helsinki 00120, Finland
-        </p>
-        <div className="w-full aspect-video">
-          <iframe
-            title="Norelia studio location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1984.9!2d24.934!3d60.162!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjDCsDA5JzQ0LjAiTiAyNMKwNTYnMDIuNCJF!5e0!3m2!1sen!2sfi!4v1234567890"
-            width="100%"
-            height="100%"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="border-0 grayscale"
-          />
+        {/* Intro */}
+        <div className="max-w-[720px] mb-20">
+          <p className="font-display text-[22px] tracking-[0.14em] text-on-surface mb-5">
+            Born in the West of Greece.
+          </p>
+          <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
+            {BRAND}. started the way most things worth doing start — with frustration. We couldn&apos;t
+            find streetwear that felt both premium and personal, both sharp and wearable in the heat of
+            a Greek summer. So we made our own.
+          </p>
+          <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
+            Founded in Preveza in 2024, {BRAND}. is a small independent label built around one idea:
+            that where you&apos;re from shouldn&apos;t limit what you wear. We design pieces that can
+            move from the streets of a quiet Greek town to the front row of anything — no apology
+            required.
+          </p>
+          <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em]">
+            Everything is designed in-house. Every drop is intentional. We don&apos;t chase trends —
+            we make things we&apos;d actually wear, and trust that the right people will find them.
+          </p>
         </div>
+
+        {/* Three pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-[2px] mb-20">
+          {PILLARS.map(({ num, title, body }) => (
+            <div key={num} className="bg-surface-raised px-9 py-10">
+              <p className="font-display text-[13px] tracking-[0.22em] text-on-surface/30 mb-3.5">{num}</p>
+              <p className="font-display text-2xl tracking-[0.1em] text-on-surface mb-4">{title}</p>
+              <p className="font-body text-[13px] text-on-surface-muted leading-[1.8] tracking-[0.02em]">{body}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Closing */}
+        <div className="border-t border-border-subtle pt-12 max-w-[720px]">
+          <p className="font-display text-[32px] tracking-[0.08em] text-on-surface mb-4">
+            Still just getting started.
+          </p>
+          <p className="font-body text-sm text-on-surface-muted leading-[1.85] tracking-[0.02em]">
+            {BRAND}. is young, intentionally small, and not in a hurry. We&apos;d rather get it right
+            than get it fast. Follow along — the best is still ahead.
+          </p>
+        </div>
+
       </section>
     </main>
   )

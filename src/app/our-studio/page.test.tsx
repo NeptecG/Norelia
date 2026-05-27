@@ -1,26 +1,33 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+
+vi.mock('next/navigation', () => ({
+  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+  usePathname: () => '/',
+}))
 
 import OurStudioPage from './page'
 
 describe('OurStudioPage', () => {
-  it('renders the OUR STUDIO heading', async () => {
+  it('renders the Our Studio heading', async () => {
     render(await OurStudioPage())
     const h1 = screen.getByRole('heading', { level: 1 })
     expect(h1).toBeTruthy()
-    // h1 contains "OUR" and "STUDIO" split across a <br> — check both words are present
-    expect(h1.textContent).toMatch(/OUR/i)
-    expect(h1.textContent).toMatch(/STUDIO/i)
+    expect(h1.textContent).toMatch(/Our Studio/i)
   })
 
   it('renders address section with Preveza', async () => {
     render(await OurStudioPage())
-    // "Preveza" appears in both the hero subtitle and the address block
     expect(screen.getAllByText(/Preveza/i).length).toBeGreaterThan(0)
   })
 
   it('renders map iframe', async () => {
     render(await OurStudioPage())
     expect(document.querySelector('iframe')).toBeTruthy()
+  })
+
+  it('renders contact info', async () => {
+    render(await OurStudioPage())
+    expect(screen.getByText('hello@norelia.com')).toBeTruthy()
   })
 })
