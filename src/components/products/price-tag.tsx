@@ -28,7 +28,7 @@ export function PriceTag({ price, salePrice, size = 'md' }: Props) {
       <span className="font-body line-through text-on-surface-muted">{price}</span>
       <span className="font-body font-bold text-destructive">€{salePrice}</span>
       {/* inline-flex + lining-nums + tabular-nums: keeps − and digits on same optical baseline */}
-      <span className="rounded bg-destructive px-1.5 py-[0.15em] text-[0.6em] font-bold text-surface inline-flex items-center self-center lining-nums tabular-nums leading-none">
+      <span className="rounded bg-destructive px-1.5 py-[0.2em] text-[0.75em] font-bold text-surface inline-flex items-center self-center lining-nums tabular-nums leading-none">
         −{pct}%
       </span>
     </div>

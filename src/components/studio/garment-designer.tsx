@@ -554,7 +554,7 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
         Color:{' '}
         <span className="normal-case tracking-normal text-on-surface">{color.name}</span>
       </p>
-      <div className="flex gap-2.5">
+      <div className="flex gap-2">
         {GCOLORS.map((c) => (
           <button
             key={c.name}
@@ -562,17 +562,13 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
             aria-label={c.name}
             aria-pressed={color.name === c.name}
             onClick={() => onChange(c)}
-            className="w-7 h-7 transition-transform hover:scale-110"
-            style={{
-              // Dynamic hex color — cannot use static Tailwind class
-              backgroundColor: c.hex,
-              border: color.name === c.name
-                ? '2px solid var(--color-on-surface)'
-                : c.outline ? '1px solid var(--color-border-subtle)' : '1px solid transparent',
-              transform: color.name === c.name ? 'scale(1.2)' : undefined,
-              outline: color.name === c.name ? '2px solid var(--color-surface)' : undefined,
-              outlineOffset: color.name === c.name ? '-3px' : undefined,
-            }}
+            /* dynamic swatch colour — cannot use a static Tailwind class */
+            style={{ '--swatch-color': c.hex } as React.CSSProperties}
+            className={cn(
+              'w-6 h-6 rounded-full transition-transform hover:scale-110 bg-[var(--swatch-color)]',
+              c.outline && 'border border-on-surface/20',
+              color.name === c.name && 'ring-2 ring-offset-2 ring-on-surface',
+            )}
           />
         ))}
       </div>
