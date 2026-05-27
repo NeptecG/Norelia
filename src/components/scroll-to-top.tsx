@@ -39,7 +39,7 @@ export function ScrollToTop() {
           onClick={handleClick}
           aria-label="Scroll to top"
           className={cn(
-            'fixed bottom-6 right-6 z-40 group relative',
+            'fixed bottom-6 right-6 z-40 group',
             'w-10 h-10 flex items-center justify-center',
             'border border-on-surface bg-surface-alt text-on-surface',
             'hover:bg-on-surface hover:text-surface transition-colors duration-200',
