@@ -62,7 +62,7 @@ export function ProductCard({ product, priority = false }: Props) {
 
   function handlePickSize(size: string) {
     addToCart(product.id, 1)
-    showToast(`${product.name} — ${size} added`, 'add')
+    showToast(`${product.name}, ${size} added`, 'add')
     setSizePickerOpen(false)
   }
 

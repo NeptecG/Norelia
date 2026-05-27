@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!filter || !VALID_GENDERS.includes(gender)) return {}
   const genderLabel = gender === 'men' ? 'Men' : 'Women'
   return {
-    title: `${catLabelPlural(filter)} — ${genderLabel}`,
+    title: `${catLabelPlural(filter)} · ${genderLabel}`,
     description: `Shop ${genderLabel.toLowerCase()}'s ${catLabelPlural(filter).toLowerCase()} from Norelia.`,
   }
 }

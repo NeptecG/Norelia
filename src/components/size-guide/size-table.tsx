@@ -52,7 +52,7 @@ export function SizeTable({ rows, mini }: Props) {
               )}
               <td className={tdClass}>{row.chest}</td>
               <td className={tdClass}>{row.waist}</td>
-              {hasHip && <td className={tdClass}>{row.hip ?? '—'}</td>}
+              {hasHip && <td className={tdClass}>{row.hip ?? '-'}</td>}
               <td className={tdClass}>{row.length}</td>
               <td className={tdClass}>{row.sleeve}</td>
             </tr>

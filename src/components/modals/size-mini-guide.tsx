@@ -29,7 +29,7 @@ export function SizeMiniGuide({ product, open, onClose }: Props) {
           SIZE GUIDE
         </DialogTitle>
         <p className="font-body text-[10px] text-on-surface/50 mb-4">
-          {product.name} — measurements in cm
+          {product.name} · measurements in cm
         </p>
         <SizeTable rows={rows} gender={gender} mini />
       </DialogContent>

@@ -109,7 +109,7 @@ export function SignInModal() {
           )}
 
           <p className="mt-4 text-center font-body text-[10px] text-on-surface/30 tracking-wide">
-            UI only — authentication coming soon
+            UI only · authentication coming soon
           </p>
         </div>
 

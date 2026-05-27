@@ -145,8 +145,8 @@ describe('GarmentDesigner', () => {
 
   it('clicking a size button updates price and changes CTA to UPLOAD A DESIGN', () => {
     render(<GarmentDesigner />)
-    // Price shows "—" initially
-    expect(screen.getByText('—')).toBeTruthy()
+    // Price shows "-" initially (no size selected yet)
+    expect(screen.getByText('-')).toBeTruthy()
     // Click size S
     fireEvent.click(screen.getByRole('button', { name: 'S' }))
     // Price now shows the mocked getPrice value (24.99)

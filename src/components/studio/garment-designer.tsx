@@ -727,7 +727,7 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, on
     <div className="pt-5 border-t border-border-subtle">
       <div className="flex items-baseline gap-2.5 mb-1">
         <span className="font-display text-4xl text-on-surface">
-          {total !== null ? `€${total.toFixed(2)}` : '—'}
+          {total !== null ? `€${total.toFixed(2)}` : '-'}
         </span>
         {fit === 'oversized'        && <span className="font-body text-[11px] text-on-surface-muted">+€4 oversized</span>}
         {printMethod === 'embroidery' && <span className="font-body text-[11px] text-on-surface-muted">+€7 embroidery</span>}
@@ -772,15 +772,15 @@ export function OrderSummaryTable({
   const rows: [string, string][] = [
     ['Garment',    GARMENT_LABELS[garmentType]],
     ['Color',      color.name],
-    ['Size',       size ?? '—'],
+    ['Size',       size ?? '-'],
     ['Fit',        fit === 'oversized' ? 'Oversized Fit' : 'Normal Fit'],
     ['Print',      printMethod === 'dtg' ? 'DTG Print' : 'Embroidery'],
     ['Sides',      sides],
-    ...(hasDesign.front ? [[`Position (Front)`, `${frontP.label} — ${frontP.cm}`] as [string, string]] : []),
-    ...(hasDesign.back  ? [[`Position (Back)`,  `${backP.label} — ${backP.cm}`]  as [string, string]] : []),
-    ['Unit Price', price !== null ? `€${price.toFixed(2)}` : '—'],
+    ...(hasDesign.front ? [[`Position (Front)`, `${frontP.label}, ${frontP.cm}`] as [string, string]] : []),
+    ...(hasDesign.back  ? [[`Position (Back)`,  `${backP.label}, ${backP.cm}`]  as [string, string]] : []),
+    ['Unit Price', price !== null ? `€${price.toFixed(2)}` : '-'],
     ['Qty',        String(qty)],
-    ['Total',      total !== null ? `€${total.toFixed(2)}` : '—'],
+    ['Total',      total !== null ? `€${total.toFixed(2)}` : '-'],
   ]
 
   return (
@@ -1124,7 +1124,7 @@ export function GarmentDesigner() {
             order_fit:      fit,
             order_print:    printMethod,
             order_qty:      String(qty),
-            order_total:    price !== null ? `€${(price * qty).toFixed(2)}` : '—',
+            order_total:    price !== null ? `€${(price * qty).toFixed(2)}` : '-',
             notes:          data.notes ?? '',
           },
           { publicKey: ejsKey },

@@ -57,7 +57,7 @@ export default function PrivacyPage() {
 
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
             {BRAND} is committed to protecting your privacy. This policy explains what data we
-            collect, why we collect it, and how we keep it safe — in plain language.
+            collect, why we collect it, and how we keep it safe, in plain language.
           </p>
 
           {SECTIONS.map(({ title, detail }, i) => (

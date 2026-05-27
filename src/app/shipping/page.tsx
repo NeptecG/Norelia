@@ -4,7 +4,7 @@ import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
   title: 'Shipping',
-  description: `Shipping information — free delivery over €${FREE_SHIPPING_THRESHOLD}.`,
+  description: `Shipping information, free delivery over €${FREE_SHIPPING_THRESHOLD}.`,
 }
 
 const METHODS = [

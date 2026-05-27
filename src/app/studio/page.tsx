@@ -4,7 +4,7 @@ import { StudioClient } from '@/components/studio/studio-client'
 
 export const metadata: Metadata = {
   title: 'Design Your Own',
-  description: `Custom garment designer — ${BRAND}`,
+  description: `Custom garment designer by ${BRAND}`,
 }
 
 export default function StudioPage() {

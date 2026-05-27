@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const label = gender === 'men' ? 'Men' : 'Women'
   return {
     title: label,
-    description: `Shop the full ${label.toLowerCase()} collection — T-Shirts, Hoodies, Zippers and more.`,
+    description: `Shop the full ${label.toLowerCase()} collection: T-Shirts, Hoodies, Zippers and more.`,
   }
 }
 

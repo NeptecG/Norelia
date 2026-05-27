@@ -78,7 +78,7 @@ export default function TermsPage() {
           <div className="bg-surface-raised px-6 py-5 mt-4">
             <p className="font-body text-[12px] text-on-surface-muted leading-[1.8]">
               <strong className="text-on-surface">Questions? </strong>
-              Contact us at hello@norelia.com — we aim to respond to all enquiries within one business day.
+              Contact us at hello@norelia.com. We aim to respond to all enquiries within one business day.
             </p>
           </div>
 

@@ -45,3 +45,4 @@ Never use raw Tailwind color scales (`bg-zinc-900`, `text-gray-500`) inside comp
 - Never define a component inside another component
 - Never use default exports except `page.tsx` and `layout.tsx`
 - Never use raw Tailwind color scales in components
+- **Never use em-dashes (—) anywhere in user-visible text** — page titles, body copy, metadata, toasts, labels, placeholders. Use commas, colons, periods, or the middle dot (·) instead.

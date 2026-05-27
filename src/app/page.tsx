@@ -5,7 +5,7 @@ import { FeaturedCarousel } from '@/components/home/featured-carousel'
 import { PRODUCTS } from '@/data/products'
 
 export const metadata: Metadata = {
-  title: 'NORELIA. — Premium Streetwear',
+  title: 'NORELIA. Premium Streetwear',
   description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
 }
 

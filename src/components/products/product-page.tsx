@@ -103,7 +103,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
             >
               <Image
                 src={product.img}
-                alt={`${product.name} — front`}
+                alt={`${product.name} front`}
                 fill
                 className="object-cover"
                 sizes="54px"
@@ -125,7 +125,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
               {product.imgBack ? (
                 <Image
                   src={product.imgBack}
-                  alt={`${product.name} — back`}
+                  alt={`${product.name} back`}
                   fill
                   className="object-cover"
                   sizes="54px"

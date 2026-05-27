@@ -3,21 +3,21 @@ import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
   title: 'Returns & Exchanges',
-  description: 'Our returns and exchange policy — hassle-free within 30 days.',
+  description: 'Our returns and exchange policy, hassle-free within 30 days.',
 }
 
 const SECTIONS = [
   {
     title:  'Return Policy',
-    detail: 'We accept returns and exchanges within 30 days of delivery. Items must be unworn, unwashed, and in their original condition with all tags attached. We inspect every return on receipt — items that don\'t meet these conditions will be sent back.',
+    detail: 'We accept returns and exchanges within 30 days of delivery. Items must be unworn, unwashed, and in their original condition with all tags attached. We inspect every return on receipt. Items that don\'t meet these conditions will be sent back.',
   },
   {
     title:  'How to Start a Return',
-    detail: 'Email us at returns@norelia.com with your order number and the reason for your return. We\'ll reply within 24 hours with a prepaid DHL return label. Drop your parcel at any DHL ServicePoint — no printer needed if you use the QR code option.',
+    detail: 'Email us at returns@norelia.com with your order number and the reason for your return. We\'ll reply within 24 hours with a prepaid DHL return label. Drop your parcel at any DHL ServicePoint, no printer needed if you use the QR code option.',
   },
   {
     title:  'Refunds & Exchanges',
-    detail: 'Once we receive and inspect your return, we\'ll process your refund to the original payment method within 3–5 business days. For exchanges, we dispatch the replacement as soon as the return is confirmed — no waiting for the refund to clear. First exchange ships free.',
+    detail: 'Once we receive and inspect your return, we\'ll process your refund to the original payment method within 3–5 business days. For exchanges, we dispatch the replacement as soon as the return is confirmed, no waiting for the refund to clear. First exchange ships free.',
   },
   {
     title:  'Custom & Printed Orders',
@@ -49,7 +49,7 @@ export default function ReturnsPage() {
           {/* Intro */}
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
             We want you to love what you wear. If something isn&apos;t right,
-            we make it easy to send it back — no questions asked within{' '}
+            we make it easy to send it back, no questions asked, within{' '}
             <strong className="text-on-surface">30 days</strong> of delivery.
           </p>
 

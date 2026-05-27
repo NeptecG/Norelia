@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Our Studio',
-  description: `Visit the ${BRAND} studio in Preveza, Greece — where we design, print, and ship.`,
+  description: `Visit the ${BRAND} studio in Preveza, Greece. We design, print, and ship from here.`,
 }
 
 const HOURS = [
@@ -36,7 +36,7 @@ export default function OurStudioPage() {
         <div className="flex-[1_1_520px] min-w-[320px]">
           <div className="w-full aspect-[4/3] border border-on-surface/10 overflow-hidden">
             <iframe
-              title="Norelia studio location — Preveza, Greece"
+              title="Norelia studio location, Preveza, Greece"
               src="https://maps.google.com/maps?q=38.971454,20.746212&z=17&output=embed"
               width="100%"
               height="100%"

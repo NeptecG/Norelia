@@ -4,7 +4,7 @@ import { BackButton } from '@/components/layout/back-button'
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `The story behind ${BRAND} — premium streetwear from Preveza, Greece.`,
+  description: `The story behind ${BRAND}, premium streetwear from Preveza, Greece.`,
 }
 
 const PILLARS = [
@@ -21,7 +21,7 @@ const PILLARS = [
   {
     num:   '03',
     title: 'Your Way',
-    body:  "Our studio lets you customise any piece — colours, prints, placement. If you're going to wear something, it should be yours.",
+    body:  "Our studio lets you customise any piece: colours, prints, placement. If you're going to wear something, it should be yours.",
   },
 ] as const
 
@@ -51,19 +51,19 @@ export default function AboutPage() {
             Born in the West of Greece.
           </p>
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
-            {BRAND} started the way most things worth doing start — with frustration. We couldn&apos;t
+            {BRAND} started the way most things worth doing start, with frustration. We couldn&apos;t
             find streetwear that felt both premium and personal, both sharp and wearable in the heat of
             a Greek summer. So we made our own.
           </p>
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
             Founded in Preveza in 2024, {BRAND} is a small independent label built around one idea:
             that where you&apos;re from shouldn&apos;t limit what you wear. We design pieces that can
-            move from the streets of a quiet Greek town to the front row of anything — no apology
+            move from the streets of a quiet Greek town to the front row of anything, no apology
             required.
           </p>
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em]">
-            Everything is designed in-house. Every drop is intentional. We don&apos;t chase trends —
-            we make things we&apos;d actually wear, and trust that the right people will find them.
+            Everything is designed in-house. Every drop is intentional. We don&apos;t chase trends.
+            We make things we&apos;d actually wear, and trust that the right people will find them.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export default function AboutPage() {
           </p>
           <p className="font-body text-sm text-on-surface-muted leading-[1.85] tracking-[0.02em]">
             {BRAND} is young, intentionally small, and not in a hurry. We&apos;d rather get it right
-            than get it fast. Follow along — the best is still ahead.
+            than get it fast. Follow along. The best is still ahead.
           </p>
         </div>
 
