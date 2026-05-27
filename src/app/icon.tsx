@@ -26,10 +26,10 @@ export default function Icon() {
         <span
           style={{
             fontFamily: 'Bebas Neue',
-            fontSize: 26,
+            fontSize: 30,
             color: '#ffffff',
             lineHeight: 1,
-            marginTop: 2, // optical vertical correction for Bebas Neue descender
+            marginTop: 1, // optical vertical correction for Bebas Neue descender
           }}
         >
           N

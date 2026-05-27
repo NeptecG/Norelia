@@ -6,17 +6,19 @@ import ReturnsPage from './page'
 describe('ReturnsPage', () => {
   it('renders the RETURNS heading', async () => {
     render(await ReturnsPage())
-    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
-    expect(screen.getByText('RETURNS')).toBeTruthy()
+    const h1 = screen.getByRole('heading', { level: 1 })
+    expect(h1).toBeTruthy()
+    expect(h1.textContent).toMatch(/RETURNS/i)
+    expect(h1.textContent).toMatch(/EXCHANGES/i)
   })
 
-  it('renders Our Policy section', async () => {
+  it('renders Return Policy section', async () => {
     render(await ReturnsPage())
-    expect(screen.getByText('Our Policy')).toBeTruthy()
+    expect(screen.getByText('Return Policy')).toBeTruthy()
   })
 
-  it('renders Refunds section', async () => {
+  it('renders Refunds & Exchanges section', async () => {
     render(await ReturnsPage())
-    expect(screen.getByText('Refunds')).toBeTruthy()
+    expect(screen.getByText('Refunds & Exchanges')).toBeTruthy()
   })
 })

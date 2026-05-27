@@ -7,36 +7,63 @@ export const metadata: Metadata = {
   description: `Visit the ${BRAND} studio in Preveza, Greece — where we design, print, and ship.`,
 }
 
+const PILLARS = [
+  {
+    num:    '01',
+    title:  'Designed In-House',
+    body:   'Every garment starts as a sketch in our studio. No third-party designers, no trend-chasing. We build collections around what we actually want to wear — and stand behind every cut.',
+  },
+  {
+    num:    '02',
+    title:  'Printed On-Site',
+    body:   'Our DTG press and embroidery machine sit ten metres from where we pack orders. That means we control quality at every step — from the first ink pull to the final fold.',
+  },
+  {
+    num:    '03',
+    title:  'Small Runs, Zero Waste',
+    body:   'We don\'t overproduce. Each drop is limited. When stock is gone, it\'s gone. This isn\'t marketing — it\'s how we keep quality high and waste low.',
+  },
+] as const
+
 export default function OurStudioPage() {
   return (
-    <main className="min-h-screen bg-surface pt-20">
+    <main className="min-h-screen bg-surface">
 
-      {/* Back link */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] pt-8 pb-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
-        >
-          ← Back
-        </Link>
-      </div>
+      {/* ── Dark hero ── */}
+      <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
+        <div className="max-w-[1440px] mx-auto">
+          <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
+            {BRAND}. Streetwear · Preveza, Greece
+          </p>
+          <h1 className="font-display text-7xl md:text-[7rem] text-on-surface leading-none mb-10">
+            OUR<br />STUDIO
+          </h1>
+          <p className="font-body text-[15px] text-on-surface/55 leading-[1.85] max-w-[560px]">
+            A small space in the west of Greece where everything gets made, checked, and shipped.
+            No warehouses, no middlemen — just the work.
+          </p>
+        </div>
+      </section>
 
-      {/* Brand + heading */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] pb-10">
-        <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface-muted mb-1">
-          {BRAND}. STREETWEAR
-        </p>
-        <h1 className="font-display text-6xl md:text-8xl text-on-surface leading-none">
-          OUR STUDIO
-        </h1>
-      </div>
+      {/* ── Three pillars ── */}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-20 border-b border-border-subtle">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 md:divide-x md:divide-border-subtle">
+          {PILLARS.map(({ num, title, body }) => (
+            <div key={num} className="md:px-10 first:pl-0 last:pr-0 py-6 md:py-0">
+              <p className="font-display text-[11px] tracking-[0.3em] text-on-surface/25 mb-4">{num}</p>
+              <h2 className="font-display text-xl tracking-[0.06em] text-on-surface mb-3">{title}</h2>
+              <p className="font-body text-[13px] text-on-surface-muted leading-[1.8]">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* Map + info grid */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-0">
+      {/* ── Map + contact ── */}
+      <section className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-0">
 
-          {/* Google Maps embed — Preveza, Greece */}
-          <div className="relative">
+          {/* Google Maps embed */}
+          <div>
             <div className="w-full aspect-[4/3] lg:aspect-auto lg:h-full min-h-[400px]">
               <iframe
                 title="Norelia studio location — Preveza, Greece"
@@ -48,7 +75,6 @@ export default function OurStudioPage() {
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-            {/* Open in Google Maps link */}
             <a
               href="https://maps.google.com/?q=38.971454,20.746212"
               target="_blank"
@@ -60,59 +86,52 @@ export default function OurStudioPage() {
           </div>
 
           {/* Address / Hours / Contact */}
-          <div className="lg:pl-12 pt-8 lg:pt-0 flex flex-col gap-8">
+          <div className="lg:pl-14 pt-10 lg:pt-0 flex flex-col gap-10 justify-center">
 
-            {/* Address */}
             <div>
-              <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface-muted mb-3">
+              <p className="font-body text-[9px] tracking-[0.28em] uppercase text-on-surface-muted mb-3 border-b border-border-subtle pb-2">
                 Address
               </p>
-              <p className="font-body text-sm text-on-surface leading-relaxed">
-                G. Gianniwth 216
-              </p>
-              <p className="font-body text-sm text-on-surface leading-relaxed">
-                Preveza 48100
-              </p>
-              <p className="font-body text-sm text-on-surface leading-relaxed">
-                Greece
-              </p>
+              <p className="font-body text-sm text-on-surface leading-relaxed">G. Gianniwth 216</p>
+              <p className="font-body text-sm text-on-surface leading-relaxed">Preveza 48100</p>
+              <p className="font-body text-sm text-on-surface leading-relaxed">Greece</p>
             </div>
 
-            {/* Studio hours */}
             <div>
-              <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface-muted mb-3">
+              <p className="font-body text-[9px] tracking-[0.28em] uppercase text-on-surface-muted mb-3 border-b border-border-subtle pb-2">
                 Studio Hours
               </p>
-              <div className="flex justify-between font-body text-sm text-on-surface mb-1.5">
-                <span className="text-on-surface/70">Mon – Fri</span>
-                <span>09:00 – 17:00</span>
-              </div>
-              <div className="flex justify-between font-body text-sm text-on-surface mb-1.5">
-                <span className="text-on-surface/70">Saturday</span>
-                <span>10:00 – 14:00</span>
-              </div>
-              <div className="flex justify-between font-body text-sm text-on-surface">
-                <span className="text-on-surface/70">Sunday</span>
-                <span className="text-on-surface-muted">Closed</span>
-              </div>
+              {[
+                { day: 'Mon – Fri', hours: '09:00 – 17:00' },
+                { day: 'Saturday',  hours: '10:00 – 14:00' },
+                { day: 'Sunday',    hours: 'Closed',        muted: true },
+              ].map(({ day, hours, muted }) => (
+                <div key={day} className="flex justify-between font-body text-sm mb-1.5">
+                  <span className="text-on-surface-muted">{day}</span>
+                  <span className={muted ? 'text-on-surface-muted' : 'text-on-surface'}>{hours}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Get in touch */}
             <div>
-              <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface-muted mb-3">
+              <p className="font-body text-[9px] tracking-[0.28em] uppercase text-on-surface-muted mb-3 border-b border-border-subtle pb-2">
                 Get in Touch
               </p>
-              <p className="font-body text-sm text-on-surface mb-1.5">
-                hello@norelia.com
-              </p>
-              <p className="font-body text-sm text-on-surface-muted">
-                +30 26820 00000
-              </p>
+              <p className="font-body text-sm text-on-surface mb-1.5">hello@norelia.com</p>
+              <p className="font-body text-sm text-on-surface-muted">+30 26820 00000</p>
             </div>
+
+            <Link
+              href="/studio"
+              className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.2em] uppercase border border-on-surface px-5 py-3 text-on-surface hover:bg-on-surface hover:text-surface transition-colors w-fit"
+            >
+              Design Your Own &rarr;
+            </Link>
 
           </div>
         </div>
-      </div>
+      </section>
+
     </main>
   )
 }

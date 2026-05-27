@@ -10,13 +10,13 @@ describe('ShippingPage', () => {
     expect(screen.getByText('SHIPPING')).toBeTruthy()
   })
 
-  it('renders Delivery Times section', async () => {
+  it('renders Standard Delivery section', async () => {
     render(await ShippingPage())
-    expect(screen.getByText('Delivery Times')).toBeTruthy()
+    expect(screen.getByText('Standard Delivery')).toBeTruthy()
   })
 
-  it('renders Shipping Costs section', async () => {
+  it('renders Express Delivery section', async () => {
     render(await ShippingPage())
-    expect(screen.getByText('Shipping Costs')).toBeTruthy()
+    expect(screen.getByText('Express Delivery')).toBeTruthy()
   })
 })
