@@ -155,31 +155,36 @@ export function CartItemRow({ item, variants, stock, onDecrement, onIncrement, o
 // ---------------------------------------------------------------------------
 
 interface OrderSummaryProps {
-  subtotal:       number
+  // Pricing — all computed in CheckoutPage
+  exVat:          number   // items price excl. VAT (after coupon)
+  vatAmt:         number   // VAT component (24%, extracted from prices)
+  afterDiscount:  number   // items total VAT-incl after coupon (for free-shipping check)
   discountAmt:    number
   discountRate:   number
   appliedCoupon:  string | null
-  vatAmount:      number
   shipping:       number
-  total:          number
+  grandTotal:     number
+  // Coupon field
   couponInput:    string
   couponError:    string
-  orderNotes:     string
   onCouponChange: (val: string) => void
   onCouponApply:  () => void
   onCouponRemove: () => void
+  // Notes + submit
+  orderNotes:     string
   onNotesChange:  (val: string) => void
   onPlaceOrder:   () => void
 }
 
 export function OrderSummary({
-  subtotal,
+  exVat,
+  vatAmt,
+  afterDiscount,
   discountAmt,
   discountRate,
   appliedCoupon,
-  vatAmount,
   shipping,
-  total,
+  grandTotal,
   couponInput,
   couponError,
   orderNotes,
@@ -189,10 +194,10 @@ export function OrderSummary({
   onNotesChange,
   onPlaceOrder,
 }: OrderSummaryProps) {
-  // Progress bar is based on the already-discounted subtotal
-  const progressPct  = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
-  const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD
-  const remaining    = (FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)
+  // Free-shipping progress is based on items total after coupon (VAT incl.)
+  const progressPct  = Math.min((afterDiscount / FREE_SHIPPING_THRESHOLD) * 100, 100)
+  const freeShipping = afterDiscount >= FREE_SHIPPING_THRESHOLD
+  const remaining    = (FREE_SHIPPING_THRESHOLD - afterDiscount).toFixed(2)
 
   return (
     // `dark` class forces dark-mode token values so text-on-surface (#f5f5f5) is readable
@@ -200,79 +205,20 @@ export function OrderSummary({
     <aside className="dark lg:sticky lg:top-24 h-fit bg-surface-alt p-6 border border-border">
       <h2 className="font-display text-2xl text-on-surface tracking-widest mb-6">YOUR ORDER</h2>
 
-      {/* ── Coupon code ── */}
-      <div className="mb-5">
-        <label
-          htmlFor="coupon-code"
-          className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
-        >
-          Coupon Code
-        </label>
-        {appliedCoupon ? (
-          <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
-            <p className="font-body text-xs text-success tracking-wide">
-              {appliedCoupon} · {Math.round(discountRate * 100)}% off ✓
-            </p>
-            <button
-              type="button"
-              aria-label="Remove coupon"
-              onClick={onCouponRemove}
-              className="font-body text-[10px] text-on-surface/40 hover:text-on-surface transition-colors ml-2 uppercase tracking-widest"
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <input
-              id="coupon-code"
-              type="text"
-              value={couponInput}
-              onChange={e => onCouponChange(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && onCouponApply()}
-              placeholder="Enter code"
-              className="flex-1 min-w-0 px-3 py-2 bg-on-surface/10 border border-border text-on-surface font-body text-[11px] uppercase tracking-widest placeholder:text-on-surface/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-on-surface/50"
-            />
-            <button
-              type="button"
-              onClick={onCouponApply}
-              className="px-4 bg-on-surface/20 hover:bg-on-surface/30 text-on-surface font-body text-[10px] tracking-[0.18em] uppercase transition-colors border border-border whitespace-nowrap"
-            >
-              Apply
-            </button>
-          </div>
-        )}
-        {couponError && (
-          <p className="font-body text-[10px] text-destructive mt-1.5 tracking-wide">
-            {couponError}
-          </p>
-        )}
-      </div>
-
-      {/* ── Line items ── */}
-
-      {/* Subtotal */}
+      {/* ── Subtotal excl. VAT ── */}
       <div className="flex justify-between font-body text-sm text-on-surface mb-2.5">
-        <span>Subtotal</span>
-        <span>€{(subtotal + discountAmt).toFixed(2)}</span>
+        <span className="text-on-surface/70">Subtotal excl. VAT</span>
+        <span>€{exVat.toFixed(2)}</span>
       </div>
 
-      {/* Discount — only shown when a coupon is applied */}
-      {discountAmt > 0 && (
-        <div className="flex justify-between font-body text-sm text-success mb-2.5">
-          <span>Discount ({Math.round(discountRate * 100)}%)</span>
-          <span>-€{discountAmt.toFixed(2)}</span>
-        </div>
-      )}
-
-      {/* VAT informational line — Greek standard VAT 24% included in prices */}
-      <div className="flex justify-between font-body text-xs text-on-surface/45 mb-4 pb-4 border-b border-border">
-        <span>VAT incl. (24%)</span>
-        <span>€{vatAmount.toFixed(2)}</span>
+      {/* ── VAT (24%) ── */}
+      <div className="flex justify-between font-body text-sm text-on-surface mb-4 pb-4 border-b border-border">
+        <span className="text-on-surface/70">VAT (24%)</span>
+        <span>€{vatAmt.toFixed(2)}</span>
       </div>
 
-      {/* Free shipping progress */}
-      <div className="mb-4">
+      {/* ── Free shipping progress ── */}
+      <div className="mb-3">
         {freeShipping ? (
           <p className="font-body text-xs text-success tracking-wide">
             Free shipping applied ✓
@@ -300,19 +246,70 @@ export function OrderSummary({
         )}
       </div>
 
-      {/* Shipping line */}
-      <div className="flex justify-between font-body text-sm text-on-surface mb-6 pb-6 border-b border-border">
-        <span>Shipping</span>
+      {/* ── Shipping line ── */}
+      <div className="flex justify-between font-body text-sm text-on-surface mb-5 pb-5 border-b border-border">
+        <span className="text-on-surface/70">Shipping</span>
         <span>{shipping === 0 ? 'Free' : '€4.99'}</span>
       </div>
 
-      {/* Grand Total */}
-      <div className="flex justify-between font-display text-2xl text-on-surface mb-6">
+      {/* ── Grand Total ── */}
+      <div className="flex justify-between font-display text-2xl text-on-surface mb-5 pb-5 border-b border-border">
         <span>GRAND TOTAL</span>
-        <span>€{total.toFixed(2)}</span>
+        <span>€{grandTotal.toFixed(2)}</span>
       </div>
 
-      {/* Order notes / special instructions */}
+      {/* ── Coupon code — sits below grand total (NOIR pattern) ── */}
+      <div className="mb-5">
+        <p className="font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2">
+          Coupon Code
+        </p>
+        {appliedCoupon ? (
+          <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
+            <p className="font-body text-xs text-success tracking-wide">
+              {appliedCoupon} · {Math.round(discountRate * 100)}% off ✓
+              {discountAmt > 0 && (
+                <span className="ml-1 text-on-surface/40 font-normal normal-case">
+                  (saved €{discountAmt.toFixed(2)})
+                </span>
+              )}
+            </p>
+            <button
+              type="button"
+              aria-label="Remove coupon"
+              onClick={onCouponRemove}
+              className="font-body text-[10px] text-on-surface/40 hover:text-on-surface transition-colors ml-3 uppercase tracking-widest shrink-0"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div className="flex">
+            <input
+              id="coupon-code"
+              type="text"
+              value={couponInput}
+              onChange={e => onCouponChange(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && onCouponApply()}
+              placeholder="Enter code"
+              className="flex-1 min-w-0 px-3 py-2.5 bg-on-surface/10 border border-border border-r-0 text-on-surface font-body text-[11px] uppercase tracking-widest placeholder:text-on-surface/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-on-surface/50"
+            />
+            <button
+              type="button"
+              onClick={onCouponApply}
+              className="px-4 bg-on-surface text-surface font-body text-[10px] tracking-[0.18em] uppercase transition-opacity hover:opacity-80 border border-on-surface whitespace-nowrap"
+            >
+              Apply
+            </button>
+          </div>
+        )}
+        {couponError && (
+          <p className="font-body text-[10px] text-destructive mt-1.5 tracking-wide">
+            {couponError}
+          </p>
+        )}
+      </div>
+
+      {/* ── Order notes / special instructions ── */}
       <div className="mb-6">
         <label
           htmlFor="order-notes"
@@ -330,7 +327,7 @@ export function OrderSummary({
         />
       </div>
 
-      {/* Place Order */}
+      {/* ── Place Order ── */}
       <button
         type="button"
         aria-label="Place order"
@@ -371,12 +368,17 @@ export default function CheckoutPage() {
     return sum + unitPrice * item.qty
   }, 0)
 
-  const discountRate  = appliedCoupon ? (VALID_COUPONS[appliedCoupon] ?? 0) : 0
-  const discountAmt   = rawSubtotal * discountRate
-  const subtotal      = rawSubtotal - discountAmt           // after coupon
-  const shipping      = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99
-  const vatAmount     = subtotal * (0.24 / 1.24)           // 24% Greek VAT included in prices
-  const total         = subtotal + shipping
+  // All prices are VAT-inclusive (Greek standard VAT 24%).
+  // afterDiscount = items total (VAT incl.) after coupon is applied.
+  // exVat  = afterDiscount / 1.24   — the net price excl. VAT
+  // vatAmt = afterDiscount − exVat  — the VAT component (0.24/1.24 of total)
+  const discountRate    = appliedCoupon ? (VALID_COUPONS[appliedCoupon] ?? 0) : 0
+  const discountAmt     = rawSubtotal * discountRate
+  const afterDiscount   = rawSubtotal - discountAmt
+  const exVat           = afterDiscount / 1.24
+  const vatAmt          = afterDiscount - exVat
+  const shipping        = afterDiscount >= FREE_SHIPPING_THRESHOLD ? 0 : 4.99
+  const grandTotal      = afterDiscount + shipping
 
   const variants = makeItemVariants(reduced)
 
@@ -443,13 +445,14 @@ export default function CheckoutPage() {
 
             {/* Summary column */}
             <OrderSummary
-              subtotal={subtotal}
+              exVat={exVat}
+              vatAmt={vatAmt}
+              afterDiscount={afterDiscount}
               discountAmt={discountAmt}
               discountRate={discountRate}
               appliedCoupon={appliedCoupon}
-              vatAmount={vatAmount}
               shipping={shipping}
-              total={total}
+              grandTotal={grandTotal}
               couponInput={couponInput}
               couponError={couponError}
               orderNotes={orderNotes}
