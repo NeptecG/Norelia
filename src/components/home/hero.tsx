@@ -126,7 +126,7 @@ export function Hero() {
         label="WOMEN"
         href="/women"
         bgSrc="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=960&h=1200&fit=crop&q=85"
-        objectPosition="center top"
+        objectPosition="center 20%"
         isHovered={hovered === 'women'}
         onHover={setHovered}
       />
@@ -135,6 +135,7 @@ export function Hero() {
         label="MEN"
         href="/men"
         bgSrc="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=960&h=1200&fit=crop&q=85"
+        objectPosition="center 15%"
         isHovered={hovered === 'men'}
         onHover={setHovered}
       />

@@ -183,43 +183,43 @@ export function ProductCard({ product, priority = false }: Props) {
           />
         </div>
 
-        {/* Color swatches — each navigates to product page with pre-selected color */}
-        <motion.div
-          variants={{
-            rest:  { opacity: 0 },
-            hover: { opacity: reducedMotion ? 0 : 1 },
-          }}
-          transition={{ duration: 0.2 }}
-          className="mt-2 flex gap-1.5 px-3"
-        >
-          {GCOLORS.map((c) => (
-            <button
-              key={c.name}
-              type="button"
-              aria-label={c.name}
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}${genderCtx ? `&from=${genderCtx}` : ''}`)
-              }}
-              style={{ '--swatch-color': c.hex } as React.CSSProperties}
-              className={cn(
-                'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer',
-                c.outline && 'ring-1 ring-border ring-offset-1',
-              )}
-            />
-          ))}
-        </motion.div>
-
-        {/* Info */}
-        <div className="mt-2 space-y-0.5 px-3">
-          <p className="font-body text-xs uppercase tracking-wider text-on-surface-muted">
+        {/* Info — padded block matching NOIR card layout */}
+        <div className="bg-surface px-4 pt-4 pb-5 space-y-[5px]">
+          <p className="font-body text-[11px] uppercase tracking-[0.12em] text-on-surface-muted">
             {catLabel(product.cat)}
           </p>
-          <p className="font-body text-sm font-semibold uppercase tracking-wide text-on-surface">
+          <p className="font-body text-[13px] font-semibold uppercase tracking-[0.06em] text-on-surface">
             {product.name}
           </p>
           <PriceTag price={product.price} salePrice={product.salePrice} />
+
+          {/* Color swatches — Norelia addition, fade in on hover */}
+          <motion.div
+            variants={{
+              rest:  { opacity: 0 },
+              hover: { opacity: reducedMotion ? 0 : 1 },
+            }}
+            transition={{ duration: 0.2 }}
+            className="flex gap-1.5 pt-1"
+          >
+            {GCOLORS.map((c) => (
+              <button
+                key={c.name}
+                type="button"
+                aria-label={c.name}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}${genderCtx ? `&from=${genderCtx}` : ''}`)
+                }}
+                style={{ '--swatch-color': c.hex } as React.CSSProperties}
+                className={cn(
+                  'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer',
+                  c.outline && 'ring-1 ring-border ring-offset-1',
+                )}
+              />
+            ))}
+          </motion.div>
         </div>
       </Link>
     </motion.div>
