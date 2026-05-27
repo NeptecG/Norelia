@@ -31,6 +31,20 @@ Next.js 15 App Router · TypeScript strict · Tailwind CSS + CSS variables · sh
 - `src/lib/utils.ts` — cn(), byGender(), getPrice(), getStock()
 - `src/lib/constants.ts` — BRAND, MARQUEE_TEXT, nav categories, thresholds
 
+## Deferred: Skeleton Loaders
+
+`loading.tsx` files are intentionally absent. All data in v1 comes from static arrays in `src/data/` — there is nothing async to skeleton over, and adding them now would just flash for a frame.
+
+**Add `loading.tsx` at these route segments when Supabase lands and real `await` calls appear:**
+- `src/app/men/loading.tsx`
+- `src/app/women/loading.tsx`
+- `src/app/men/[category]/loading.tsx`
+- `src/app/women/[category]/loading.tsx`
+- `src/app/product/[code]/loading.tsx`
+- `src/app/checkout/loading.tsx`
+
+Each should render a static skeleton that matches the page layout (card grid, product detail columns, etc.) using `animate-pulse` blocks and semantic token colours (`bg-surface-raised`). Mirror the grid column count and aspect ratios of the real content so there is no layout shift when data arrives.
+
 ## Design Rules
 
 Use semantic Tailwind only: `bg-surface`, `text-on-surface`, `bg-surface-alt`, `text-destructive`, `text-success`, `border-border`, etc.
