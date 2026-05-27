@@ -3,7 +3,7 @@ import { BRAND } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: `How ${BRAND}. collects, uses, and protects your personal data.`,
+  description: `How ${BRAND} collects, uses, and protects your personal data.`,
 }
 
 const SECTIONS = [
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-surface">
 
       {/* Dark hero band */}
-      <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
+      <section className="dark bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
             Legal
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
         <div className="max-w-[760px]">
 
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
-            {BRAND}. is committed to protecting your privacy. This policy explains what data we
+            {BRAND} is committed to protecting your privacy. This policy explains what data we
             collect, why we collect it, and how we keep it safe — in plain language.
           </p>
 

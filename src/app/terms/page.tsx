@@ -3,7 +3,7 @@ import { BRAND } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: `Terms and conditions for purchasing from ${BRAND}.`,
+  description: `Terms and conditions for purchasing from ${BRAND}`,
 }
 
 const SECTIONS = [
@@ -21,11 +21,11 @@ const SECTIONS = [
   },
   {
     title:  'Intellectual Property',
-    detail: `All designs, graphics, product names, and brand assets on this site are the exclusive property of ${BRAND}. and may not be reproduced, copied, or distributed without written permission. The site software and structure are also protected by copyright.`,
+    detail: `All designs, graphics, product names, and brand assets on this site are the exclusive property of ${BRAND} and may not be reproduced, copied, or distributed without written permission. The site software and structure are also protected by copyright.`,
   },
   {
     title:  'Limitation of Liability',
-    detail: `${BRAND}.'s total liability for any claim arising from a purchase is limited to the value of the order in question. We are not liable for indirect or consequential losses. We do not guarantee uninterrupted access to this website.`,
+    detail: `${BRAND}'s total liability for any claim arising from a purchase is limited to the value of the order in question. We are not liable for indirect or consequential losses. We do not guarantee uninterrupted access to this website.`,
   },
   {
     title:  'Changes to These Terms',
@@ -38,7 +38,7 @@ export default function TermsPage() {
     <main className="min-h-screen bg-surface">
 
       {/* Dark hero band */}
-      <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
+      <section className="dark bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
             Legal
@@ -55,7 +55,7 @@ export default function TermsPage() {
 
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
             Please read these terms carefully before ordering. By purchasing from{' '}
-            <strong className="text-on-surface">{BRAND}.</strong> you agree to be bound by the
+            <strong className="text-on-surface">{BRAND}</strong> you agree to be bound by the
             conditions set out below.
           </p>
 

@@ -16,13 +16,13 @@ const HOURS = [
 
 export default function OurStudioPage() {
   return (
-    <main className="min-h-screen bg-surface-alt text-on-surface">
+    <main className="dark min-h-screen bg-surface-alt text-on-surface">
 
       {/* ── Header ── */}
       <div className="max-w-[1440px] mx-auto pt-32 px-4 md:px-[60px]">
         <BackButton />
         <p className="font-body text-[10px] tracking-[0.28em] uppercase text-on-surface/40 mb-2">
-          {BRAND}. Streetwear
+          {BRAND} Streetwear
         </p>
         <h1 className="font-display text-[64px] tracking-[0.06em] text-on-surface leading-none mb-12">
           Our Studio
@@ -104,7 +104,7 @@ export default function OurStudioPage() {
       {/* ── Bottom strip ── */}
       <div className="border-t border-on-surface/10 py-5 text-center">
         <p className="font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/20">
-          {BRAND}. Streetwear · Preveza, Greece
+          {BRAND} Streetwear · Preveza, Greece
         </p>
       </div>
 

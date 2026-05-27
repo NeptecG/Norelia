@@ -29,7 +29,7 @@ export default function ReturnsPage() {
     <main className="min-h-screen bg-surface">
 
       {/* Dark hero band */}
-      <section className="bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
+      <section className="dark bg-surface-alt pt-32 pb-20 px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
             Policy

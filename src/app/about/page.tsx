@@ -30,14 +30,14 @@ export default function AboutPage() {
     <main className="min-h-screen bg-surface">
 
       {/* ── Dark hero band ── */}
-      <section className="bg-surface-alt pt-32 pb-[72px] px-4 md:px-[60px]">
+      <section className="dark bg-surface-alt pt-32 pb-[72px] px-4 md:px-[60px]">
         <div className="max-w-[1440px] mx-auto">
           <BackButton />
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-3">
             Est. 2024 · Preveza, Greece
           </p>
           <h1 className="font-display text-7xl md:text-[88px] tracking-[0.04em] text-on-surface leading-[0.95]">
-            About<br />{BRAND}.
+            About<br />{BRAND}
           </h1>
         </div>
       </section>
@@ -51,12 +51,12 @@ export default function AboutPage() {
             Born in the West of Greece.
           </p>
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
-            {BRAND}. started the way most things worth doing start — with frustration. We couldn&apos;t
+            {BRAND} started the way most things worth doing start — with frustration. We couldn&apos;t
             find streetwear that felt both premium and personal, both sharp and wearable in the heat of
             a Greek summer. So we made our own.
           </p>
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-5">
-            Founded in Preveza in 2024, {BRAND}. is a small independent label built around one idea:
+            Founded in Preveza in 2024, {BRAND} is a small independent label built around one idea:
             that where you&apos;re from shouldn&apos;t limit what you wear. We design pieces that can
             move from the streets of a quiet Greek town to the front row of anything — no apology
             required.
@@ -84,7 +84,7 @@ export default function AboutPage() {
             Still just getting started.
           </p>
           <p className="font-body text-sm text-on-surface-muted leading-[1.85] tracking-[0.02em]">
-            {BRAND}. is young, intentionally small, and not in a hurry. We&apos;d rather get it right
+            {BRAND} is young, intentionally small, and not in a hurry. We&apos;d rather get it right
             than get it fast. Follow along — the best is still ahead.
           </p>
         </div>
