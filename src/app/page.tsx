@@ -32,7 +32,7 @@ export default function HomePage() {
       />
       <FeaturedCarousel
         title="ON SALE"
-        subtitle="LIMITED OFFERS"
+        subtitle="LIMITED TIME OFFERS"
         products={saleProducts}
         viewAllHref="/men?filter=SALES"
       />
