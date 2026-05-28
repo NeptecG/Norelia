@@ -9,10 +9,9 @@ vi.mock('@/navigation', () => ({
   usePathname: () => '/',
 }))
 
-vi.mock('next-intl', async (importOriginal) => {
-  const actual = await importOriginal()
+vi.mock('next-intl', async () => {
   return {
-    ...actual,
+    NextIntlClientProvider: ({ children }: { children: React.ReactNode }) => children,
     useLocale: () => 'en',
   }
 })
