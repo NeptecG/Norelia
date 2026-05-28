@@ -125,9 +125,9 @@
     --color-border-val:           #212121;
     --color-border-subtle-val:    #e0e0e0;
 
-    /* Font variable bridges */
-    --font-display-var: var(--font-display-latin, Impact, sans-serif);
-    --font-body-var: "Helvetica Neue", sans-serif;
+    /* Font variable bridges — Noto Sans for both display and body, all locales */
+    --font-display-var: var(--font-noto, Impact, sans-serif);
+    --font-body-var: var(--font-noto, "Helvetica Neue", sans-serif);
   }
 
   .dark {
@@ -172,15 +172,6 @@
     --color-success-val:          #22c55e;
     --color-border-val:           rgba(255, 255, 255, 0.15);
     --color-border-subtle-val:    rgba(255, 255, 255, 0.08);
-  }
-
-  /* Switch display font to Oswald for Greek locale */
-  html[lang="el"] {
-    --font-display-var: var(--font-display-greek, Impact, sans-serif);
-  }
-
-  html[lang="en"] {
-    --font-display-var: var(--font-display-latin, Impact, sans-serif);
   }
 
   * {

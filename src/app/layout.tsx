@@ -1,29 +1,14 @@
 import type { Metadata } from 'next'
-import { Bebas_Neue, Oswald, DM_Sans } from 'next/font/google'
+import { Noto_Sans } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import './globals.css'
 import { BRAND } from '@/lib/constants'
 
-const bebasNeue = Bebas_Neue({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--font-display-latin',
-  display: 'swap',
-})
-
-const oswald = Oswald({
-  weight: ['400', '500'],
-  // 'greek' subset is not available for Oswald in Google Fonts — latin covers the glyphs used
-  subsets: ['latin'],
-  variable: '--font-display-greek',
-  display: 'swap',
-})
-
-const dmSans = DM_Sans({
-  // 'greek' subset is not available for DM Sans in Google Fonts — latin-ext covers extended chars
-  subsets: ['latin', 'latin-ext'],
+// Noto Sans — full Latin + Greek coverage, used for both display and body across all locales
+const notoSans = Noto_Sans({
+  subsets: ['latin', 'greek'],
   weight: ['300', '400', '500', '700'],
-  variable: '--font-body',
+  variable: '--font-noto',
   display: 'swap',
 })
 
@@ -38,7 +23,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale}
-      className={`${bebasNeue.variable} ${oswald.variable} ${dmSans.variable}`}
+      className={`${notoSans.variable}`}
     >
       <body className="font-body bg-surface text-on-surface antialiased">
         {children}
