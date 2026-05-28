@@ -6,19 +6,11 @@ vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@/stores/cart-store', () => ({ useCartStore: vi.fn() }))
 vi.mock('@/stores/favorites-store', () => ({ useFavoritesStore: vi.fn() }))
 vi.mock('@/data/products', () => ({ PRODUCTS: [] }))
-vi.mock('next/link', () => ({
-  default: ({ href, children, onClick, ...rest }: { href: string; children: React.ReactNode; onClick?: () => void; [key: string]: unknown }) =>
-    <a href={href} onClick={onClick} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
-}))
 vi.mock('next/image', () => ({
   default: ({ alt, ...rest }: { alt: string; [key: string]: unknown }) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img alt={alt} {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)} />
   ),
-}))
-vi.mock('next/navigation', () => ({
-  usePathname: () => '/',
-  useRouter: () => ({ push: vi.fn() }),
 }))
 vi.mock('next-intl', async (importOriginal) => {
   const actual = await importOriginal<typeof import('next-intl')>()

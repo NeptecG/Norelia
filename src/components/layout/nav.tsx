@@ -388,7 +388,7 @@ export function Nav() {
 
           {/* Search */}
           <button
-            aria-label="Search"
+            aria-label={t('searchLabel')}
             onClick={() => { setSearchOpen(v => !v); setSearchQuery(''); setMobMenuOpen(false) }}
             className="text-on-surface/82 flex items-center"
           >
