@@ -68,6 +68,7 @@
     "free": "Free",
     "selectSize": "Select a size to add to cart",
     "inStock": "{n} left",
+    "inStockFull": "In Stock",
     "measurementsCm": "measurements in cm"
   },
   "SidePanel": {

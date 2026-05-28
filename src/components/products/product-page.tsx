@@ -324,7 +324,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
               ) : stock <= 5 ? (
                 <span className="text-destructive">{t('inStock', { n: stock })}</span>
               ) : (
-                <span className="text-success">In Stock</span>
+                <span className="text-success">{t('inStockFull')}</span>
               )
             )}
           </div>
@@ -360,7 +360,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-6 pt-6 border-t border-border flex flex-wrap gap-4">
             <span className="flex items-center gap-1.5 font-body text-[9px] text-on-surface-muted uppercase tracking-wide">
               <Truck size={12} />
-              Free shipping €60+
+              {t('free')} shipping €60+
             </span>
             <span className="flex items-center gap-1.5 font-body text-[9px] text-on-surface-muted uppercase tracking-wide">
               <Shield size={12} />

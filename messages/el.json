@@ -68,6 +68,7 @@
     "free": "Δωρεάν",
     "selectSize": "Επίλεξε μέγεθος για να προσθέσεις στο καλάθι",
     "inStock": "{n} διαθέσιμα",
+    "inStockFull": "Σε Απόθεμα",
     "measurementsCm": "μετρήσεις σε cm"
   },
   "SidePanel": {
