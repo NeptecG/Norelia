@@ -1,4 +1,5 @@
 export const BRAND = 'NORELIA.'
+export const CONTACT_EMAIL = 'hello@norelia.com'
 
 export const MARQUEE_TEXT = 'NORELIA. STUDIO ✦ PREMIUM STREETWEAR ✦ CUSTOM PRINTING ✦ SS 2026 ✦ DTG & EMBROIDERY ✦ FREE SHIPPING OVER €60 ✦'
 
