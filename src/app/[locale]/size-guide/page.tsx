@@ -49,9 +49,16 @@ export default async function SizeGuidePage({ searchParams }: Props) {
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <BackButton />
-        <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-8">
+        <p className="font-body text-[10px] tracking-[0.3em] text-on-surface/40 mb-3 uppercase">
+          {t('eyebrow')}
+        </p>
+        <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-4">
           {t('heading')}
         </h1>
+
+        <p className="font-body text-[13px] text-on-surface-muted leading-[1.8] tracking-[0.02em] mb-8 max-w-[600px]">
+          {t('intro')}
+        </p>
 
         {/* Gender tab strip */}
         <div className="flex gap-2 mb-4">
@@ -108,7 +115,25 @@ export default async function SizeGuidePage({ searchParams }: Props) {
           </div>
         </div>
 
-        <p className="mt-6 font-body text-xs text-on-surface-muted">All measurements in cm.</p>
+        {/* How to measure */}
+        <div className="mt-10 border-t border-border pt-8 max-w-[600px]">
+          <p className="font-display text-[13px] tracking-[0.2em] text-on-surface mb-5 uppercase">
+            {t('measureTitle')}
+          </p>
+          <ul className="space-y-2">
+            <li className="font-body text-[12px] text-on-surface-muted leading-[1.7]">{t('measureChest')}</li>
+            <li className="font-body text-[12px] text-on-surface-muted leading-[1.7]">{t('measureWaist')}</li>
+            <li className="font-body text-[12px] text-on-surface-muted leading-[1.7]">{t('measureHip')}</li>
+          </ul>
+          <Link
+            href="/studio"
+            className="inline-block mt-5 font-body text-[11px] tracking-[0.15em] text-on-surface-muted hover:text-on-surface transition-colors"
+          >
+            {t('studioLink')}
+          </Link>
+        </div>
+
+        <p className="mt-6 font-body text-xs text-on-surface-muted">{t('measureNote')}</p>
       </div>
     </main>
   )

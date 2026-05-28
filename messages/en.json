@@ -244,7 +244,10 @@
     "section5Title": "Limitation of Liability",
     "section5Detail": "{brand}'s total liability for any claim arising from a purchase is limited to the value of the order in question. We are not liable for indirect or consequential losses. We do not guarantee uninterrupted access to this website.",
     "section6Title": "Changes to These Terms",
-    "section6Detail": "We may update these terms at any time. The version in force at the time of your order applies to that order. Continued use of the site after a terms update constitutes acceptance of the new terms. This version was last updated in May 2026."
+    "section6Detail": "We may update these terms at any time. The version in force at the time of your order applies to that order. Continued use of the site after a terms update constitutes acceptance of the new terms. This version was last updated in May 2026.",
+    "intro": "Please read these terms carefully before ordering. By purchasing from {brand} you agree to be bound by the conditions set out below.",
+    "noteStrong": "Questions? ",
+    "note": "Contact us at hello@norelia.com. We aim to respond to all enquiries within one business day."
   },
   "Privacy": {
     "eyebrow": "Legal",
@@ -263,7 +266,8 @@
     "tshirtsTab": "T-SHIRTS",
     "hoodiesTab": "HOODIES",
     "zippersTab": "ZIPPERS",
-    "studioLink": "Design your own →"
+    "studioLink": "Design your own →",
+    "measureNote": "All measurements in cm."
   },
   "GenderPage": {
     "men": "MEN",

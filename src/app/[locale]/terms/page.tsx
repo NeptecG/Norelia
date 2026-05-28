@@ -32,9 +32,7 @@ export default async function TermsPage() {
         <div className="max-w-[760px]">
 
           <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-16">
-            Please read these terms carefully before ordering. By purchasing from{' '}
-            <strong className="text-on-surface">{BRAND}</strong> you agree to be bound by the
-            conditions set out below.
+            {t('intro', { brand: BRAND })}
           </p>
 
           {/* Section 1 */}
@@ -81,8 +79,8 @@ export default async function TermsPage() {
 
           <div className="bg-surface-raised px-6 py-5 mt-4">
             <p className="font-body text-[12px] text-on-surface-muted leading-[1.8]">
-              <strong className="text-on-surface">Questions? </strong>
-              Contact us at hello@norelia.com. We aim to respond to all enquiries within one business day.
+              <strong className="text-on-surface">{t('noteStrong')}</strong>
+              {t('note')}
             </p>
           </div>
 
