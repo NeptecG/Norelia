@@ -1,6 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { IntlWrapper } from '@/test-utils/intl-wrapper'
 
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@base-ui/react/dialog', () => ({
@@ -22,12 +23,12 @@ import { CheckoutComingSoonModal } from './checkout-coming-soon-modal'
 describe('CheckoutComingSoonModal', () => {
   it('renders nothing when closed', () => {
     vi.mocked(useUIStore).mockReturnValue({ showCheckoutModal: false, setShowCheckoutModal: vi.fn() } as ReturnType<typeof useUIStore>)
-    render(<CheckoutComingSoonModal />)
+    render(<IntlWrapper><CheckoutComingSoonModal /></IntlWrapper>)
     expect(screen.queryByRole('dialog')).toBeNull()
   })
   it('renders dialog when open', () => {
     vi.mocked(useUIStore).mockReturnValue({ showCheckoutModal: true, setShowCheckoutModal: vi.fn() } as ReturnType<typeof useUIStore>)
-    render(<CheckoutComingSoonModal />)
+    render(<IntlWrapper><CheckoutComingSoonModal /></IntlWrapper>)
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
 })

@@ -1,5 +1,7 @@
+import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
+import { IntlWrapper } from '@/test-utils/intl-wrapper'
 
 vi.mock('motion/react', () => ({
   motion: {
@@ -21,12 +23,12 @@ describe('ScrollToTop', () => {
   })
 
   it('is not visible when scrollY is 0', () => {
-    render(<ScrollToTop />)
+    render(<IntlWrapper><ScrollToTop /></IntlWrapper>)
     expect(screen.queryByRole('button', { name: /scroll to top/i })).toBeNull()
   })
 
   it('becomes visible after scrolling past 300px', () => {
-    render(<ScrollToTop />)
+    render(<IntlWrapper><ScrollToTop /></IntlWrapper>)
     act(() => {
       Object.defineProperty(window, 'scrollY', { value: 400 })
       window.dispatchEvent(new Event('scroll'))
@@ -37,7 +39,7 @@ describe('ScrollToTop', () => {
   it('calls window.scrollTo on click', () => {
     const scrollTo = vi.fn()
     window.scrollTo = scrollTo as typeof window.scrollTo
-    render(<ScrollToTop />)
+    render(<IntlWrapper><ScrollToTop /></IntlWrapper>)
     act(() => {
       Object.defineProperty(window, 'scrollY', { value: 400 })
       window.dispatchEvent(new Event('scroll'))

@@ -1,6 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { IntlWrapper } from '@/test-utils/intl-wrapper'
 
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@base-ui/react/dialog', () => ({
@@ -22,12 +23,12 @@ import { SignInModal } from './sign-in-modal'
 describe('SignInModal', () => {
   it('renders nothing when showSignIn is false', () => {
     vi.mocked(useUIStore).mockReturnValue({ showSignIn: false, setShowSignIn: vi.fn() } as ReturnType<typeof useUIStore>)
-    render(<SignInModal />)
+    render(<IntlWrapper><SignInModal /></IntlWrapper>)
     expect(screen.queryByRole('dialog')).toBeNull()
   })
   it('renders dialog when showSignIn is true', () => {
     vi.mocked(useUIStore).mockReturnValue({ showSignIn: true, setShowSignIn: vi.fn() } as ReturnType<typeof useUIStore>)
-    render(<SignInModal />)
+    render(<IntlWrapper><SignInModal /></IntlWrapper>)
     expect(screen.getByRole('dialog')).toBeTruthy()
   })
 })

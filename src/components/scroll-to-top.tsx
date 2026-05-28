@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { ChevronUp } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false)
   const prefersReduced = useReducedMotion()
+  const t = useTranslations('ScrollToTop')
 
   useEffect(() => {
     function onScroll() {
@@ -37,7 +39,7 @@ export function ScrollToTop() {
           exit="hidden"
           transition={{ duration: 0.2 }}
           onClick={handleClick}
-          aria-label="Scroll to top"
+          aria-label={t('label')}
           className={cn(
             'fixed bottom-6 right-6 z-40 group',
             'w-11 h-11 flex items-center justify-center',
@@ -56,7 +58,7 @@ export function ScrollToTop() {
             'text-on-surface/70',
             'opacity-0 group-hover:opacity-100 transition-opacity duration-150',
           )}>
-            TOP
+            {t('top')}
           </span>
         </motion.button>
       )}

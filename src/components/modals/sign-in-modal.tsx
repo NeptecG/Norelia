@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { useUIStore } from '@/stores/ui-store'
@@ -9,6 +10,7 @@ import { useUIStore } from '@/stores/ui-store'
 export function SignInModal() {
   const { showSignIn, setShowSignIn } = useUIStore()
   const [tab, setTab] = useState<'signin' | 'register'>('signin')
+  const t = useTranslations('SignInModal')
 
   return (
     <Dialog open={showSignIn} onOpenChange={(open) => { if (!open) { setShowSignIn(false); setTab('signin') } }}>
@@ -17,11 +19,11 @@ export function SignInModal() {
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4">
           <h2 className="font-display text-2xl tracking-[0.14em] text-on-surface">
-            {tab === 'signin' ? 'SIGN IN' : 'CREATE ACCOUNT'}
+            {tab === 'signin' ? t('signInTitle') : t('registerTitle')}
           </h2>
           <button
             type="button"
-            aria-label="Close"
+            aria-label={t('close')}
             onClick={() => setShowSignIn(false)}
             className="text-on-surface/50 hover:text-on-surface transition-colors"
           >
@@ -31,19 +33,19 @@ export function SignInModal() {
 
         {/* Tabs */}
         <div className="flex border-b border-border mx-6">
-          {(['signin', 'register'] as const).map((t) => (
+          {(['signin', 'register'] as const).map((tabKey) => (
             <button
-              key={t}
+              key={tabKey}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => setTab(tabKey)}
               className={cn(
                 'flex-1 pb-2 font-body text-[10px] tracking-[0.18em] uppercase transition-colors',
-                tab === t
+                tab === tabKey
                   ? 'text-on-surface border-b-2 border-on-surface -mb-px'
                   : 'text-on-surface/40 hover:text-on-surface/70',
               )}
             >
-              {t === 'signin' ? 'Sign In' : 'Create Account'}
+              {tabKey === 'signin' ? t('signInTab') : t('registerTab')}
             </button>
           ))}
         </div>
@@ -54,13 +56,13 @@ export function SignInModal() {
             <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t('emailPlaceholder')}
                 autoComplete="email"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t('passwordPlaceholder')}
                 autoComplete="current-password"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
@@ -69,33 +71,33 @@ export function SignInModal() {
                   type="button"
                   className="font-body text-[10px] tracking-[0.08em] text-on-surface/40 hover:text-on-surface/70 transition-colors"
                 >
-                  Forgot your password?
+                  {t('forgotPassword')}
                 </button>
               </div>
               <button
                 type="submit"
                 className="mt-1 bg-on-surface text-surface w-full py-3 font-body text-[10px] tracking-[0.2em] uppercase hover:opacity-90 transition-opacity"
               >
-                Sign In
+                {t('signInButton')}
               </button>
             </form>
           ) : (
             <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
               <input
                 type="text"
-                placeholder="Full Name"
+                placeholder={t('namePlaceholder')}
                 autoComplete="name"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
               <input
                 type="email"
-                placeholder="Email"
+                placeholder={t('emailPlaceholder')}
                 autoComplete="email"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
               <input
                 type="password"
-                placeholder="Password"
+                placeholder={t('passwordPlaceholder')}
                 autoComplete="new-password"
                 className="bg-on-surface/10 border-none outline-none text-on-surface placeholder:text-on-surface/40 px-4 py-3 w-full font-body text-[12px]"
               />
@@ -103,13 +105,13 @@ export function SignInModal() {
                 type="submit"
                 className="mt-1 bg-on-surface text-surface w-full py-3 font-body text-[10px] tracking-[0.2em] uppercase hover:opacity-90 transition-opacity"
               >
-                Create Account
+                {t('createButton')}
               </button>
             </form>
           )}
 
           <p className="mt-4 text-center font-body text-[10px] text-on-surface/30 tracking-wide">
-            UI only · authentication coming soon
+            {t('comingSoon')}
           </p>
         </div>
 
