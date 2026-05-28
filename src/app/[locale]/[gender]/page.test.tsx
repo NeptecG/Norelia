@@ -9,9 +9,13 @@ vi.mock('@/data/products', () => ({
     { id: 3, name: 'GAMMA TEE', cat: 'TSHIRTS', gender: 'women', code: '200001', description: 'desc', price: '€45', salePrice: 30, tag: '', img: '/c.jpg' },
   ],
 }))
-vi.mock('next/navigation', () => ({ notFound: vi.fn(() => { throw new Error('NOTFOUND') }), useRouter: () => ({ push: vi.fn() }), usePathname: () => '/men' }))
-vi.mock('next/link', () => ({
-  default: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a>,
+vi.mock('next/navigation', () => ({ notFound: vi.fn(() => { throw new Error('NOTFOUND') }) }))
+vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('@/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+  usePathname: () => '/men',
+  Link: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) =>
+    <a href={href} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
 }))
 vi.mock('next/image', () => ({
   default: ({ alt }: { alt: string }) => React.createElement('img', { alt }),
