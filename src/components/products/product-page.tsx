@@ -360,15 +360,15 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-6 pt-6 border-t border-border flex flex-wrap gap-4">
             <span className="flex items-center gap-1.5 font-body text-[9px] text-on-surface-muted uppercase tracking-wide">
               <Truck size={12} />
-              {t('free')} shipping €60+
+              {t('freeShippingBadge')}
             </span>
             <span className="flex items-center gap-1.5 font-body text-[9px] text-on-surface-muted uppercase tracking-wide">
               <Shield size={12} />
-              Secure checkout
+              {t('secureCheckout')}
             </span>
             <span className="flex items-center gap-1.5 font-body text-[9px] text-on-surface-muted uppercase tracking-wide">
               <RotateCcw size={12} />
-              30-day returns
+              {t('returnsPolicy')}
             </span>
           </div>
         </div>

@@ -65,7 +65,7 @@ export function ProductCard({ product, priority = false }: Props) {
     const sizeStock = getStock(product.id, size)
     const cartQty   = cartItems[product.id] ?? 0
     if (cartQty >= sizeStock) {
-      showToast(t('noMoreStock', { size, name: product.name }), 'remove')
+      showToast(t('noMoreStock', { size, name: product.name }), 'remove', 'cart')
       setSizePickerOpen(false)
       return
     }

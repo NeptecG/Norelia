@@ -69,7 +69,10 @@
     "selectSize": "Επίλεξε μέγεθος για να προσθέσεις στο καλάθι",
     "inStock": "{n} διαθέσιμα",
     "inStockFull": "Σε Απόθεμα",
-    "measurementsCm": "μετρήσεις σε cm"
+    "measurementsCm": "μετρήσεις σε cm",
+    "freeShippingBadge": "Δωρεάν αποστολή €60+",
+    "secureCheckout": "Ασφαλής αγορά",
+    "returnsPolicy": "Επιστροφές 30 ημερών"
   },
   "SidePanel": {
     "cart": "ΤΟ ΚΑΛΑΘΙ ΜΟΥ",
