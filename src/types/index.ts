@@ -70,6 +70,7 @@ export interface ToastState {
   msg:     string
   visible: boolean
   type:    'add' | 'remove'
+  kind?:   'cart' | 'fav'
 }
 
 export interface DesignState {

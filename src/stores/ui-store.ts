@@ -11,7 +11,7 @@ interface UIStore {
   toggleSidePanel:      (panel: 'cart' | 'favorites') => void
 
   toast:                ToastState
-  showToast:            (msg: string, type: 'add' | 'remove') => void
+  showToast:            (msg: string, type: 'add' | 'remove', kind?: 'cart' | 'fav') => void
 
   showSignIn:           boolean
   setShowSignIn:        (val: boolean) => void
@@ -57,11 +57,11 @@ export const useUIStore = create<UIStore>()(
       setSidePanel:    (panel) => set({ sidePanel: panel }),
       toggleSidePanel: (panel) => set(s => ({ sidePanel: s.sidePanel === panel ? null : panel })),
 
-      toast: { msg: '', visible: false, type: 'add' },
-      showToast: (msg, type) => {
+      toast: { msg: '', visible: false, type: 'add', kind: undefined },
+      showToast: (msg, type, kind) => {
         // Cancel any in-flight hide timer so rapid toasts each get the full duration
         if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null }
-        set({ toast: { msg, visible: true, type } })
+        set({ toast: { msg, visible: true, type, kind } })
         _toastTimer = setTimeout(
           () => { set(s => ({ toast: { ...s.toast, visible: false } })); _toastTimer = null },
           TOAST_DURATION_MS,
