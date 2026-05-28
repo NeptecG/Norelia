@@ -1,8 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
-import { BRAND } from '@/lib/constants'
 import { Nav }           from '@/components/layout/nav'
 import { SiteFooter }    from '@/components/layout/site-footer'
 import { NewsletterBar } from '@/components/layout/newsletter-bar'
