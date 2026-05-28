@@ -20,10 +20,24 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/',
   useRouter: () => ({ push: vi.fn() }),
 }))
+vi.mock('next-intl', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('next-intl')>()
+  return {
+    ...actual,
+    useTranslations: () => (key: string) => key,
+  }
+})
+vi.mock('@/navigation', () => ({
+  usePathname: () => '/',
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  Link: ({ href, children, onClick, ...rest }: { href: string; children: React.ReactNode; onClick?: () => void; [key: string]: unknown }) =>
+    <a href={href} onClick={onClick} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
+}))
 
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
+import { IntlWrapper } from '@/test-utils/intl-wrapper'
 import { Nav } from './nav'
 
 const DEFAULT_STORES = () => {
@@ -44,36 +58,36 @@ beforeEach(DEFAULT_STORES)
 
 describe('Nav', () => {
   it('renders the brand name NORELIA.', () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     expect(screen.getAllByText('NORELIA.').length).toBeGreaterThan(0)
   })
 
   it('renders a link to home (/)', () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     const homeLinks = document.querySelectorAll('a[href="/"]')
     expect(homeLinks.length).toBeGreaterThan(0)
   })
 
   it('renders a link to /men', () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     const menLinks = document.querySelectorAll('a[href="/men"]')
     expect(menLinks.length).toBeGreaterThan(0)
   })
 
   it('renders a link to /women', () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     const womenLinks = document.querySelectorAll('a[href="/women"]')
     expect(womenLinks.length).toBeGreaterThan(0)
   })
 
   it('renders favorites and cart buttons', () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     expect(screen.getByLabelText(/favorites/i)).toBeTruthy()
     expect(screen.getByLabelText(/cart/i)).toBeTruthy()
   })
 
   it('shows Men dropdown on mouseenter', async () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     const menWrapper = document.querySelector('[aria-haspopup="menu"]') as HTMLElement
     fireEvent.mouseEnter(menWrapper)
     // MEN_NAV_CATS links should appear — check for at least one category link
@@ -81,7 +95,7 @@ describe('Nav', () => {
   })
 
   it('closes Men dropdown on Escape key', async () => {
-    render(<Nav />)
+    render(<IntlWrapper><Nav /></IntlWrapper>)
     const menWrapper = document.querySelector('[aria-haspopup="menu"]') as HTMLElement
     fireEvent.mouseEnter(menWrapper)
     fireEvent.keyDown(menWrapper, { key: 'Escape' })
@@ -94,8 +108,8 @@ describe('Nav', () => {
       toggleSidePanel: vi.fn(),
       setShowSignIn,
     } as ReturnType<typeof useUIStore>)
-    render(<Nav />)
-    fireEvent.click(screen.getByLabelText(/sign in/i))
+    render(<IntlWrapper><Nav /></IntlWrapper>)
+    fireEvent.click(screen.getByLabelText(/signInLabel/i))
     expect(setShowSignIn).toHaveBeenCalledWith(true)
   })
 })

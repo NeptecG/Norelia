@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import { Heart, ShoppingBag, X, Search } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { useTranslations } from 'next-intl'
+import { Link, usePathname } from '@/navigation'
+import { LanguageSwitcher } from '@/components/layout/language-switcher'
 import { cn } from '@/lib/utils'
 import { BRAND, MEN_NAV_CATS, WOMEN_NAV_CATS, NAV_CAT_TO_SLUG } from '@/lib/constants'
 import { PRODUCTS } from '@/data/products'
@@ -29,6 +30,7 @@ function useIsMobile() {
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
 export function Nav() {
+  const t = useTranslations('Nav')
   const isMobile = useIsMobile()
   const shouldReduceMotion = useReducedMotion()
 
@@ -120,9 +122,9 @@ export function Nav() {
             <Link
               href="/"
               aria-current={pathname === '/' ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
             >
-              Home
+              {t('home')}
               <span className={cn(
                 'absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]',
                 pathname === '/' ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
@@ -141,9 +143,9 @@ export function Nav() {
                 aria-expanded={activeMenu === 'men'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/men') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
               >
-                Men
+                {t('men')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' || pathname.startsWith('/men') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
               <AnimatePresence>
@@ -190,9 +192,9 @@ export function Nav() {
                 aria-expanded={activeMenu === 'women'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/women') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
               >
-                Women
+                {t('women')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' || pathname.startsWith('/women') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
               </Link>
               <AnimatePresence>
@@ -231,9 +233,9 @@ export function Nav() {
             <Link
               href="/studio"
               aria-current={pathname.startsWith('/studio') ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
             >
-              Design Your Own
+              {t('designYourOwn')}
               <span className={cn(
                 'absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]',
                 pathname.startsWith('/studio') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100',
@@ -252,12 +254,12 @@ export function Nav() {
                   ref={searchInput}
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
+                  placeholder={t('searchPlaceholder')}
                   className="absolute right-[calc(100%+8px)] top-1/2 -translate-y-1/2 w-[220px] bg-on-surface/13 border-none outline-none font-body text-[10px] tracking-[0.1em] text-on-surface placeholder:text-on-surface/40 px-2.5 h-7 z-[601]"
                 />
               )}
               <button
-                aria-label="Search products"
+                aria-label={t('searchLabel')}
                 onClick={() => { setSearchOpen(v => !v); setSearchQuery('') }}
                 className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
               >
@@ -273,7 +275,7 @@ export function Nav() {
                 <div className="absolute top-[calc(100%+14px)] right-0 w-[300px] bg-surface border border-border-subtle shadow-lg z-[600]">
                   {searchResults.length === 0 ? (
                     <p className="font-body text-[10px] text-on-surface-muted tracking-[0.1em] text-center py-3.5">
-                      No results for &ldquo;{searchQuery}&rdquo;
+                      {t('noResults')} &ldquo;{searchQuery}&rdquo;
                     </p>
                   ) : searchResults.map(p => (
                     <Link
@@ -307,7 +309,7 @@ export function Nav() {
 
             {/* Favorites */}
             <button
-              aria-label={`Favorites${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
+              aria-label={totalFavCount > 0 ? t('favoritesWithCount', { count: totalFavCount }) : t('favoritesLabel')}
               onClick={() => toggleSidePanel('favorites')}
               className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
             >
@@ -327,7 +329,7 @@ export function Nav() {
 
             {/* Cart */}
             <button
-              aria-label={`Cart${totalCartCount > 0 ? ` (${totalCartCount} items)` : ''}`}
+              aria-label={totalCartCount > 0 ? t('cartWithCount', { count: totalCartCount }) : t('cartLabel')}
               onClick={() => toggleSidePanel('cart')}
               className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
             >
@@ -350,12 +352,16 @@ export function Nav() {
 
             {/* Sign In */}
             <button
-              aria-label="Sign in to your account"
+              aria-label={t('signInLabel')}
               onClick={() => setShowSignIn(true)}
               className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface/80 border border-on-surface/68 px-3.5 py-1.5 hover:text-on-surface hover:border-on-surface/70 transition-colors"
             >
-              Sign In
+              {t('signIn')}
             </button>
+
+            {/* Language switcher */}
+            <div className="w-px h-3.5 bg-on-surface/15" />
+            <LanguageSwitcher />
 
           </div>
 
@@ -391,7 +397,7 @@ export function Nav() {
 
           {/* Favorites */}
           <button
-            aria-label={`Favorites${totalFavCount > 0 ? ` (${totalFavCount})` : ''}`}
+            aria-label={totalFavCount > 0 ? t('favoritesWithCount', { count: totalFavCount }) : t('favoritesLabel')}
             onClick={() => toggleSidePanel('favorites')}
             className="relative text-on-surface/82"
           >
@@ -405,7 +411,7 @@ export function Nav() {
 
           {/* Cart */}
           <button
-            aria-label={`Cart${totalCartCount > 0 ? ` (${totalCartCount} items)` : ''}`}
+            aria-label={totalCartCount > 0 ? t('cartWithCount', { count: totalCartCount }) : t('cartLabel')}
             onClick={() => toggleSidePanel('cart')}
             className="relative text-on-surface/82"
           >
@@ -419,7 +425,7 @@ export function Nav() {
 
           {/* Hamburger */}
           <button
-            aria-label="Menu"
+            aria-label={t('menuLabel')}
             onClick={() => { setMobMenuOpen(v => { if (v) setMobExpanded(null); return !v }); setSearchOpen(false) }}
             className="text-on-surface/82 flex items-center justify-center w-[22px] h-[22px]"
           >
@@ -444,7 +450,7 @@ export function Nav() {
               ref={searchInput}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search products..."
+              placeholder={t('searchPlaceholder')}
               className="flex-1 bg-transparent border-none outline-none font-body text-[11px] tracking-wide text-on-surface placeholder:text-on-surface/40 py-1"
             />
             {searchQuery && (
@@ -456,7 +462,7 @@ export function Nav() {
           {sq.length > 0 && (
             <div className="mt-2 border-t border-border pt-2">
               {searchResults.length === 0 ? (
-                <p className="font-body text-[10px] text-on-surface/35 tracking-[0.1em] py-2">No results for &ldquo;{searchQuery}&rdquo;</p>
+                <p className="font-body text-[10px] text-on-surface/35 tracking-[0.1em] py-2">{t('noResults')} &ldquo;{searchQuery}&rdquo;</p>
               ) : searchResults.map(p => (
                 <Link
                   key={p.id}
@@ -485,14 +491,14 @@ export function Nav() {
       {mobMenuOpen && (
         <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2">
 
-          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Home</Link>
+          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('home')}</Link>
 
           {/* Men accordion */}
           <button
             onClick={() => setMobExpanded(e => e === 'men' ? null : 'men')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
+            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7"
           >
-            <span>Men</span>
+            <span>{t('men')}</span>
             <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'men' ? '−' : '+'}</span>
           </button>
           {mobExpanded === 'men' && MEN_NAV_CATS.map(cat => (
@@ -509,9 +515,9 @@ export function Nav() {
           {/* Women accordion */}
           <button
             onClick={() => setMobExpanded(e => e === 'women' ? null : 'women')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
+            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7"
           >
-            <span>Women</span>
+            <span>{t('women')}</span>
             <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'women' ? '−' : '+'}</span>
           </button>
           {mobExpanded === 'women' && WOMEN_NAV_CATS.map(cat => (
@@ -525,14 +531,18 @@ export function Nav() {
             </Link>
           ))}
 
-          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">Design Your Own</Link>
+          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('designYourOwn')}</Link>
 
           <button
             onClick={() => { setShowSignIn(true); setMobMenuOpen(false); setMobExpanded(null) }}
             className="block mt-7 w-full border border-on-surface/35 font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/75 px-6 py-3 text-left"
           >
-            Sign In
+            {t('signIn')}
           </button>
+
+          <div className="mt-5 flex items-center gap-3">
+            <LanguageSwitcher />
+          </div>
 
         </div>
       )}
