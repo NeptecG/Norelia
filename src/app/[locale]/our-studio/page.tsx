@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { BRAND } from '@/lib/constants'
 import { BackButton } from '@/components/layout/back-button'
 import { cn } from '@/lib/utils'
@@ -8,13 +9,9 @@ export const metadata: Metadata = {
   description: `Visit the ${BRAND} studio in Preveza, Greece. We design, print, and ship from here.`,
 }
 
-const HOURS = [
-  { day: 'Mon – Fri', hrs: '09:00 – 17:00' },
-  { day: 'Saturday',  hrs: '10:00 – 14:00' },
-  { day: 'Sunday',    hrs: 'Closed' },
-] as const
+export default async function OurStudioPage() {
+  const t = await getTranslations('OurStudio')
 
-export default function OurStudioPage() {
   return (
     <main className="dark min-h-screen bg-surface-alt text-on-surface">
 
@@ -22,10 +19,10 @@ export default function OurStudioPage() {
       <div className="max-w-[1440px] mx-auto pt-32 px-4 md:px-[60px]">
         <BackButton />
         <p className="font-body text-[10px] tracking-[0.28em] uppercase text-on-surface/40 mb-2">
-          {BRAND} Premium Streetwear
+          {t('eyebrow', { brand: BRAND })}
         </p>
         <h1 className="font-display text-[64px] tracking-[0.06em] text-on-surface leading-none mb-12">
-          Our Studio
+          {t('heading')}
         </h1>
       </div>
 
@@ -36,7 +33,7 @@ export default function OurStudioPage() {
         <div className="flex-[1_1_520px] min-w-[320px]">
           <div className="w-full aspect-[4/3] border border-on-surface/10 overflow-hidden">
             <iframe
-              title="Norelia studio location, Preveza, Greece"
+              title={t('mapTitle')}
               src="https://maps.google.com/maps?q=38.971454,20.746212&z=17&output=embed"
               width="100%"
               height="100%"
@@ -51,7 +48,7 @@ export default function OurStudioPage() {
             rel="noopener noreferrer"
             className="inline-block mt-3 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 hover:text-on-surface/70 transition-colors underline"
           >
-            Open in Google Maps ↗
+            {t('mapsLink')}
           </a>
         </div>
 
@@ -61,9 +58,9 @@ export default function OurStudioPage() {
           {/* Address */}
           <div className="mb-9">
             <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
-              Address
+              {t('addressLabel')}
             </p>
-            {['G. Gianniwth 216', 'Preveza 48100', 'Greece'].map(l => (
+            {([t('address1'), t('address2'), t('address3')] as string[]).map(l => (
               <p key={l} className="font-body text-[13px] text-on-surface/85 tracking-[0.04em] leading-loose">
                 {l}
               </p>
@@ -73,14 +70,18 @@ export default function OurStudioPage() {
           {/* Hours */}
           <div className="mb-9">
             <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
-              Studio Hours
+              {t('hoursLabel')}
             </p>
-            {HOURS.map(({ day, hrs }) => (
+            {([
+              { day: t('monFri'),   hrs: t('monFriHours') },
+              { day: t('saturday'), hrs: t('saturdayHours') },
+              { day: t('sunday'),   hrs: t('closed') },
+            ] as { day: string; hrs: string }[]).map(({ day, hrs }) => (
               <div key={day} className="flex justify-between mb-1.5">
                 <span className="font-body text-[12px] text-on-surface/55 tracking-[0.04em]">{day}</span>
                 <span className={cn(
                   'font-body text-[12px] tracking-[0.04em]',
-                  hrs === 'Closed' ? 'text-on-surface/30' : 'text-on-surface/85',
+                  hrs === t('closed') ? 'text-on-surface/30' : 'text-on-surface/85',
                 )}>{hrs}</span>
               </div>
             ))}
@@ -89,9 +90,9 @@ export default function OurStudioPage() {
           {/* Contact */}
           <div>
             <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/40 mb-3">
-              Get in Touch
+              {t('contactLabel')}
             </p>
-            {['hello@norelia.com', '+30 26820 00000'].map(l => (
+            {(['hello@norelia.com', '+30 26820 00000'] as string[]).map(l => (
               <p key={l} className="font-body text-[13px] text-on-surface/85 tracking-[0.04em] leading-loose">
                 {l}
               </p>
@@ -104,7 +105,7 @@ export default function OurStudioPage() {
       {/* ── Bottom strip ── */}
       <div className="border-t border-on-surface/10 py-5 text-center">
         <p className="font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/20">
-          {BRAND} Premium Streetwear · Preveza, Greece
+          {t('strip', { brand: BRAND })}
         </p>
       </div>
 

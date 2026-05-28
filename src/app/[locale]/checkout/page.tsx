@@ -3,7 +3,8 @@
 import type React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import { Trash2 } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
@@ -305,6 +306,7 @@ const VALID_COUPONS: Record<string, number> = {
 }
 
 export default function CheckoutPage() {
+  const t = useTranslations('CheckoutPage')
   const { cartLines, removeFromCart, decrementCart, addToCart } = useCartStore()
   const { setShowCheckoutModal } = useUIStore()
   const reduced = useReducedMotion() ?? false
@@ -357,7 +359,7 @@ export default function CheckoutPage() {
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
 
         {/* Page heading */}
-        <h1 className="font-display text-6xl text-on-surface leading-none mb-10">YOUR CART</h1>
+        <h1 className="font-display text-6xl text-on-surface leading-none mb-10">{t('title')}</h1>
 
         {isEmpty ? (
           /* ── Empty state ── */

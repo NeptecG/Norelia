@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { BRAND } from '@/lib/constants'
 import { BackButton } from '@/components/layout/back-button'
 
@@ -34,7 +35,9 @@ const SECTIONS = [
   },
 ] as const
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const t = await getTranslations('Privacy')
+
   return (
     <main className="min-h-screen bg-surface">
 
@@ -43,10 +46,10 @@ export default function PrivacyPage() {
         <div className="max-w-[1440px] mx-auto">
           <BackButton />
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
-            Legal
+            {t('eyebrow')}
           </p>
-          <h1 className="font-display text-7xl md:text-[7rem] text-on-surface leading-none">
-            PRIVACY<br />POLICY
+          <h1 className="font-display text-7xl md:text-[7rem] text-on-surface leading-none whitespace-pre-line">
+            {t('heading')}
           </h1>
         </div>
       </section>

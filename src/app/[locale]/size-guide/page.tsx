@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/navigation'
 import { SIZE_DATA } from '@/data/sizes'
 import { SizeTable } from '@/components/size-guide/size-table'
 import { MaleFigure } from '@/components/size-guide/male-figure'
@@ -27,23 +28,29 @@ function isValidGarment(v: string | undefined): v is ValidGarment {
 }
 
 export default async function SizeGuidePage({ searchParams }: Props) {
-  const params   = await searchParams
-  const gender   = isValidGender(params.gender)   ? params.gender   : 'men'
-  const garment  = isValidGarment(params.garment) ? params.garment  : 'tshirt'
-  const rows     = SIZE_DATA[garment][gender]
+  const t       = await getTranslations('SizeGuide')
+  const params  = await searchParams
+  const gender  = isValidGender(params.gender)   ? params.gender   : 'men'
+  const garment = isValidGarment(params.garment) ? params.garment  : 'tshirt'
+  const rows    = SIZE_DATA[garment][gender]
 
   const garmentTabs: { label: string; key: ValidGarment }[] = [
-    { label: 'T-SHIRTS', key: 'tshirt'  },
-    { label: 'HOODIES',  key: 'hoodie'  },
-    { label: 'ZIPPERS',  key: 'zipper'  },
+    { label: t('tshirtsTab'), key: 'tshirt' },
+    { label: t('hoodiesTab'), key: 'hoodie' },
+    { label: t('zippersTab'), key: 'zipper' },
   ]
+
+  const genderLabels: Record<ValidGender, string> = {
+    men:   t('menTitle').toUpperCase(),
+    women: t('womenTitle').toUpperCase(),
+  }
 
   return (
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <BackButton />
         <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-8">
-          SIZE GUIDE
+          {t('heading')}
         </h1>
 
         {/* Gender tab strip */}
@@ -61,7 +68,7 @@ export default async function SizeGuidePage({ searchParams }: Props) {
                     : 'font-body text-xs tracking-[0.14em] uppercase px-4 py-2 text-on-surface border border-border'
                 }
               >
-                {g.toUpperCase()}
+                {genderLabels[g]}
               </Link>
             )
           })}

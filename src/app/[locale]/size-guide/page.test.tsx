@@ -5,6 +5,17 @@ import { render, screen } from '@testing-library/react'
 // Mocks
 // ---------------------------------------------------------------------------
 
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string, values?: Record<string, unknown>) => {
+    if (!values) return key
+    return Object.entries(values).reduce(
+      (str, [k, v]) => str.replace(`{${k}}`, String(v)),
+      key,
+    )
+  },
+  getMessages: async () => ({}),
+  getLocale: async () => 'en',
+}))
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
@@ -66,23 +77,24 @@ async function renderPage(searchParams: Record<string, string> = {}) {
 // ---------------------------------------------------------------------------
 
 describe('SizeGuidePage', () => {
-  it('renders SIZE GUIDE heading', async () => {
+  it('renders the heading key', async () => {
     await renderPage()
     expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
-    expect(screen.getByText('SIZE GUIDE')).toBeTruthy()
+    expect(screen.getByText('heading')).toBeTruthy()
   })
 
-  it('renders MEN tab as active by default', async () => {
+  it('renders MEN tab as active by default (uses menTitle key uppercased)', async () => {
     await renderPage()
-    const menLink = screen.getAllByText('MEN').find(
+    // mock returns 'menTitle', .toUpperCase() gives 'MENTITLE'
+    const menLink = screen.getAllByText('MENTITLE').find(
       (el) => el.closest('a')?.getAttribute('aria-current') === 'page',
     )
     expect(menLink).toBeTruthy()
   })
 
-  it('renders T-SHIRTS garment tab as active by default', async () => {
+  it('renders T-SHIRTS garment tab as active by default (uses tshirtsTab key)', async () => {
     await renderPage()
-    const tshirtsLink = screen.getAllByText('T-SHIRTS').find(
+    const tshirtsLink = screen.getAllByText('tshirtsTab').find(
       (el) => el.closest('a')?.getAttribute('aria-current') === 'page',
     )
     expect(tshirtsLink).toBeTruthy()
@@ -93,9 +105,9 @@ describe('SizeGuidePage', () => {
     expect(screen.getByText('96–100')).toBeTruthy()
   })
 
-  it('renders WOMEN tab as active when gender=women', async () => {
+  it('renders WOMEN tab as active when gender=women (uses womenTitle key uppercased)', async () => {
     await renderPage({ gender: 'women' })
-    const womenLink = screen.getAllByText('WOMEN').find(
+    const womenLink = screen.getAllByText('WOMENTITLE').find(
       (el) => el.closest('a')?.getAttribute('aria-current') === 'page',
     )
     expect(womenLink).toBeTruthy()

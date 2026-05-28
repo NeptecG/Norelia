@@ -1,6 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string, values?: Record<string, unknown>) => {
+    if (!values) return key
+    return Object.entries(values).reduce(
+      (str, [k, v]) => str.replace(`{${k}}`, String(v)),
+      key,
+    )
+  },
+  getMessages: async () => ({}),
+  getLocale: async () => 'en',
+}))
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
@@ -12,28 +23,26 @@ vi.mock('@/navigation', () => ({
 import AboutPage from './page'
 
 describe('AboutPage', () => {
-  it('renders the About NORELIA heading', async () => {
+  it('renders the About heading', async () => {
     render(await AboutPage())
     const h1 = screen.getByRole('heading', { level: 1 })
     expect(h1).toBeTruthy()
-    expect(h1.textContent).toMatch(/About/i)
-    expect(h1.textContent).toMatch(/NORELIA/i)
   })
 
-  it('renders the Born in the West of Greece intro', async () => {
+  it('renders the intro title key', async () => {
     render(await AboutPage())
-    expect(screen.getByText('Born in the West of Greece.')).toBeTruthy()
+    expect(screen.getByText('introTitle')).toBeTruthy()
   })
 
-  it('renders the three pillars', async () => {
+  it('renders the three pillar title keys', async () => {
     render(await AboutPage())
-    expect(screen.getByText('Design First')).toBeTruthy()
-    expect(screen.getByText('Made to Last')).toBeTruthy()
-    expect(screen.getByText('Your Way')).toBeTruthy()
+    expect(screen.getByText('pillar01Title')).toBeTruthy()
+    expect(screen.getByText('pillar02Title')).toBeTruthy()
+    expect(screen.getByText('pillar03Title')).toBeTruthy()
   })
 
-  it('renders the closing section', async () => {
+  it('renders the closing title key', async () => {
     render(await AboutPage())
-    expect(screen.getByText('Still just getting started.')).toBeTruthy()
+    expect(screen.getByText('closingTitle')).toBeTruthy()
   })
 })

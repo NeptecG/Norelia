@@ -2,12 +2,15 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-vi.mock('@/stores/cart-store', () => ({ useCartStore: vi.fn() }))
-vi.mock('@/stores/ui-store',   () => ({ useUIStore: vi.fn() }))
-vi.mock('next/link', () => ({
-  default: ({ href, children }: { href: string; children: React.ReactNode }) =>
+vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('@/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
+  usePathname: () => '/',
+  Link: ({ href, children }: { href: string; children: React.ReactNode }) =>
     <a href={href}>{children}</a>,
 }))
+vi.mock('@/stores/cart-store', () => ({ useCartStore: vi.fn() }))
+vi.mock('@/stores/ui-store',   () => ({ useUIStore: vi.fn() }))
 vi.mock('next/image', () => ({
   default: ({ alt, src }: { alt: string; src: string }) =>
     // eslint-disable-next-line @next/next/no-img-element
@@ -79,9 +82,10 @@ async function renderPage() {
 // ---------------------------------------------------------------------------
 
 describe('CheckoutPage', () => {
-  it('renders "YOUR CART" heading', async () => {
+  it('renders the title key heading', async () => {
     await renderPage()
-    expect(screen.getByRole('heading', { name: /your cart/i })).toBeTruthy()
+    // t('title') returns 'title' from the mock
+    expect(screen.getByRole('heading', { name: /title/i })).toBeTruthy()
   })
 
   it('shows empty-cart message and Continue Shopping link when cart is empty', async () => {

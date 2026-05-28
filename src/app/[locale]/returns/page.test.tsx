@@ -1,6 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string, values?: Record<string, unknown>) => {
+    if (!values) return key
+    return Object.entries(values).reduce(
+      (str, [k, v]) => str.replace(`{${k}}`, String(v)),
+      key,
+    )
+  },
+  getMessages: async () => ({}),
+  getLocale: async () => 'en',
+}))
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
@@ -12,21 +23,20 @@ vi.mock('@/navigation', () => ({
 import ReturnsPage from './page'
 
 describe('ReturnsPage', () => {
-  it('renders the RETURNS heading', async () => {
+  it('renders the heading key', async () => {
     render(await ReturnsPage())
     const h1 = screen.getByRole('heading', { level: 1 })
     expect(h1).toBeTruthy()
-    expect(h1.textContent).toMatch(/RETURNS/i)
-    expect(h1.textContent).toMatch(/EXCHANGES/i)
+    expect(h1.textContent).toMatch(/heading/i)
   })
 
-  it('renders Return Policy section', async () => {
+  it('renders section1Title key', async () => {
     render(await ReturnsPage())
-    expect(screen.getByText('Return Policy')).toBeTruthy()
+    expect(screen.getByText('section1Title')).toBeTruthy()
   })
 
-  it('renders Exchanges section', async () => {
+  it('renders section3Title key', async () => {
     render(await ReturnsPage())
-    expect(screen.getByText('Exchanges')).toBeTruthy()
+    expect(screen.getByText('section3Title')).toBeTruthy()
   })
 })
