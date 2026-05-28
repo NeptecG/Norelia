@@ -5,9 +5,12 @@ import { render, screen } from '@testing-library/react'
 // Mocks
 // ---------------------------------------------------------------------------
 
-vi.mock('next/navigation', () => ({
-  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('@/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
   usePathname: () => '/',
+  Link: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) =>
+    <a href={href} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
 }))
 
 vi.mock('@/data/sizes', () => ({
@@ -39,24 +42,6 @@ vi.mock('@/data/sizes', () => ({
   },
   SIZES: ['S', 'M', 'L', 'XL', '2XL', '3XL'],
   SIZE_CHART_IMG: '/size-chart.jpg',
-}))
-
-vi.mock('next/link', () => ({
-  default: ({
-    href,
-    children,
-    className,
-    'aria-current': ariaCurrent,
-  }: {
-    href: string
-    children: React.ReactNode
-    className?: string
-    'aria-current'?: React.AriaAttributes['aria-current']
-  }) => (
-    <a href={href} className={className} aria-current={ariaCurrent}>
-      {children}
-    </a>
-  ),
 }))
 
 // Lightweight SVG figure mocks

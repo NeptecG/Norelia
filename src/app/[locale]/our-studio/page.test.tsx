@@ -1,9 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
-vi.mock('next/navigation', () => ({
-  useRouter:   () => ({ back: vi.fn(), push: vi.fn() }),
+vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('@/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
   usePathname: () => '/',
+  Link: ({ href, children, ...rest }: { href: string; children: React.ReactNode; [key: string]: unknown }) =>
+    <a href={href} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
 }))
 
 import OurStudioPage from './page'
