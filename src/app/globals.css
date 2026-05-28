@@ -126,7 +126,7 @@
     --color-border-subtle-val:    #e0e0e0;
 
     /* Font variable bridges */
-    --font-display-var: Impact, sans-serif;
+    --font-display-var: var(--font-display-latin, Impact, sans-serif);
     --font-body-var: "Helvetica Neue", sans-serif;
   }
 
@@ -172,6 +172,15 @@
     --color-success-val:          #22c55e;
     --color-border-val:           rgba(255, 255, 255, 0.15);
     --color-border-subtle-val:    rgba(255, 255, 255, 0.08);
+  }
+
+  /* Switch display font to Oswald for Greek locale */
+  html[lang="el"] {
+    --font-display-var: var(--font-display-greek, Impact, sans-serif);
+  }
+
+  html[lang="en"] {
+    --font-display-var: var(--font-display-latin, Impact, sans-serif);
   }
 
   * {

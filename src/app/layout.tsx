@@ -1,26 +1,27 @@
 import type { Metadata } from 'next'
-import { Bebas_Neue, DM_Sans } from 'next/font/google'
+import { Bebas_Neue, Oswald, DM_Sans } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
 import './globals.css'
 import { BRAND } from '@/lib/constants'
-import { Nav }           from '@/components/layout/nav'
-import { SiteFooter }    from '@/components/layout/site-footer'
-import { NewsletterBar } from '@/components/layout/newsletter-bar'
-import { SidePanel }     from '@/components/layout/side-panel'
-import { Toast }         from '@/components/layout/toast'
-import { GDPRBanner }    from '@/components/layout/gdpr-banner'
-import { SignInModal }             from '@/components/modals/sign-in-modal'
-import { CheckoutComingSoonModal } from '@/components/modals/checkout-coming-soon-modal'
-import { ScrollToTop }             from '@/components/scroll-to-top'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
   subsets: ['latin'],
-  variable: '--font-display',
+  variable: '--font-display-latin',
+  display: 'swap',
+})
+
+const oswald = Oswald({
+  weight: ['400', '500'],
+  // 'greek' subset is not available for Oswald in Google Fonts — latin covers the glyphs used
+  subsets: ['latin'],
+  variable: '--font-display-greek',
   display: 'swap',
 })
 
 const dmSans = DM_Sans({
-  subsets: ['latin'],
+  // 'greek' subset is not available for DM Sans in Google Fonts — latin-ext covers extended chars
+  subsets: ['latin', 'latin-ext'],
   weight: ['300', '400', '500', '700'],
   variable: '--font-body',
   display: 'swap',
@@ -32,21 +33,15 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://norelia.com'),
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable}`}>
+    <html
+      lang={locale}
+      className={`${bebasNeue.variable} ${oswald.variable} ${dmSans.variable}`}
+    >
       <body className="font-body bg-surface text-on-surface antialiased">
-        <Nav />
-        <main>{children}</main>
-        <NewsletterBar />
-        <SiteFooter />
-        {/* Client-only overlays rendered after main content */}
-        <SidePanel />
-        <Toast />
-        <GDPRBanner />
-        <SignInModal />
-        <CheckoutComingSoonModal />
-        <ScrollToTop />
+        {children}
       </body>
     </html>
   )
