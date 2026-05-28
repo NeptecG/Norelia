@@ -1,0 +1,266 @@
+{
+  "Nav": {
+    "home": "Home",
+    "men": "Men",
+    "women": "Women",
+    "designYourOwn": "Design Your Own",
+    "signIn": "Sign In",
+    "signInLabel": "Sign in to your account",
+    "searchLabel": "Search products",
+    "cartLabel": "Cart",
+    "cartWithCount": "Cart ({count} items)",
+    "favoritesLabel": "Favorites",
+    "favoritesWithCount": "Favorites ({count})",
+    "searchPlaceholder": "Search products...",
+    "noResults": "No results for",
+    "menuLabel": "Menu",
+    "closePanel": "Close"
+  },
+  "Hero": {
+    "srHeading": "NORELIA. Premium Streetwear",
+    "shopEyebrow": "SHOP",
+    "womenLabel": "WOMEN",
+    "menLabel": "MEN",
+    "womenAriaLabel": "Shop Women",
+    "menAriaLabel": "Shop Men"
+  },
+  "Home": {
+    "newInTitle": "NEW IN COLLECTION",
+    "newInSubtitle": "JUST ARRIVED",
+    "trendingTitle": "TRENDING",
+    "trendingSubtitle": "THIS SEASON",
+    "onSaleTitle": "ON SALE",
+    "onSaleSubtitle": "LIMITED TIME OFFERS"
+  },
+  "FeaturedCarousel": {
+    "viewAll": "View All",
+    "goToPage": "Go to page {n}"
+  },
+  "ProductGrid": {
+    "nonFound": "NONE FOUND",
+    "comingSoon": "COMING SOON",
+    "styles": "styles"
+  },
+  "ProductCard": {
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "quickAdd": "QUICK ADD",
+    "outOfStock": "OUT OF STOCK",
+    "new": "NEW",
+    "addedToFavorites": "Added to favorites",
+    "removedFromFavorites": "Removed from favorites",
+    "noMoreStock": "No more {size} left for {name}",
+    "sizeAdded": "{name}, {size} added"
+  },
+  "ProductPage": {
+    "sizeLabel": "Size",
+    "addToCart": "Add to Cart",
+    "addedToCart": "{name} added to cart",
+    "addToFavorites": "Add to Favourites",
+    "removeFromFavorites": "Remove from Favourites",
+    "addedToFavorites": "{name} saved to favourites",
+    "removedFromFavorites": "{name} removed from favourites",
+    "soldOut": "Sold Out",
+    "sizeGuide": "Size Guide",
+    "free": "Free",
+    "selectSize": "Select a size to add to cart",
+    "inStock": "{n} left",
+    "measurementsCm": "measurements in cm"
+  },
+  "SidePanel": {
+    "cart": "MY CART",
+    "favorites": "FAVORITES",
+    "close": "Close panel",
+    "cartEmpty": "Your cart is empty.",
+    "noSaved": "No saved items yet.",
+    "saveForLater": "Save for later",
+    "removeFromSaved": "Remove from saved",
+    "removeItem": "Remove item",
+    "orderTotal": "Order Total",
+    "freeShipping": "Free shipping on your order!",
+    "addMoreForFreeShipping": "Add €{amount} more for free shipping",
+    "checkout": "Proceed to Checkout",
+    "removedFromCart": "{name} removed from cart",
+    "addedToFavorites": "{name} added to favorites",
+    "removedFromFavorites": "{name} removed from favorites"
+  },
+  "NewsletterBar": {
+    "headline": "Stay in the loop.",
+    "subtitle": "Early access to drops & exclusive offers",
+    "placeholder": "your@email.com",
+    "subscribe": "Subscribe",
+    "success": "✓ You're in."
+  },
+  "GDPRBanner": {
+    "title": "We use cookies",
+    "body": "We use cookies to improve your browsing experience and analyse site traffic. By clicking Accept All, you consent to our use of cookies in accordance with EU regulations (GDPR). You can decline non-essential cookies without affecting your shopping experience.",
+    "acceptAll": "Accept All",
+    "decline": "Decline",
+    "acceptLabel": "Accept all cookies",
+    "declineLabel": "Decline non-essential cookies"
+  },
+  "SiteFooter": {
+    "premiumStreetware": "Premium Streetwear",
+    "information": "Information",
+    "about": "About Us",
+    "sizeGuide": "Size Guide",
+    "shipping": "Shipping",
+    "returns": "Returns & Exchanges",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact",
+    "hours": "Mon–Fri, 9:00–17:00",
+    "saturday": "Saturday, 10:00–14:00",
+    "ourStudio": "Our Studio",
+    "payment": "Payment Methods",
+    "copyright": "© {year} Norelia. All rights reserved.",
+    "tagline": "Premium Streetwear · Preveza, Greece",
+    "secure": "Secure Payments · SSL Encrypted",
+    "instagramLabel": "Norelia on Instagram",
+    "xLabel": "Norelia on X",
+    "youtubeLabel": "Norelia on YouTube"
+  },
+  "SignInModal": {
+    "signInTitle": "SIGN IN",
+    "registerTitle": "CREATE ACCOUNT",
+    "signInTab": "Sign In",
+    "registerTab": "Create Account",
+    "emailPlaceholder": "Email",
+    "passwordPlaceholder": "Password",
+    "namePlaceholder": "Full Name",
+    "forgotPassword": "Forgot your password?",
+    "signInButton": "Sign In",
+    "createButton": "Create Account",
+    "close": "Close",
+    "comingSoon": "UI only · authentication coming soon"
+  },
+  "CheckoutComingSoonModal": {
+    "title": "CHECKOUT",
+    "body": "We're getting the checkout experience ready. Thank you for your patience.",
+    "close": "Close"
+  },
+  "CheckoutPage": {
+    "title": "My Shopping Cart"
+  },
+  "ScrollToTop": {
+    "label": "Scroll to top",
+    "top": "TOP"
+  },
+  "BackButton": {
+    "label": "← Back"
+  },
+  "NotFound": {
+    "heading": "Page Not Found",
+    "body": "The page you're looking for doesn't exist.",
+    "back": "Back to {brand}"
+  },
+  "About": {
+    "eyebrow": "Est. 2024 · Preveza, Greece",
+    "heading": "About\n{brand}",
+    "introTitle": "Born in the West of Greece.",
+    "intro1": "{brand} started the way most things worth doing start, with frustration. We couldn't find streetwear that felt both premium and personal, both sharp and wearable in the heat of a Greek summer. So we made our own.",
+    "intro2": "Founded in Preveza in 2024, {brand} is a small independent label built around one idea: that where you're from shouldn't limit what you wear. We design pieces that can move from the streets of a quiet Greek town to the front row of anything, no apology required.",
+    "intro3": "Everything is designed in-house. Every drop is intentional. We don't chase trends. We make things we'd actually wear, and trust that the right people will find them.",
+    "pillar01Title": "Design First",
+    "pillar01Body": "Every piece starts with a sketch, not a sales target. We design for the garment, then figure out the rest.",
+    "pillar02Title": "Made to Last",
+    "pillar02Body": "We use heavyweight, high-quality fabrics because fast fashion isn't something we believe in. Buy less, wear more.",
+    "pillar03Title": "Your Way",
+    "pillar03Body": "Our studio lets you customise any piece: colours, prints, placement. If you're going to wear something, it should be yours.",
+    "closingTitle": "Still just getting started.",
+    "closingBody": "{brand} is young, intentionally small, and not in a hurry. We'd rather get it right than get it fast. Follow along. The best is still ahead."
+  },
+  "OurStudio": {
+    "eyebrow": "{brand} Premium Streetwear",
+    "heading": "Our Studio",
+    "addressLabel": "Address",
+    "address1": "G. Gianniwth 216",
+    "address2": "Preveza 48100",
+    "address3": "Greece",
+    "hoursLabel": "Studio Hours",
+    "monFri": "Mon – Fri",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "monFriHours": "09:00 – 17:00",
+    "saturdayHours": "10:00 – 14:00",
+    "closed": "Closed",
+    "contactLabel": "Get in Touch",
+    "mapsLink": "Open in Google Maps ↗",
+    "mapTitle": "Norelia studio location, Preveza, Greece",
+    "strip": "{brand} Premium Streetwear · Preveza, Greece"
+  },
+  "Shipping": {
+    "eyebrow": "Delivery",
+    "heading": "SHIPPING",
+    "intro": "We ship every NORELIA. order with care. Whether you're across town or across borders, here's everything you need to know before and after you place your order.",
+    "method1Title": "Standard Shipping",
+    "method1Time": "3–5 Business Days",
+    "method1Price": "Free on orders over €{threshold} · €4.90 below",
+    "method1Detail": "Available for all destinations within Greece. Orders are processed within 1–2 business days and dispatched via ACS Courier or ELTA. You'll receive a tracking number by email once your order ships.",
+    "method2Title": "Express Shipping",
+    "method2Time": "1–2 Business Days",
+    "method2Price": "€8.90",
+    "method2Detail": "Need it faster? Select express at checkout for next-day or 2-day delivery within Greece. Orders placed before 13:00 are dispatched same day.",
+    "method3Title": "International Shipping",
+    "method3Time": "5–12 Business Days",
+    "method3Price": "From €12.90",
+    "method3Detail": "We ship to all EU countries and select international destinations. Delivery times and rates vary by destination. Customs duties and import taxes may apply and are the responsibility of the recipient.",
+    "noteStrong": "Please note: ",
+    "note": "Delivery times are estimates and may vary during peak periods, public holidays, or due to circumstances beyond our control. Once an order has been dispatched, NORELIA. is not responsible for delays caused by the courier."
+  },
+  "Returns": {
+    "eyebrow": "Policy",
+    "heading": "RETURNS &\nEXCHANGES",
+    "intro": "We want you to love what you ordered. If something isn't right, here's how we make it right.",
+    "section1Title": "Return Policy",
+    "section1Detail": "You have 14 days from the date of delivery to request a return. Items must be unworn, unwashed, and in their original condition with all tags attached. Sale items and customised pieces from our Design Your Own studio are final sale and cannot be returned.",
+    "section2Title": "How to Return",
+    "section2Detail": "Email us at hello@norelia.com with your order number and reason for return. We'll respond within 1–2 business days with a return authorisation and instructions. Once we receive and inspect the item, your refund will be processed within 5–7 business days to your original payment method.",
+    "section3Title": "Exchanges",
+    "section3Detail": "Want a different size or colour? We offer free exchanges on full-price items within 14 days of delivery. Simply contact us at hello@norelia.com and we'll sort it out. Exchanges are subject to stock availability.",
+    "section4Title": "Damaged or Incorrect Items",
+    "section4Detail": "If your order arrives damaged or you received the wrong item, please contact us within 48 hours of delivery with photos. We'll arrange a replacement or full refund at no cost to you. No questions asked.",
+    "noteStrong": "Return shipping costs ",
+    "note": "are the responsibility of the customer unless the item is faulty or incorrect. We recommend using a tracked service as we cannot be held responsible for returns lost in transit."
+  },
+  "Terms": {
+    "eyebrow": "Legal",
+    "heading": "TERMS OF\nSERVICE",
+    "section1Title": "Acceptance of Terms",
+    "section1Detail": "By placing an order on this website you confirm that you are at least 18 years old and agree to these terms in full. These terms are governed by Greek law and any disputes will be subject to the exclusive jurisdiction of the courts of Preveza, Greece.",
+    "section2Title": "Orders & Pricing",
+    "section2Detail": "All prices are displayed in Euros (€) and include VAT where applicable. We reserve the right to refuse or cancel any order, including after confirmation, if we detect fraud, pricing errors, or stock discrepancies. In such cases you will receive a full refund. Promotional codes are single-use and cannot be combined.",
+    "section3Title": "Custom Orders",
+    "section3Detail": "Orders placed through the Design Your Own studio are made to order. By uploading your artwork you confirm you own the rights to use it commercially and that it does not infringe third-party intellectual property. NORELIA. accepts no liability for content uploaded by customers.",
+    "section4Title": "Intellectual Property",
+    "section4Detail": "All designs, graphics, product names, and brand assets on this site are the exclusive property of {brand} and may not be reproduced, copied, or distributed without written permission. The site software and structure are also protected by copyright.",
+    "section5Title": "Limitation of Liability",
+    "section5Detail": "{brand}'s total liability for any claim arising from a purchase is limited to the value of the order in question. We are not liable for indirect or consequential losses. We do not guarantee uninterrupted access to this website.",
+    "section6Title": "Changes to These Terms",
+    "section6Detail": "We may update these terms at any time. The version in force at the time of your order applies to that order. Continued use of the site after a terms update constitutes acceptance of the new terms. This version was last updated in May 2026."
+  },
+  "Privacy": {
+    "eyebrow": "Legal",
+    "heading": "PRIVACY\nPOLICY"
+  },
+  "SizeGuide": {
+    "heading": "SIZE GUIDE",
+    "eyebrow": "Fit",
+    "intro": "All NORELIA. garments are sized XS through XL. Measure yourself and use the table below to find your best fit.",
+    "measureTitle": "How to measure",
+    "measureChest": "Chest: Measure horizontally around the fullest part of your chest.",
+    "measureWaist": "Waist: Measure around the narrowest part of your torso.",
+    "measureHip": "Hips: Measure around the fullest part.",
+    "menTitle": "Men",
+    "womenTitle": "Women",
+    "tshirtsTab": "T-SHIRTS",
+    "hoodiesTab": "HOODIES",
+    "zippersTab": "ZIPPERS",
+    "studioLink": "Design your own →"
+  },
+  "GenderPage": {
+    "men": "MEN",
+    "women": "WOMEN",
+    "styles": "styles"
+  }
+}
