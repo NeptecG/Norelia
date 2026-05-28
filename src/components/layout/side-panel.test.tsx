@@ -1,6 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { IntlWrapper } from '@/test-utils/intl-wrapper'
 
 // Mock stores
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
@@ -26,15 +27,9 @@ vi.mock('next/image', () => ({
   default: ({ alt, ...rest }: { alt: string; [key: string]: unknown }) => <img alt={alt} {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)} />,
 }))
 
-// Mock next/link
-vi.mock('next/link', () => ({
-  default: ({ href, children, onClick, ...rest }: { href: string; children: React.ReactNode; onClick?: () => void; [key: string]: unknown }) =>
-    <a href={href} onClick={onClick} {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>,
-}))
-
-// Mock next/navigation
+// Mock @/navigation (locale-aware router)
 const mockPush = vi.fn()
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mockPush }) }))
+vi.mock('@/navigation', () => ({ useRouter: () => ({ push: mockPush }) }))
 
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
@@ -66,7 +61,7 @@ beforeEach(() => {
 
 describe('SidePanel', () => {
   it('renders nothing when sidePanel is null', () => {
-    const { container } = render(<SidePanel />)
+    const { container } = render(<IntlWrapper><SidePanel /></IntlWrapper>)
     expect(container.firstChild).toBeNull()
   })
 
@@ -74,7 +69,7 @@ describe('SidePanel', () => {
     vi.mocked(useUIStore).mockReturnValue({
       ...DEFAULT_UI, sidePanel: 'cart',
     } as ReturnType<typeof useUIStore>)
-    render(<SidePanel />)
+    render(<IntlWrapper><SidePanel /></IntlWrapper>)
     expect(screen.getByText('MY CART')).toBeTruthy()
   })
 
@@ -82,7 +77,7 @@ describe('SidePanel', () => {
     vi.mocked(useUIStore).mockReturnValue({
       ...DEFAULT_UI, sidePanel: 'favorites',
     } as ReturnType<typeof useUIStore>)
-    render(<SidePanel />)
+    render(<IntlWrapper><SidePanel /></IntlWrapper>)
     expect(screen.getByText('FAVORITES')).toBeTruthy()
   })
 
@@ -91,7 +86,7 @@ describe('SidePanel', () => {
     vi.mocked(useUIStore).mockReturnValue({
       ...DEFAULT_UI, sidePanel: 'cart', setSidePanel,
     } as ReturnType<typeof useUIStore>)
-    render(<SidePanel />)
+    render(<IntlWrapper><SidePanel /></IntlWrapper>)
     // The backdrop is the first motion.div rendered (before the panel)
     const backdrop = document.querySelector('[aria-hidden="true"]')
     expect(backdrop).toBeTruthy()

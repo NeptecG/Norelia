@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 // ── Schema ─────────────────────────────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ type FormValues = z.infer<typeof schema>
 // ── NewsletterBar ──────────────────────────────────────────────────────────────
 
 export function NewsletterBar() {
+  const t = useTranslations('NewsletterBar')
   const [submitted, setSubmitted] = useState(false)
 
   const {
@@ -57,17 +59,17 @@ export function NewsletterBar() {
         {/* Left: editorial headline */}
         <div className="shrink-0">
           <p className="font-display text-[28px] tracking-[0.18em] text-on-surface/85 leading-none mb-1">
-            Stay in the loop.
+            {t('headline')}
           </p>
-          <p className="font-body text-[11px] tracking-[0.16em] uppercase text-on-surface/40">
-            Early access to drops &amp; exclusive offers
+          <p className="font-body text-[11px] tracking-[0.16em] text-on-surface/40">
+            {t('subtitle')}
           </p>
         </div>
 
         {/* Right: form or thank-you */}
         {submitted ? (
           <p role="status" aria-live="polite" className="font-body text-[12px] tracking-[0.06em] text-success">
-            ✓ You&apos;re in.
+            {t('success')}
           </p>
         ) : (
           <form
@@ -79,8 +81,8 @@ export function NewsletterBar() {
               <input
                 {...register('email')}
                 type="email"
-                placeholder="your@email.com"
-                aria-label="Email address"
+                placeholder={t('placeholder')}
+                aria-label={t('placeholder')}
                 className={cn(
                   'flex-1 md:w-[220px] bg-transparent py-2 pr-2',
                   'font-body text-[12px] tracking-[0.04em] text-on-surface',
@@ -93,10 +95,10 @@ export function NewsletterBar() {
               />
               <button
                 type="submit"
-                aria-label="Subscribe to newsletter"
+                aria-label={t('subscribe')}
                 className="flex items-center gap-2 pl-5 py-2.5 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors duration-150 whitespace-nowrap shrink-0"
               >
-                Subscribe
+                {t('subscribe')}
               </button>
             </div>
             {errors.email && (

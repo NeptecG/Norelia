@@ -1,7 +1,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
@@ -16,6 +17,8 @@ import type { CartItem, Product } from '@/types'
 
 // ─── CartItemRow ──────────────────────────────────────────────────────────────
 
+type TFunction = ReturnType<typeof useTranslations<'SidePanel'>>
+
 interface CartItemRowProps {
   item: CartItem
   isFav: boolean
@@ -25,6 +28,7 @@ interface CartItemRowProps {
   onAdd: () => void
   onRemove: () => void
   onNavigate: () => void
+  t: TFunction
 }
 
 function CartItemRow({
@@ -36,6 +40,7 @@ function CartItemRow({
   onAdd,
   onRemove,
   onNavigate,
+  t,
 }: CartItemRowProps) {
   const unit = item.salePrice ?? parsePriceNumber(item.price)
   const total = (unit * item.qty).toFixed(2)
@@ -92,7 +97,7 @@ function CartItemRow({
           {/* Save for later (heart) */}
           <button
             onClick={onFav}
-            aria-label={isFav ? 'Remove from saved' : 'Save for later'}
+            aria-label={isFav ? t('removeFromSaved') : t('saveForLater')}
             className={cn(
               'transition-colors',
               isFav ? 'text-destructive' : 'text-on-surface-muted hover:text-destructive',
@@ -123,7 +128,7 @@ function CartItemRow({
           {/* Delete */}
           <button
             onClick={onRemove}
-            aria-label="Remove item"
+            aria-label={t('removeItem')}
             className="text-on-surface-muted hover:text-destructive transition-colors"
           >
             <Trash2 size={13} />
@@ -143,6 +148,7 @@ interface FavItemRowProps {
 }
 
 function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
+  const t = useTranslations('SidePanel')
   return (
     <div className="py-3.5 border-b border-border">
       <div className="flex gap-3.5 items-start">
@@ -185,11 +191,11 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
         </div>
         <button
           onClick={onRemove}
-          aria-label={`Remove ${product.name} from saved`}
+          aria-label={t('removeFromSaved')}
           className="text-on-surface-muted hover:text-destructive transition-colors flex flex-col items-center gap-1 pt-1"
         >
           <Trash2 size={14} />
-          <span className="font-body text-[9px] tracking-[0.1em] uppercase">Remove</span>
+          <span className="font-body text-[9px] tracking-[0.1em] uppercase">{t('removeFromSaved')}</span>
         </button>
       </div>
     </div>
@@ -199,6 +205,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
 // ─── SidePanel ────────────────────────────────────────────────────────────────
 
 export function SidePanel() {
+  const t = useTranslations('SidePanel')
   const { sidePanel, setSidePanel, showToast } = useUIStore()
   const { cartItems, addToCart, removeFromCart, decrementCart } = useCartStore()
   const { favorites, toggleFavorite } = useFavoritesStore()
@@ -276,11 +283,11 @@ export function SidePanel() {
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-6 border-b border-border">
               <span className="font-display text-[22px] tracking-[0.12em] text-on-surface">
-                {isCart ? 'MY CART' : 'FAVORITES'}
+                {isCart ? t('cart') : t('favorites')}
               </span>
               <button
                 onClick={handleClose}
-                aria-label="Close panel"
+                aria-label={t('close')}
                 className="text-on-surface-muted hover:text-on-surface p-1 transition-colors"
               >
                 <X size={18} />
@@ -292,7 +299,7 @@ export function SidePanel() {
               {isCart ? (
                 cartLines.length === 0 ? (
                   <p className="font-body text-sm text-on-surface-muted tracking-wide mt-4">
-                    Your cart is empty.
+                    {t('cartEmpty')}
                   </p>
                 ) : (
                   cartLines.map(item => (
@@ -305,24 +312,26 @@ export function SidePanel() {
                         toggleFavorite(item.id)
                         showToast(
                           favorites.includes(item.id)
-                            ? `${item.name} removed from favorites`
-                            : `${item.name} added to favorites`,
+                            ? t('removedFromFavorites', { name: item.name })
+                            : t('addedToFavorites', { name: item.name }),
                           favorites.includes(item.id) ? 'remove' : 'add',
+                          favorites.includes(item.id) ? undefined : 'fav',
                         )
                       }}
                       onDecrement={() => decrementCart(item.id)}
                       onAdd={() => addToCart(item.id)}
                       onRemove={() => {
                         removeFromCart(item.id)
-                        showToast(`${item.name} removed from cart`, 'remove')
+                        showToast(t('removedFromCart', { name: item.name }), 'remove', 'cart')
                       }}
                       onNavigate={handleClose}
+                      t={t}
                     />
                   ))
                 )
               ) : favProducts.length === 0 ? (
                 <p className="font-body text-sm text-on-surface-muted tracking-wide mt-4">
-                  No saved items yet.
+                  {t('noSaved')}
                 </p>
               ) : (
                 favProducts.map(product => (
@@ -331,7 +340,7 @@ export function SidePanel() {
                     product={product}
                     onRemove={() => {
                       toggleFavorite(product.id)
-                      showToast(`${product.name} removed from favorites`, 'remove')
+                      showToast(t('removedFromFavorites', { name: product.name }), 'remove', 'fav')
                     }}
                     onNavigate={handleClose}
                   />
@@ -344,7 +353,7 @@ export function SidePanel() {
               <div className="border-t border-border px-5 py-[18px] bg-surface-raised">
                 <div className="flex items-baseline justify-between mb-2">
                   <span className="font-body text-[11px] tracking-[0.18em] uppercase text-on-surface-muted">
-                    Order Total
+                    {t('orderTotal')}
                   </span>
                   <span className="font-display text-2xl text-on-surface">
                     €{total.toFixed(2)}
@@ -352,14 +361,14 @@ export function SidePanel() {
                 </div>
                 <p className="font-body text-[10px] text-on-surface-muted tracking-wide mb-3.5">
                   {total >= 60
-                    ? 'Free shipping on your order!'
-                    : `Add €${(60 - total).toFixed(2)} more for free shipping`}
+                    ? t('freeShipping')
+                    : t('addMoreForFreeShipping', { amount: (60 - total).toFixed(2) })}
                 </p>
                 <button
                   onClick={handleCheckout}
                   className="w-full bg-on-surface text-surface font-body text-[11px] font-bold tracking-[0.22em] uppercase py-3.5 hover:opacity-90 transition-opacity"
                 >
-                  Proceed to Checkout
+                  {t('checkout')}
                 </button>
               </div>
             )}

@@ -1,7 +1,10 @@
 import type React from 'react'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { BRAND } from '@/lib/constants'
+
+type TFooter = Awaited<ReturnType<typeof getTranslations<'SiteFooter'>>>
 
 // ── Column heading ─────────────────────────────────────────────────────────────
 
@@ -29,10 +32,10 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
 
 // ── Brand column ───────────────────────────────────────────────────────────────
 
-function BrandColumn() {
+function BrandColumn({ t }: { t: TFooter }) {
   return (
     <div>
-      <FooterHeading>Premium Streetwear</FooterHeading>
+      <FooterHeading>{t('premiumStreetware')}</FooterHeading>
       <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-7')}>
         {BRAND}
       </p>
@@ -42,7 +45,7 @@ function BrandColumn() {
           href="https://instagram.com/norelia"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Norelia on Instagram"
+          aria-label={t('instagramLabel')}
           className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -57,7 +60,7 @@ function BrandColumn() {
           href="https://x.com/norelia"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Norelia on X"
+          aria-label={t('xLabel')}
           className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -70,7 +73,7 @@ function BrandColumn() {
           href="https://youtube.com/@norelia"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Norelia on YouTube"
+          aria-label={t('youtubeLabel')}
           className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -85,17 +88,17 @@ function BrandColumn() {
 
 // ── Info column ────────────────────────────────────────────────────────────────
 
-function InfoColumn() {
+function InfoColumn({ t }: { t: TFooter }) {
   return (
     <div>
-      <FooterHeading>Information</FooterHeading>
+      <FooterHeading>{t('information')}</FooterHeading>
       <div className="flex flex-col items-start">
-        <FooterLink href="/about">About Us</FooterLink>
-        <FooterLink href="/size-guide">Size Guide</FooterLink>
-        <FooterLink href="/shipping">Shipping</FooterLink>
-        <FooterLink href="/returns">Returns &amp; Exchanges</FooterLink>
-        <FooterLink href="/privacy">Privacy Policy</FooterLink>
-        <FooterLink href="/terms">Terms of Service</FooterLink>
+        <FooterLink href="/about">{t('about')}</FooterLink>
+        <FooterLink href="/size-guide">{t('sizeGuide')}</FooterLink>
+        <FooterLink href="/shipping">{t('shipping')}</FooterLink>
+        <FooterLink href="/returns">{t('returns')}</FooterLink>
+        <FooterLink href="/privacy">{t('privacy')}</FooterLink>
+        <FooterLink href="/terms">{t('terms')}</FooterLink>
       </div>
     </div>
   )
@@ -103,10 +106,10 @@ function InfoColumn() {
 
 // ── Contact column ─────────────────────────────────────────────────────────────
 
-function ContactColumn() {
+function ContactColumn({ t }: { t: TFooter }) {
   return (
     <div>
-      <FooterHeading>Contact</FooterHeading>
+      <FooterHeading>{t('contact')}</FooterHeading>
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/80 mb-2.5">
         hello@norelia.com
       </p>
@@ -114,12 +117,12 @@ function ContactColumn() {
         +30 26820 00000
       </p>
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        Mon–Fri, 9:00–17:00
+        {t('hours')}
       </p>
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        Saturday, 10:00–14:00
+        {t('saturday')}
       </p>
-      <FooterLink href="/our-studio">Our Studio</FooterLink>
+      <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
     </div>
   )
 }
@@ -166,10 +169,10 @@ function KlarnaIcon() {
 
 // ── Payment column ─────────────────────────────────────────────────────────────
 
-function PaymentColumn() {
+function PaymentColumn({ t }: { t: TFooter }) {
   return (
     <div>
-      <FooterHeading>Payment Methods</FooterHeading>
+      <FooterHeading>{t('payment')}</FooterHeading>
       <div className="flex flex-wrap gap-2">
         <VisaIcon />
         <MastercardIcon />
@@ -182,16 +185,18 @@ function PaymentColumn() {
 
 // ── SiteFooter ─────────────────────────────────────────────────────────────────
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const t = await getTranslations('SiteFooter')
+
   return (
     <footer className="dark bg-surface-alt text-on-surface">
       {/* Main columns */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-16">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          <BrandColumn />
-          <InfoColumn />
-          <ContactColumn />
-          <PaymentColumn />
+          <BrandColumn t={t} />
+          <InfoColumn t={t} />
+          <ContactColumn t={t} />
+          <PaymentColumn t={t} />
         </div>
       </div>
 
@@ -199,13 +204,13 @@ export function SiteFooter() {
       <div className="border-t border-border">
         <div className="max-w-[1440px] mx-auto px-6 md:px-[60px] py-5 grid grid-cols-1 sm:grid-cols-3 items-center gap-y-2 text-center sm:text-left">
           <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/35 uppercase">
-            &copy; {new Date().getFullYear()} Norelia. All rights reserved.
+            {t('copyright', { year: new Date().getFullYear() })}
           </p>
           <p className="font-body text-[10px] tracking-[0.15em] text-on-surface/55 uppercase text-center">
-            Premium Streetwear · Preveza, Greece
+            {t('tagline')}
           </p>
           <p className="font-body text-[10px] tracking-[0.12em] text-on-surface/35 uppercase sm:text-right">
-            Secure Payments · SSL Encrypted
+            {t('secure')}
           </p>
         </div>
       </div>

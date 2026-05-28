@@ -9,11 +9,7 @@ export function Toast() {
   const { toast } = useUIStore()
   const shouldReduceMotion = useReducedMotion()
 
-  const isFav =
-    toast.type === 'add' &&
-    (toast.msg.toLowerCase().includes('saved') ||
-      toast.msg.toLowerCase().includes('favourites') ||
-      toast.msg.toLowerCase().includes('favorites'))
+  const isFav = toast.type === 'add' && toast.kind === 'fav'
 
   const variants = shouldReduceMotion
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } }

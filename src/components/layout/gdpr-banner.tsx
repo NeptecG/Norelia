@@ -3,12 +3,14 @@
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 const CONSENT_KEY = 'norelia_gdpr_consent'
 
 // ── GDPRBanner ─────────────────────────────────────────────────────────────────
 
 export function GDPRBanner() {
+  const t = useTranslations('GDPRBanner')
   const [visible, setVisible] = useState<boolean>(
     () => typeof window !== 'undefined' && !localStorage.getItem(CONSENT_KEY),
   )
@@ -51,13 +53,10 @@ export function GDPRBanner() {
             {/* Text */}
             <div className="flex-1 min-w-0">
               <p className="font-display text-[15px] tracking-[0.14em] text-on-surface mb-1.5">
-                We use cookies
+                {t('title')}
               </p>
               <p className="font-body text-[11px] tracking-[0.04em] leading-[1.7] text-on-surface/55 max-w-[600px]">
-                We use cookies to improve your browsing experience and analyse site traffic.
-                By clicking Accept All, you consent to our use of cookies in accordance with
-                EU regulations (GDPR). You can decline non-essential cookies without
-                affecting your shopping experience.
+                {t('body')}
               </p>
             </div>
 
@@ -65,7 +64,7 @@ export function GDPRBanner() {
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={decline}
-                aria-label="Decline non-essential cookies"
+                aria-label={t('declineLabel')}
                 className={cn(
                   'font-body text-[10px] tracking-[0.18em] uppercase',
                   'border border-on-surface/25 hover:border-on-surface/60',
@@ -73,18 +72,18 @@ export function GDPRBanner() {
                   'px-5 py-2.5 transition-colors duration-200',
                 )}
               >
-                Decline
+                {t('decline')}
               </button>
               <button
                 onClick={accept}
-                aria-label="Accept all cookies"
+                aria-label={t('acceptLabel')}
                 className={cn(
                   'font-body text-[10px] tracking-[0.18em] uppercase font-bold',
                   'bg-on-surface text-surface',
                   'px-6 py-2.5 hover:opacity-90 transition-opacity duration-200',
                 )}
               >
-                Accept All
+                {t('acceptAll')}
               </button>
             </div>
 
