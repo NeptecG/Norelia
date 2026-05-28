@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/navigation'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/products/product-card'
 import type { Product } from '@/types'

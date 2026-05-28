@@ -11,9 +11,9 @@ vi.mock('@/components/products/product-card', () => ({
   ),
 }))
 
-// Mock next/link — render as plain <a> so href assertions work in jsdom
-vi.mock('next/link', () => ({
-  default: ({
+// Mock @/navigation — render Link as plain <a> so href assertions work in jsdom
+vi.mock('@/navigation', () => ({
+  Link: ({
     href,
     children,
     className,

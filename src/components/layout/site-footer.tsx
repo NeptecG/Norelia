@@ -1,5 +1,5 @@
 import type React from 'react'
-import Link from 'next/link'
+import { Link } from '@/navigation'
 import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { BRAND } from '@/lib/constants'

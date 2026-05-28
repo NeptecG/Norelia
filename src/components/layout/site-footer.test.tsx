@@ -1,5 +1,11 @@
+import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+
+vi.mock('@/navigation', () => ({
+  Link: ({ href, children }: { href: string; children: React.ReactNode }) =>
+    <a href={href}>{children}</a>,
+}))
 
 vi.mock('next-intl/server', () => ({
   getTranslations: async () => (key: string, values?: Record<string, unknown>) => {
