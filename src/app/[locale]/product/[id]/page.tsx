@@ -7,12 +7,15 @@ import { RelatedProducts } from '@/components/products/related-products'
 import { RecentlyViewedStrip } from '@/components/products/recently-viewed-strip'
 
 interface Props {
-  params:       Promise<{ id: string }>
+  params:       Promise<{ locale: string; id: string }>
   searchParams: Promise<{ color?: string; from?: string }>
 }
 
 export function generateStaticParams() {
-  return PRODUCTS.map(p => ({ id: p.code }))
+  return PRODUCTS.flatMap(p => [
+    { locale: 'el', id: p.code },
+    { locale: 'en', id: p.code },
+  ])
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

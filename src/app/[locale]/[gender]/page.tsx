@@ -4,7 +4,7 @@ import { ProductGrid } from '@/components/products/product-grid'
 import { byGender, CAT_SLUG_TO_FILTER } from '@/lib/utils'
 
 interface Props {
-  params: Promise<{ gender: string }>
+  params:       Promise<{ locale: string; gender: string }>
   searchParams: Promise<{ filter?: string }>
 }
 
@@ -12,7 +12,12 @@ const VALID_GENDERS = ['men', 'women']
 const VALID_CAT_FILTERS = new Set(Object.values(CAT_SLUG_TO_FILTER))
 
 export function generateStaticParams() {
-  return VALID_GENDERS.map(gender => ({ gender }))
+  return [
+    { locale: 'el', gender: 'men' },
+    { locale: 'el', gender: 'women' },
+    { locale: 'en', gender: 'men' },
+    { locale: 'en', gender: 'women' },
+  ]
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

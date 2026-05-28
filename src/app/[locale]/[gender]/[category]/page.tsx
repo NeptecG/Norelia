@@ -6,11 +6,13 @@ import { byGender, CAT_SLUG_TO_FILTER, catLabelPlural } from '@/lib/utils'
 const VALID_GENDERS = ['men', 'women']
 const VALID_CATS    = Object.keys(CAT_SLUG_TO_FILTER)
 
-interface Props { params: Promise<{ gender: string; category: string }> }
+interface Props { params: Promise<{ locale: string; gender: string; category: string }> }
 
 export function generateStaticParams() {
-  return VALID_GENDERS.flatMap(gender =>
-    VALID_CATS.map(category => ({ gender, category }))
+  return ['el', 'en'].flatMap(locale =>
+    VALID_GENDERS.flatMap(gender =>
+      VALID_CATS.map(category => ({ locale, gender, category }))
+    )
   )
 }
 

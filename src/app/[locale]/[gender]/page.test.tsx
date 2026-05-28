@@ -29,7 +29,7 @@ vi.mock('@/stores/ui-store', () => ({
 async function renderGenderPage(gender: string, filter?: string) {
   const GenderPage = (await import('./page')).default
   const jsx = await GenderPage({
-    params: Promise.resolve({ gender }),
+    params: Promise.resolve({ locale: 'en', gender }),
     searchParams: Promise.resolve(filter ? { filter } : {}),
   })
   render(jsx)
