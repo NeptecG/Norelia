@@ -1,10 +1,10 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
 import { Heart } from 'lucide-react'
-import { useRouter, usePathname } from 'next/navigation'
+import { Link, useRouter, usePathname } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn, catLabel, getStock } from '@/lib/utils'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -26,6 +26,7 @@ export function ProductCard({ product, priority = false }: Props) {
   const reducedMotion  = useReducedMotion()
   const router         = useRouter()
   const pathname       = usePathname()
+  const t              = useTranslations('ProductCard')
   const [hovering, setHovering]           = useState(false)
   const [sizePickerOpen, setSizePickerOpen] = useState(false)
 
@@ -51,7 +52,7 @@ export function ProductCard({ product, priority = false }: Props) {
     if (now - last < COOLDOWN_MS) return
     lastToggleRef.current[product.id] = now
     toggleFavorite(product.id)
-    showToast(favorited ? 'Removed from favorites' : 'Added to favorites', favorited ? 'remove' : 'add')
+    showToast(favorited ? t('removedFromFavorites') : t('addedToFavorites'), favorited ? 'remove' : 'add', 'fav')
   }
 
   function handleQuickAdd(e: React.MouseEvent) {
@@ -64,12 +65,12 @@ export function ProductCard({ product, priority = false }: Props) {
     const sizeStock = getStock(product.id, size)
     const cartQty   = cartItems[product.id] ?? 0
     if (cartQty >= sizeStock) {
-      showToast(`No more ${size} left for ${product.name}`, 'remove')
+      showToast(t('noMoreStock', { size, name: product.name }), 'remove')
       setSizePickerOpen(false)
       return
     }
     addToCart(product.id, 1)
-    showToast(`${product.name}, ${size} added`, 'add')
+    showToast(t('sizeAdded', { name: product.name, size }), 'add', 'cart')
     setSizePickerOpen(false)
   }
 
@@ -124,14 +125,14 @@ export function ProductCard({ product, priority = false }: Props) {
           {/* NEW badge */}
           {product.tag === 'NEW' && (
             <span className="absolute left-2 top-2 z-10 bg-on-surface px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-widest text-surface">
-              NEW
+              {t('new')}
             </span>
           )}
 
           {/* Heart / Favorite button */}
           <motion.button
             type="button"
-            aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
+            aria-label={favorited ? t('removeFromFavorites') : t('addToFavorites')}
             onClick={handleFavorite}
             variants={heartVariants}
             transition={{ duration: 0.15 }}
@@ -186,7 +187,7 @@ export function ProductCard({ product, priority = false }: Props) {
                   outOfStock && 'cursor-not-allowed opacity-50',
                 )}
               >
-                {outOfStock ? 'OUT OF STOCK' : 'QUICK ADD'}
+                {outOfStock ? t('outOfStock') : t('quickAdd')}
               </button>
             )}
           </motion.div>

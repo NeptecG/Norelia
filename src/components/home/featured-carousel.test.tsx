@@ -43,8 +43,12 @@ vi.mock('motion/react', () => ({
   useReducedMotion: () => false,
 }))
 
-vi.mock('next/link', () => ({
-  default: ({
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
+vi.mock('@/navigation', () => ({
+  Link: ({
     href,
     children,
     ...rest
@@ -132,13 +136,13 @@ describe('FeaturedCarousel', () => {
   it('shows dot pagination when there are more than 4 products', () => {
     render(<FeaturedCarousel title="New In" products={FIVE_PRODUCTS} />)
     act(() => vi.advanceTimersByTime(1000))
-    const dots = screen.getAllByLabelText(/Go to page/)
+    const dots = screen.getAllByLabelText(/goToPage/)
     expect(dots.length).toBeGreaterThanOrEqual(2)
   })
 
   it('does NOT show dot pagination when there are 4 or fewer products', () => {
     render(<FeaturedCarousel title="New In" products={FOUR_PRODUCTS} />)
     act(() => vi.advanceTimersByTime(1000))
-    expect(screen.queryByLabelText(/Go to page/)).toBeNull()
+    expect(screen.queryByLabelText(/goToPage/)).toBeNull()
   })
 })

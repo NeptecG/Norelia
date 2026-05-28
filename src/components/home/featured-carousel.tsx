@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { Link } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/products/product-card'
@@ -39,6 +40,7 @@ interface Props {
 export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Props) {
   const reducedMotion = useReducedMotion()
   const isMobile = useIsMobile()
+  const t = useTranslations('FeaturedCarousel')
   // No artificial loading delay — data is static and available immediately
 
   const perPage = isMobile ? 2 : 4
@@ -69,7 +71,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
           {viewAllHref && (
             <Link href={viewAllHref} className="group relative shrink-0 ml-4">
               <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
-                View All
+                {t('viewAll')}
               </span>
               <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </Link>
@@ -104,7 +106,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
                 <button
                   key={idx}
                   type="button"
-                  aria-label={`Go to page ${idx + 1}`}
+                  aria-label={t('goToPage', { n: idx + 1 })}
                   onClick={() => setPage(idx)}
                   className="p-2"
                 >

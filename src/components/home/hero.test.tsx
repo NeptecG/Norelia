@@ -10,8 +10,12 @@ vi.mock('next/image', () => ({
   ),
 }))
 
-vi.mock('next/link', () => ({
-  default: ({
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
+
+vi.mock('@/navigation', () => ({
+  Link: ({
     href,
     children,
     ...rest
@@ -49,21 +53,21 @@ vi.mock('motion/react', () => ({
 describe('Hero', () => {
   it('renders two links to /women and /men', () => {
     render(<Hero />)
-    const womenLink = screen.getByRole('link', { name: /Shop Women/i })
-    const menLink = screen.getByRole('link', { name: /Shop Men/i })
+    const womenLink = screen.getByRole('link', { name: 'womenAriaLabel' })
+    const menLink = screen.getByRole('link', { name: 'menAriaLabel' })
     expect(womenLink).toHaveAttribute('href', '/women')
     expect(menLink).toHaveAttribute('href', '/men')
   })
 
-  it('renders "WOMEN" and "MEN" labels', () => {
+  it('renders gender labels', () => {
     render(<Hero />)
-    expect(screen.getByText('WOMEN')).toBeTruthy()
-    expect(screen.getByText('MEN')).toBeTruthy()
+    expect(screen.getByText('womenLabel')).toBeTruthy()
+    expect(screen.getByText('menLabel')).toBeTruthy()
   })
 
   it('links have correct aria-labels', () => {
     render(<Hero />)
-    expect(screen.getByRole('link', { name: 'Shop WOMEN' })).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Shop MEN' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'womenAriaLabel' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'menAriaLabel' })).toBeTruthy()
   })
 })

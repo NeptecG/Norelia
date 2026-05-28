@@ -13,15 +13,16 @@ vi.mock('next/image', () => ({
     React.createElement('img', { src, alt, className, sizes }),
 }))
 
-// Mock next/navigation (useRouter used for color swatch routing, usePathname for gender context)
-vi.mock('next/navigation', () => ({
-  useRouter:   () => ({ push: vi.fn() }),
-  usePathname: () => '/',
+// Mock next-intl
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
 }))
 
-// Mock next/link
-vi.mock('next/link', () => ({
-  default: ({
+// Mock @/navigation (useRouter used for color swatch routing, usePathname for gender context)
+vi.mock('@/navigation', () => ({
+  useRouter:   () => ({ push: vi.fn() }),
+  usePathname: () => '/',
+  Link: ({
     href,
     children,
     ...rest
@@ -29,7 +30,7 @@ vi.mock('next/link', () => ({
     href: string
     children: React.ReactNode
     [key: string]: unknown
-  }) => React.createElement('a', { href, ...rest }, children),
+  }) => React.createElement('a', { href, ...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>) }, children),
 }))
 
 // Mock Zustand stores (localStorage unavailable in jsdom)
@@ -81,12 +82,12 @@ describe('ProductCard', () => {
 
   it('renders NEW badge when tag === "NEW"', () => {
     render(<ProductCard product={{ ...baseProduct, tag: 'NEW' }} />)
-    expect(screen.getByText('NEW')).toBeInTheDocument()
+    expect(screen.getByText('new')).toBeInTheDocument()
   })
 
   it('does NOT render NEW badge when tag === ""', () => {
     render(<ProductCard product={{ ...baseProduct, tag: '' }} />)
-    expect(screen.queryByText('NEW')).not.toBeInTheDocument()
+    expect(screen.queryByText('new')).not.toBeInTheDocument()
   })
 
   it('renders a link to /product/{code}', () => {
@@ -108,7 +109,7 @@ describe('ProductCard', () => {
     const toggleFavorite = vi.fn()
     vi.mocked(useFavoritesStore).mockReturnValue({ favorites: [], toggleFavorite, isFavorite: () => false })
     render(<ProductCard product={mockProduct} />)
-    const heartBtn = screen.getByLabelText(/add to favorites/i)
+    const heartBtn = screen.getByLabelText(/addToFavorites/i)
     fireEvent.click(heartBtn)
     expect(toggleFavorite).toHaveBeenCalledWith(mockProduct.id)
   })
@@ -120,7 +121,7 @@ describe('ProductCard', () => {
     vi.mocked(useUIStore).mockReturnValue({ showToast, sidePanel: null, setSidePanel: vi.fn(), toggleSidePanel: vi.fn() })
     render(<ProductCard product={mockProduct} />)
     // Step 1: click QUICK ADD → size picker appears
-    fireEvent.click(screen.getByText(/quick add/i))
+    fireEvent.click(screen.getByText(/quickAdd/i))
     // Step 2: pick a size → addToCart and showToast fired
     fireEvent.click(screen.getByText('M'))
     expect(addToCart).toHaveBeenCalledWith(mockProduct.id, 1)

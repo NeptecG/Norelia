@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Link, useRouter } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import { Heart, Truck, Shield, RotateCcw, Ruler, ChevronLeft } from 'lucide-react'
 import { cn, catLabel, catLabelPlural, getStock } from '@/lib/utils'
 import { NAV_CAT_TO_SLUG } from '@/lib/constants'
@@ -24,6 +24,7 @@ interface Props {
 
 export function ProductPage({ product, initialColor, from }: Props) {
   const router = useRouter()
+  const t = useTranslations('ProductPage')
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
@@ -70,7 +71,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
     if (!selectedSize || stock <= 0 || addingRef.current) return
     addingRef.current = true
     addToCart(product.id, qty)
-    showToast(`${product.name} added to cart`, 'add')
+    showToast(t('addedToCart', { name: product.name }), 'add', 'cart')
     // Release the gate after Zustand + React have flushed — prevents rapid double-click
     requestAnimationFrame(() => { addingRef.current = false })
   }
@@ -79,17 +80,18 @@ export function ProductPage({ product, initialColor, from }: Props) {
     toggleFavorite(product.id)
     showToast(
       isFav
-        ? `${product.name} removed from favorites`
-        : `${product.name} added to favorites`,
+        ? t('removedFromFavorites', { name: product.name })
+        : t('addedToFavorites', { name: product.name }),
       isFav ? 'remove' : 'add',
+      'fav',
     )
   }
 
   const addBtnDisabled = !selectedSize || stock <= 0
   const addBtnText =
-    !selectedSize ? 'SELECT A SIZE' :
-    stock <= 0    ? 'OUT OF STOCK'  :
-                    'ADD TO CART'
+    !selectedSize ? t('selectSize') :
+    stock <= 0    ? t('soldOut')    :
+                    t('addToCart')
 
   return (
     <section className="min-h-screen pt-20 bg-surface">
@@ -244,7 +246,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface">
-                SIZE
+                {t('sizeLabel')}
               </span>
               {/* Ruler icon replaces arrow per design feedback */}
               <button
@@ -253,7 +255,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
                 className="flex items-center gap-1.5 font-body text-[10px] tracking-[0.12em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
               >
                 <Ruler size={11} />
-                Size Guide
+                {t('sizeGuide')}
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -318,9 +320,9 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-3 font-body text-[11px] tracking-wide min-h-[1rem]">
             {selectedSize && (
               stock <= 0 ? (
-                <span className="text-destructive">Out of Stock</span>
+                <span className="text-destructive">{t('soldOut')}</span>
               ) : stock <= 5 ? (
-                <span className="text-destructive">Only {stock} left in stock</span>
+                <span className="text-destructive">{t('inStock', { n: stock })}</span>
               ) : (
                 <span className="text-success">In Stock</span>
               )
@@ -351,7 +353,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
               size={14}
               className={cn(isFav ? 'fill-destructive stroke-destructive' : 'fill-none')}
             />
-            {isFav ? 'SAVED TO FAVORITES' : 'ADD TO FAVORITES'}
+            {isFav ? t('removeFromFavorites') : t('addToFavorites')}
           </button>
 
           {/* Trust signals */}

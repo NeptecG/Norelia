@@ -2,13 +2,16 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/navigation'
+import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 interface HeroHalfProps {
   side: 'women' | 'men'
   label: string
+  shopLabel: string
+  ariaLabel: string
   href: string
   bgSrc: string
   objectPosition?: string
@@ -19,6 +22,8 @@ interface HeroHalfProps {
 function HeroHalf({
   side,
   label,
+  shopLabel,
+  ariaLabel,
   href,
   bgSrc,
   objectPosition = 'center',
@@ -53,7 +58,7 @@ function HeroHalf({
   return (
     <Link
       href={href}
-      aria-label={`Shop ${label}`}
+      aria-label={ariaLabel}
       className={cn(
         'relative flex-1 overflow-hidden',
         'h-[50vw] min-h-[220px] md:h-auto',
@@ -100,7 +105,7 @@ function HeroHalf({
           animate={animateState}
           transition={{ duration: 0.25 }}
         >
-          SHOP
+          {shopLabel}
         </motion.span>
 
         {/* Gender label — always visible, brightens on hover */}
@@ -119,14 +124,17 @@ function HeroHalf({
 
 export function Hero() {
   const [hovered, setHovered] = useState<'women' | 'men' | null>(null)
+  const t = useTranslations('Hero')
 
   return (
     <section className="flex flex-col md:flex-row md:h-[88vh] border-b border-border">
       {/* Visually hidden h1 for screen readers and SEO — visual title is in the hero halves */}
-      <h1 className="sr-only">NORELIA. Premium Streetwear</h1>
+      <h1 className="sr-only">{t('srHeading')}</h1>
       <HeroHalf
         side="women"
-        label="WOMEN"
+        label={t('womenLabel')}
+        shopLabel={t('shopEyebrow')}
+        ariaLabel={t('womenAriaLabel')}
         href="/women"
         bgSrc="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=960&h=1200&fit=crop&q=85"
         objectPosition="center 20%"
@@ -135,7 +143,9 @@ export function Hero() {
       />
       <HeroHalf
         side="men"
-        label="MEN"
+        label={t('menLabel')}
+        shopLabel={t('shopEyebrow')}
+        ariaLabel={t('menAriaLabel')}
         href="/men"
         bgSrc="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=960&h=1200&fit=crop&q=85"
         objectPosition="center 15%"

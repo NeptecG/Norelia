@@ -4,6 +4,7 @@ import type { Product, GarmentType } from '@/types'
 import { SIZE_DATA } from '@/data/sizes'
 import { SizeTable } from '@/components/size-guide/size-table'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { useTranslations } from 'next-intl'
 
 function catToGarment(cat: string): GarmentType {
   if (cat === 'HOODIES') return 'hoodie'
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export function SizeMiniGuide({ product, open, onClose }: Props) {
+  const t = useTranslations('ProductPage')
   const garmentType = catToGarment(product.cat)
   const gender = product.gender === 'women' ? 'women' : 'men'
   const rows = SIZE_DATA[garmentType][gender]
@@ -26,10 +28,10 @@ export function SizeMiniGuide({ product, open, onClose }: Props) {
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <DialogContent className="dark bg-surface-alt max-w-2xl overflow-auto" showCloseButton>
         <DialogTitle className="font-display text-2xl tracking-[0.12em]">
-          SIZE GUIDE
+          {t('sizeGuide')}
         </DialogTitle>
         <p className="font-body text-[10px] text-on-surface/50 mb-4">
-          {product.name} · measurements in cm
+          {product.name} · {t('measurementsCm')}
         </p>
         <SizeTable rows={rows} gender={gender} mini />
       </DialogContent>
