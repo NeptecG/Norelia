@@ -12,9 +12,12 @@
     "favoritesLabel": "Favorites",
     "favoritesWithCount": "Favorites ({count})",
     "searchPlaceholder": "Search products...",
-    "noResults": "No results for",
+    "noResults": "No results for \"{query}\"",
     "menuLabel": "Menu",
-    "closePanel": "Close"
+    "closePanel": "Close",
+    "searchTooltip": "Search",
+    "favoritesTooltip": "Favorites",
+    "cartTooltip": "Cart"
   },
   "Hero": {
     "srHeading": "NORELIA. Premium Streetwear",

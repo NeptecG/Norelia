@@ -265,7 +265,7 @@ export function Nav() {
               >
                 <Search size={16} />
                 <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[50px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
-                  Search
+                  {t('searchTooltip')}
                 </span>
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
               </button>
@@ -275,7 +275,7 @@ export function Nav() {
                 <div className="absolute top-[calc(100%+14px)] right-0 w-[300px] bg-surface border border-border-subtle shadow-lg z-[600]">
                   {searchResults.length === 0 ? (
                     <p className="font-body text-[10px] text-on-surface-muted tracking-[0.1em] text-center py-3.5">
-                      {t('noResults')} &ldquo;{searchQuery}&rdquo;
+                      {t('noResults', { query: searchQuery })}
                     </p>
                   ) : searchResults.map(p => (
                     <Link
@@ -322,7 +322,7 @@ export function Nav() {
                 )}
               </span>
               <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[62px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
-                Favorites
+                {t('favoritesTooltip')}
               </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </button>
@@ -342,7 +342,7 @@ export function Nav() {
                 )}
               </span>
               <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[36px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
-                Cart
+                {t('cartTooltip')}
               </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </button>
@@ -462,7 +462,7 @@ export function Nav() {
           {sq.length > 0 && (
             <div className="mt-2 border-t border-border pt-2">
               {searchResults.length === 0 ? (
-                <p className="font-body text-[10px] text-on-surface/35 tracking-[0.1em] py-2">{t('noResults')} &ldquo;{searchQuery}&rdquo;</p>
+                <p className="font-body text-[10px] text-on-surface/35 tracking-[0.1em] py-2">{t('noResults', { query: searchQuery })}</p>
               ) : searchResults.map(p => (
                 <Link
                   key={p.id}

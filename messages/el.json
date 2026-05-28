@@ -12,9 +12,12 @@
     "favoritesLabel": "Αγαπημένα",
     "favoritesWithCount": "Αγαπημένα ({count})",
     "searchPlaceholder": "Αναζήτηση προϊόντων...",
-    "noResults": "Δεν βρέθηκαν αποτελέσματα για",
+    "noResults": "Δεν βρέθηκαν αποτελέσματα για \"{query}\"",
     "menuLabel": "Μενού",
-    "closePanel": "Κλείσιμο"
+    "closePanel": "Κλείσιμο",
+    "searchTooltip": "Αναζήτηση",
+    "favoritesTooltip": "Αγαπημένα",
+    "cartTooltip": "Καλάθι"
   },
   "Hero": {
     "srHeading": "NORELIA. Premium Streetwear",
