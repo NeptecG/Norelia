@@ -2,7 +2,52 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, values?: Record<string, unknown>) => {
+    const map: Record<string, string> = {
+      title:                  'My Shopping Cart',
+      cartEmpty:              'Your cart is empty.',
+      continueShopping:       'Continue Shopping',
+      colProduct:             'Product',
+      colQuantity:            'Quantity',
+      colRemove:              'Remove',
+      colPrice:               'Price',
+      colTotal:               'Total',
+      decreaseQty:            'Decrease quantity',
+      increaseQty:            'Increase quantity',
+      removeFromCart:         'Remove {name} from cart',
+      catSingularTSHIRTS:     'T-Shirt',
+      catSingularHOODIES:     'Hoodie',
+      catSingularZIPPERS:     'Zip Hoodie',
+      catSingularTANKTOPS:    'Tank Top',
+      catSingularNEWIN:       'New In',
+      catSingularSALES:       'Sale',
+      orderSummary:           'ORDER SUMMARY',
+      subtotal:               'Subtotal',
+      vat:                    'VAT (24%)',
+      grandTotal:             'Grand Total',
+      freeShipping:           'Free shipping included',
+      addMoreForFreeShipping: 'Add €{amount} more for free shipping',
+      shippingProgressLabel:  'Free shipping progress',
+      couponCode:             'Coupon Code',
+      removeCoupon:           'Remove coupon',
+      removeCouponBtn:        'Remove',
+      enterCode:              'Enter code',
+      apply:                  'Apply',
+      invalidCoupon:          'Invalid coupon code',
+      specialInstructions:    'Special Instructions (optional)',
+      notesPlaceholder:       'Gift wrap, delivery notes, etc.',
+      placeOrderLabel:        'Place order',
+      placeOrder:             'PLACE ORDER',
+    }
+    const template = map[key] ?? key
+    if (!values) return template
+    return Object.entries(values).reduce(
+      (str, [k, v]) => str.replace(`{${k}}`, String(v)),
+      template,
+    )
+  },
+}))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
   usePathname: () => '/',
@@ -82,10 +127,9 @@ async function renderPage() {
 // ---------------------------------------------------------------------------
 
 describe('CheckoutPage', () => {
-  it('renders the title key heading', async () => {
+  it('renders the cart title heading', async () => {
     await renderPage()
-    // t('title') returns 'title' from the mock
-    expect(screen.getByRole('heading', { name: /title/i })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: /my shopping cart/i })).toBeTruthy()
   })
 
   it('shows empty-cart message and Continue Shopping link when cart is empty', async () => {

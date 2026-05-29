@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
 import { Upload, ArrowLeft, Check, Ruler } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
 import { SIZES, SIZE_DATA } from '@/data/sizes'
@@ -43,12 +44,6 @@ const BACK_PRESETS: PrintPreset[] = [
 const GARMENT_TYPES:  GarmentType[] = ['tshirt', 'hoodie', 'zipper']
 const FIT_TYPES:      FitType[]     = ['normal', 'oversized']
 const PRINT_METHODS:  PrintMethod[] = ['dtg', 'embroidery']
-
-const GARMENT_LABELS: Record<GarmentType, string> = {
-  tshirt: 'T-Shirt',
-  hoodie: 'Hoodie',
-  zipper: 'Zip Hoodie',
-}
 
 // Below Tailwind's standard scale — intentional for all control labels throughout the designer
 const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted'
@@ -188,6 +183,7 @@ export function GarmentPreview({
   garmentType, color, side, frontPreset, backPreset,
   canvasRef, showMeasurements, measureGender, size,
 }: GarmentPreviewProps) {
+  const t = useTranslations('GarmentDesigner')
   const activePreset = (side === 'front'
     ? FRONT_PRESETS.find(p => p.id === frontPreset)
     : BACK_PRESETS.find(p => p.id === backPreset)
@@ -317,13 +313,15 @@ export function GarmentPreview({
 
       {/* FRONT / BACK badge */}
       <div className="absolute top-2 right-2 bg-on-surface text-surface font-body text-[11px] tracking-[0.22em] uppercase px-2 py-0.5">
-        {isFront ? 'Front' : 'Back'}
+        {isFront ? t('designFront') : t('designBack')}
       </div>
     </div>
   )
 }
 
 export function SideToggle({ side, hasDesign, onToggle }: SideToggleProps) {
+  const t = useTranslations('GarmentDesigner')
+  const sideLabels = { front: t('designFront'), back: t('designBack') }
   return (
     <div className="flex border border-on-surface mt-2.5" role="group" aria-label="View side">
       {(['front', 'back'] as const).map((s) => (
@@ -340,7 +338,7 @@ export function SideToggle({ side, hasDesign, onToggle }: SideToggleProps) {
               : 'bg-surface text-on-surface hover:bg-on-surface/10',
           )}
         >
-          {s}
+          {sideLabels[s]}
           {/* Green dot — signals a design has been uploaded on this side */}
           {hasDesign[s] && (
             <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" aria-hidden="true"/>
@@ -364,7 +362,7 @@ export function PrintPresetSelector({
 
   return (
     <div className="mt-2.5">
-      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Area Guide</p>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Area Guide</p>  {/* intentionally not translated — technical label */}
       <div className="flex gap-1">
         {presets.map((p) => (
           <button
@@ -390,6 +388,7 @@ export function PrintPresetSelector({
 }
 
 export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLinksProps) {
+  const t = useTranslations('GarmentDesigner')
   if (!hasDesign.front && !hasDesign.back) return null
   return (
     <div className="flex gap-3.5 mt-2 justify-end">
@@ -399,7 +398,7 @@ export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLi
           onClick={onRemoveFront}
           className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
         >
-          Remove Front
+          {t('removeFront')}
         </button>
       )}
       {hasDesign.back && (
@@ -408,7 +407,7 @@ export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLi
           onClick={onRemoveBack}
           className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
         >
-          Remove Back
+          {t('removeBack')}
         </button>
       )}
     </div>
@@ -418,6 +417,7 @@ export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLi
 export function MeasurementsPanel({
   show, gender, garmentType, size, onToggle, onGenderChange,
 }: MeasurementsPanelProps) {
+  const t = useTranslations('GarmentDesigner')
   const mData = show && size
     ? SIZE_DATA[garmentType][gender].find(r => r.size === size)
     : null
@@ -434,7 +434,7 @@ export function MeasurementsPanel({
           )}
         >
           <Ruler size={12}/>
-          {show ? 'Hide Measurements' : 'Show Measurements'}
+          {show ? t('hideMeasurements') : t('showMeasurements')}
         </button>
         {show && (
           <div className="flex gap-1">
@@ -450,7 +450,7 @@ export function MeasurementsPanel({
                     : 'bg-transparent text-on-surface-muted border-border-subtle hover:border-on-surface',
                 )}
               >
-                {g}
+                {g === 'men' ? t('measureMen') : t('measureWomen')}
               </button>
             ))}
           </div>
@@ -460,13 +460,13 @@ export function MeasurementsPanel({
       {mData && (
         <div className="grid grid-cols-4 gap-1.5 mt-2">
           {[
-            { label: 'Length', value: `${mData.length} cm` },
-            { label: 'Chest',  value: `${mData.chest} cm`  },
-            { label: 'Sleeve', value: `${mData.sleeve} cm` },
-            ...(mData.waist ? [{ label: 'Waist', value: `${mData.waist} cm` }] : []),
-          ].map(({ label, value }) => (
-            <div key={label} className="border border-border-subtle p-2 text-center">
-              <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{label}</p>
+            { key: 'measureLength', value: `${mData.length} cm` },
+            { key: 'measureChest',  value: `${mData.chest} cm`  },
+            { key: 'measureSleeve', value: `${mData.sleeve} cm` },
+            ...(mData.waist ? [{ key: 'measureWaist', value: `${mData.waist} cm` }] : []),
+          ].map(({ key, value }) => (
+            <div key={key} className="border border-border-subtle p-2 text-center">
+              <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{t(key as 'measureLength')}</p>
               <p className="font-display text-base text-on-surface">{value}</p>
             </div>
           ))}
@@ -477,9 +477,15 @@ export function MeasurementsPanel({
 }
 
 export function GarmentTypeSelector({ value, onChange }: GarmentTypeSelectorProps) {
+  const t = useTranslations('GarmentDesigner')
+  const garmentLabels: Record<GarmentType, string> = {
+    tshirt: t('garmentTShirt'),
+    hoodie: t('garmentHoodie'),
+    zipper: t('garmentZipper'),
+  }
   return (
     <div>
-      <p className={cn(LABEL_CLS, 'mb-1.5')}>Garment</p>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>{t('garmentLabel')}</p>
       <div className="flex border border-on-surface">
         {GARMENT_TYPES.map((g) => (
           <button
@@ -495,7 +501,7 @@ export function GarmentTypeSelector({ value, onChange }: GarmentTypeSelectorProp
             )}
           >
             <span className="block font-body text-[10px] tracking-[0.18em] uppercase font-bold">
-              {GARMENT_LABELS[g]}
+              {garmentLabels[g]}
             </span>
             <span className="block font-body text-[9px] opacity-50 mt-0.5">
               from €{BP[g]['S'].toFixed(2)}
@@ -508,12 +514,13 @@ export function GarmentTypeSelector({ value, onChange }: GarmentTypeSelectorProp
 }
 
 export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZoneProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
-        Your Design{' '}
+        {t('designLabel')}{' '}
         <span className="normal-case tracking-normal text-on-surface-muted">
-          ({side === 'front' ? 'Front' : 'Back'})
+          ({side === 'front' ? t('designFront') : t('designBack')})
         </span>
       </p>
       {/* Drop zone — click opens file picker; drag-and-drop also supported */}
@@ -528,12 +535,12 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
         className="border border-dashed border-border-subtle p-6 text-center cursor-pointer hover:bg-surface-raised transition-colors"
         role="button"
         tabIndex={0}
-        aria-label="Upload your design"
+        aria-label={t('uploadAriaLabel')}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileRef.current?.click() }}
       >
         <Upload size={16} className="mx-auto mb-2 text-on-surface-muted"/>
         <p className="font-body text-[11px] text-on-surface-muted tracking-[0.08em]">
-          Click or drop image here
+          {t('uploadCta')}
         </p>
       </div>
       <input
@@ -548,10 +555,11 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
 }
 
 export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
-        Color:{' '}
+        {t('colorLabel')}:{' '}
         <span className="normal-case tracking-normal text-on-surface">{color.name}</span>
       </p>
       <div className="flex gap-2">
@@ -577,10 +585,11 @@ export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
 }
 
 export function SizeSelector({ size, onChange }: SizeSelectorProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
-        Size:{' '}
+        {t('sizeLabel')}:{' '}
         <span className="normal-case tracking-normal text-on-surface">{size ?? ''}</span>
       </p>
       <div className="flex flex-wrap gap-1.5">
@@ -606,9 +615,10 @@ export function SizeSelector({ size, onChange }: SizeSelectorProps) {
 }
 
 export function FitSelector({ fit, onChange }: FitSelectorProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
-      <p className={cn(LABEL_CLS, 'mb-1.5')}>Fit</p>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>{t('fitLabel')}</p>
       <div className="flex border border-on-surface">
         {FIT_TYPES.map((f) => (
           <button
@@ -624,10 +634,10 @@ export function FitSelector({ fit, onChange }: FitSelectorProps) {
             )}
           >
             <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
-              {f === 'normal' ? 'Normal' : 'Oversized'}
+              {f === 'normal' ? t('fitNormal') : t('fitOversized')}
             </span>
             <span className="block font-body text-[9px] opacity-50 mt-0.5">
-              {f === 'normal' ? 'True to size' : '+1–2 sizes up'}
+              {f === 'normal' ? t('fitNormalSub') : t('fitOversizedSub')}
             </span>
           </button>
         ))}
@@ -637,9 +647,10 @@ export function FitSelector({ fit, onChange }: FitSelectorProps) {
 }
 
 export function PrintMethodSelector({ printMethod, onChange }: PrintMethodSelectorProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
-      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Method</p>
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>{t('printMethodLabel')}</p>
       <div className="flex border border-on-surface">
         {PRINT_METHODS.map((p) => (
           <button
@@ -655,10 +666,10 @@ export function PrintMethodSelector({ printMethod, onChange }: PrintMethodSelect
             )}
           >
             <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
-              {p === 'dtg' ? 'DTG' : 'Embroidery'}
+              {p === 'dtg' ? t('printDtg') : t('printEmbroidery')}
             </span>
             <span className="block font-body text-[9px] opacity-50 mt-0.5">
-              {p === 'dtg' ? 'Photo-quality digital' : 'Premium stitched thread'}
+              {p === 'dtg' ? t('printDtgSub') : t('printEmbroiderySub')}
             </span>
           </button>
         ))}
@@ -668,14 +679,15 @@ export function PrintMethodSelector({ printMethod, onChange }: PrintMethodSelect
 }
 
 export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div>
-      <p className={cn(LABEL_CLS, 'mb-2')}>Qty</p>
+      <p className={cn(LABEL_CLS, 'mb-2')}>{t('qtyLabel')}</p>
       <div className="inline-flex items-center border border-on-surface">
         <button
           type="button"
           onClick={() => onChange(Math.max(1, qty - 1))}
-          aria-label="Decrease quantity"
+          aria-label={t('decreaseQty')}
           className={cn(
             'w-9 h-9 flex items-center justify-center font-body text-lg leading-none transition-colors',
             qty <= 1 ? 'text-on-surface-muted cursor-default' : 'text-on-surface hover:bg-on-surface/10',
@@ -692,13 +704,13 @@ export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
             if (!raw) { onChange(1); return }
             onChange(Math.max(1, parseInt(raw, 10)))
           }}
-          aria-label="Quantity"
+          aria-label={t('qtyAriaLabel')}
           className="w-11 h-9 text-center font-body text-sm font-bold text-on-surface bg-transparent border-none outline-none"
         />
         <button
           type="button"
           onClick={() => onChange(qty + 1)}
-          aria-label="Increase quantity"
+          aria-label={t('increaseQty')}
           className="w-9 h-9 flex items-center justify-center font-body text-lg leading-none text-on-surface hover:bg-on-surface/10 transition-colors"
         >
           +
@@ -709,15 +721,16 @@ export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
 }
 
 export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, onPlaceOrder }: PriceDisplayProps) {
+  const t          = useTranslations('GarmentDesigner')
   const total      = price !== null ? price * qty : null
   const noDesign   = !hasDesign.front && !hasDesign.back
   // Button is ready only when both a size and at least one design side are present
   const canOrder   = !!size && !noDesign
   const btnLabel   = !size
-    ? 'SELECT A SIZE'
+    ? t('selectSize')
     : noDesign
-    ? 'UPLOAD A DESIGN'
-    : 'PLACE ORDER →'
+    ? t('uploadDesign')
+    : t('placeOrder')
 
   return (
     <div className="pt-5 border-t border-border-subtle">
@@ -725,8 +738,8 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, on
         <span className="font-display text-4xl text-on-surface">
           {total !== null ? `€${total.toFixed(2)}` : '-'}
         </span>
-        {fit === 'oversized'        && <span className="font-body text-[11px] text-on-surface-muted">+€4 oversized</span>}
-        {printMethod === 'embroidery' && <span className="font-body text-[11px] text-on-surface-muted">+€7 embroidery</span>}
+        {fit === 'oversized'          && <span className="font-body text-[11px] text-on-surface-muted">{t('oversizedSurcharge')}</span>}
+        {printMethod === 'embroidery' && <span className="font-body text-[11px] text-on-surface-muted">{t('embroiderySurcharge')}</span>}
       </div>
       {price !== null && qty > 1 && (
         <p className="font-body text-[10px] text-on-surface-muted mb-1">
@@ -734,7 +747,7 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, on
         </p>
       )}
       <p className="font-body text-[10px] text-on-surface-muted tracking-[0.06em] mb-4">
-        Incl. printing · Free shipping over €60 · 5–7 day delivery
+        {t('inclPrinting')}
       </p>
       <button
         type="button"
@@ -757,26 +770,33 @@ export function OrderSummaryTable({
   garmentType, color, size, fit, printMethod, hasDesign,
   frontPreset, backPreset, price, qty,
 }: OrderSummaryProps) {
+  const t      = useTranslations('GarmentDesigner')
   const frontP = FRONT_PRESETS.find(p => p.id === frontPreset) ?? FRONT_PRESETS[0]
   const backP  = BACK_PRESETS.find(p => p.id === backPreset)   ?? BACK_PRESETS[0]
   const total  = price !== null && qty > 0 ? price * qty : null
 
+  const garmentLabels: Record<GarmentType, string> = {
+    tshirt: t('garmentTShirt'),
+    hoodie: t('garmentHoodie'),
+    zipper: t('garmentZipper'),
+  }
+
   const sides = hasDesign.front && hasDesign.back
-    ? 'Front + Back'
-    : hasDesign.front ? 'Front only' : 'Back only'
+    ? t('frontAndBack')
+    : hasDesign.front ? t('frontOnly') : t('backOnly')
 
   const rows: [string, string][] = [
-    ['Garment',    GARMENT_LABELS[garmentType]],
-    ['Color',      color.name],
-    ['Size',       size ?? '-'],
-    ['Fit',        fit === 'oversized' ? 'Oversized Fit' : 'Normal Fit'],
-    ['Print',      printMethod === 'dtg' ? 'DTG Print' : 'Embroidery'],
-    ['Sides',      sides],
-    ...(hasDesign.front ? [[`Position (Front)`, `${frontP.label}, ${frontP.cm}`] as [string, string]] : []),
-    ...(hasDesign.back  ? [[`Position (Back)`,  `${backP.label}, ${backP.cm}`]  as [string, string]] : []),
-    ['Unit Price', price !== null ? `€${price.toFixed(2)}` : '-'],
-    ['Qty',        String(qty)],
-    ['Total',      total !== null ? `€${total.toFixed(2)}` : '-'],
+    [t('rowGarment'),   garmentLabels[garmentType]],
+    [t('rowColor'),     color.name],
+    [t('rowSize'),      size ?? '-'],
+    [t('rowFit'),       fit === 'oversized' ? t('fitOversizedFull') : t('fitNormalFull')],
+    [t('rowPrint'),     printMethod === 'dtg' ? t('printDtgFull') : t('printEmbroideryFull')],
+    [t('rowSides'),     sides],
+    ...(hasDesign.front ? [[t('rowPosFront'), `${frontP.label}, ${frontP.cm}`] as [string, string]] : []),
+    ...(hasDesign.back  ? [[t('rowPosBack'),  `${backP.label}, ${backP.cm}`]  as [string, string]] : []),
+    [t('rowUnitPrice'), price !== null ? `€${price.toFixed(2)}` : '-'],
+    [t('rowQty'),       String(qty)],
+    [t('rowTotal'),     total !== null ? `€${total.toFixed(2)}` : '-'],
   ]
 
   return (
@@ -800,6 +820,7 @@ export function OrderSummaryTable({
 }
 
 export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
+  const t = useTranslations('GarmentDesigner')
   const { register, handleSubmit, formState: { errors } } = useForm<OrderFields>({
     resolver: zodResolver(orderSchema),
   })
@@ -810,46 +831,46 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="grid grid-cols-2 gap-4 mb-3.5">
         <div>
-          <label htmlFor="order-name" className={cn(LABEL_CLS, 'block mb-1')}>Full Name</label>
-          <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder="Maria Papadopoulos"/>
+          <label htmlFor="order-name" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldName')}</label>
+          <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder={t('placeholderName')}/>
           {errors.name && <p className="font-body text-xs text-destructive mt-1">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="order-phone" className={cn(LABEL_CLS, 'block mb-1')}>Phone</label>
+          <label htmlFor="order-phone" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldPhone')}</label>
           <input id="order-phone" {...register('phone')} inputMode="tel" className={INPUT_CLS} placeholder="+30 6940000000"/>
           {errors.phone && <p className="font-body text-xs text-destructive mt-1">{errors.phone.message}</p>}
         </div>
       </div>
       <div className="mb-3.5">
-        <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>Email</label>
+        <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldEmail')}</label>
         <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder="customer@email.com"/>
         {errors.email && <p className="font-body text-xs text-destructive mt-1">{errors.email.message}</p>}
       </div>
       <div className="mb-3.5">
-        <label htmlFor="order-address" className={cn(LABEL_CLS, 'block mb-1')}>Street Address</label>
-        <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder="Street &amp; Number"/>
+        <label htmlFor="order-address" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldAddress')}</label>
+        <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder={t('placeholderStreet')}/>
         {errors.address && <p className="font-body text-xs text-destructive mt-1">{errors.address.message}</p>}
       </div>
       <div className="grid grid-cols-2 gap-4 mb-3.5">
         <div>
-          <label htmlFor="order-city" className={cn(LABEL_CLS, 'block mb-1')}>City</label>
-          <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder="Athens"/>
+          <label htmlFor="order-city" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldCity')}</label>
+          <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder={t('placeholderCity')}/>
           {errors.city && <p className="font-body text-xs text-destructive mt-1">{errors.city.message}</p>}
         </div>
         <div>
-          <label htmlFor="order-zip" className={cn(LABEL_CLS, 'block mb-1')}>Zip / Postcode</label>
+          <label htmlFor="order-zip" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldZip')}</label>
           <input id="order-zip" {...register('zip')} className={INPUT_CLS} placeholder="10431"/>
           {errors.zip && <p className="font-body text-xs text-destructive mt-1">{errors.zip.message}</p>}
         </div>
       </div>
       <div className="mb-6">
-        <label htmlFor="order-notes" className={cn(LABEL_CLS, 'block mb-1')}>Notes (optional)</label>
+        <label htmlFor="order-notes" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldNotes')}</label>
         <textarea
           id="order-notes"
           {...register('notes')}
           rows={3}
           className={cn(INPUT_CLS, 'resize-none')}
-          placeholder="Special instructions…"
+          placeholder={t('placeholderNotes')}
         />
       </div>
       <button
@@ -857,13 +878,14 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
         disabled={isLoading}
         className="w-full py-4 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
       >
-        {isLoading ? 'SENDING…' : 'SEND ORDER →'}
+        {isLoading ? t('sendingOrder') : t('sendOrder')}
       </button>
     </form>
   )
 }
 
 export function OrderSuccess({ orderId, onReset }: OrderSuccessProps) {
+  const t = useTranslations('GarmentDesigner')
   return (
     <div className="text-center py-16">
       {/* Black circle with checkmark */}
@@ -871,14 +893,14 @@ export function OrderSuccess({ orderId, onReset }: OrderSuccessProps) {
         <Check size={26} className="text-surface"/>
       </div>
       <h3 className="font-display text-4xl tracking-[0.1em] text-on-surface mb-2.5">
-        ORDER RECEIVED
+        {t('orderReceived')}
       </h3>
       <p className="font-body text-sm text-on-surface-muted mb-3 leading-relaxed">
-        Your order details have been sent. Print-ready files have been downloaded to your computer.
+        {t('orderConfirmBody')}
       </p>
       {orderId && (
         <p className="font-body text-[11px] tracking-[0.14em] text-on-surface-muted mb-8">
-          ORDER {orderId}
+          {t('orderIdPrefix')} {orderId}
         </p>
       )}
       <button
@@ -886,22 +908,23 @@ export function OrderSuccess({ orderId, onReset }: OrderSuccessProps) {
         onClick={onReset}
         className="px-8 py-3.5 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity"
       >
-        DESIGN ANOTHER
+        {t('designAnother')}
       </button>
     </div>
   )
 }
 
 export function StepIndicator({ step }: StepIndicatorProps) {
+  const t = useTranslations('GarmentDesigner')
   const STEPS: { key: DesignStep; label: string }[] = [
-    { key: 'design',  label: 'Design'       },
-    { key: 'form',    label: 'Details'      },
-    { key: 'success', label: 'Confirmation' },
+    { key: 'design',  label: t('stepDesign')        },
+    { key: 'form',    label: t('stepDetails')       },
+    { key: 'success', label: t('stepConfirmation')  },
   ]
   const activeIdx = STEPS.findIndex(s => s.key === step)
 
   return (
-    <div className="flex items-center gap-2 mb-8" aria-label="Order steps">
+    <div className="flex items-center gap-2 mb-8" aria-label={t('stepsAriaLabel')}>
       {STEPS.map(({ key, label }, i) => {
         const isActive = key === step
         const isDone   = i < activeIdx
@@ -980,6 +1003,7 @@ export function GarmentDesigner() {
   ) ?? (side === 'front' ? FRONT_PRESETS[0] : BACK_PRESETS[0])
 
   const { showToast } = useUIStore()
+  const t = useTranslations('GarmentDesigner')
 
   // ── Canvas setup ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -1089,7 +1113,7 @@ export function GarmentDesigner() {
   // ── Order flow ───────────────────────────────────────────────────────────────
   function handlePlaceOrder() {
     if (!hasDesign.front && !hasDesign.back) {
-      showToast('Upload at least one design first.', 'remove')
+      showToast(t('uploadFirst'), 'remove')
       return
     }
     saveD()
@@ -1114,7 +1138,7 @@ export function GarmentDesigner() {
             customer_email: data.email,
             customer_phone: data.phone,
             customer_address: `${data.address}, ${data.city}, ${data.zip}`,
-            order_garment:  GARMENT_LABELS[garmentType],
+            order_garment:  ({ tshirt: t('garmentTShirt'), hoodie: t('garmentHoodie'), zipper: t('garmentZipper') } as Record<GarmentType, string>)[garmentType],
             order_color:    color.name,
             order_size:     size ?? '',
             order_fit:      fit,
@@ -1149,7 +1173,7 @@ export function GarmentDesigner() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <section aria-label="Garment customiser" className="w-full">
+    <section aria-label={t('designerAriaLabel')} className="w-full">
       <StepIndicator step={step}/>
 
       {/* ── STEP: SUCCESS ── */}
@@ -1166,11 +1190,11 @@ export function GarmentDesigner() {
             className="flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-8 hover:opacity-70 transition-opacity"
           >
             <ArrowLeft size={14}/>
-            Back to Designer
+            {t('backToDesigner')}
           </button>
 
           <h3 className="font-display text-3xl tracking-[0.1em] text-on-surface border-b border-on-surface pb-3.5 mb-5">
-            ORDER SUMMARY
+            {t('orderSummaryHeading')}
           </h3>
 
           <OrderSummaryTable
@@ -1187,7 +1211,7 @@ export function GarmentDesigner() {
           />
 
           <h3 className="font-display text-2xl tracking-[0.1em] text-on-surface mb-4">
-            CUSTOMER DETAILS
+            {t('customerDetailsHeading')}
           </h3>
 
           <OrderForm onSubmit={handleOrderSubmit} isLoading={isSubmitting}/>
@@ -1199,7 +1223,7 @@ export function GarmentDesigner() {
               onClick={() => setShowEjs(!showEjs)}
               className="w-full flex justify-between items-center border border-on-surface px-4 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase hover:bg-on-surface/5 transition-colors"
             >
-              <span>EmailJS Settings</span>
+              <span>{t('emailjsSettings')}</span>
               <span className="text-lg leading-none">{showEjs ? '−' : '+'}</span>
             </button>
             {showEjs && (
