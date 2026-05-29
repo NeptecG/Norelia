@@ -17,7 +17,13 @@
     "closePanel": "Κλείσιμο",
     "searchTooltip": "Αναζήτηση",
     "favoritesTooltip": "Αγαπημένα",
-    "cartTooltip": "Καλάθι"
+    "cartTooltip": "Καλάθι",
+    "catNewIn": "Νέα Είδη",
+    "catTShirts": "T-Shirts",
+    "catHoodies": "Φούτερ",
+    "catZippers": "Φερμουάρ",
+    "catTankTops": "Φανέλες",
+    "catSales": "Εκπτώσεις"
   },
   "Hero": {
     "srHeading": "NORELIA. Premium Streetwear",
@@ -42,7 +48,15 @@
   "ProductGrid": {
     "nonFound": "ΚΑΝΕΝΑ ΑΠΟΤΕΛΕΣΜΑ",
     "comingSoon": "ΕΡΧΕΤΑΙ ΣΥΝΤΟΜΑ",
-    "styles": "στυλ"
+    "styles": "στυλ",
+    "filterAll": "ΟΛΑ",
+    "filterTShirts": "T-SHIRTS",
+    "filterHoodies": "ΦΟΥΤΕΡ",
+    "filterZippers": "ΦΕΡΜΟΥΑΡ",
+    "filterTankTops": "ΦΑΝΕΛΕΣ",
+    "filterNewIn": "ΝΕΑ",
+    "filterSales": "ΕΚΠΤΩΣΕΙΣ",
+    "checkBackSoon": "Ελέγξτε ξανά σύντομα για νέες αφίξεις."
   },
   "ProductCard": {
     "addToFavorites": "Προσθήκη στα αγαπημένα",
@@ -72,7 +86,28 @@
     "measurementsCm": "μετρήσεις σε cm",
     "freeShippingBadge": "Δωρεάν αποστολή €60+",
     "secureCheckout": "Ασφαλής αγορά",
-    "returnsPolicy": "Επιστροφές 30 ημερών"
+    "returnsPolicy": "Επιστροφές 30 ημερών",
+    "back": "Πίσω",
+    "breadcrumbHome": "Αρχική",
+    "breadcrumbMen": "Ανδρικά",
+    "breadcrumbWomen": "Γυναικεία",
+    "colorLabel": "ΧΡΩΜΑ",
+    "qtyLabel": "ΠΟΣ.",
+    "viewFront": "Εμπρός",
+    "viewBack": "Πίσω όψη",
+    "backView": "Πίσω",
+    "decreaseQty": "Μείωση ποσότητας",
+    "increaseQty": "Αύξηση ποσότητας",
+    "catSingularTSHIRTS": "T-Shirt",
+    "catSingularHOODIES": "Φούτερ",
+    "catSingularZIPPERS": "Φερμουάρ",
+    "catSingularTANKTOPS": "Φανέλα",
+    "catPluralTSHIRTS": "T-Shirts",
+    "catPluralHOODIES": "Φούτερ",
+    "catPluralZIPPERS": "Φερμουάρ",
+    "catPluralTANKTOPS": "Φανέλες",
+    "catPluralNEWIN": "Νέα Είδη",
+    "catPluralSALES": "Εκπτώσεις"
   },
   "SidePanel": {
     "cart": "ΤΟ ΚΑΛΑΘΙ ΜΟΥ",
@@ -274,6 +309,35 @@
   "GenderPage": {
     "men": "ΑΝΔΡΑΣ",
     "women": "ΓΥΝΑΙΚΑ",
-    "styles": "στυλ"
+    "styles": "στυλ",
+    "catTSHIRTS": "T-SHIRTS",
+    "catHOODIES": "ΦΟΥΤΕΡ",
+    "catZIPPERS": "ΦΕΡΜΟΥΑΡ",
+    "catTANKTOPS": "ΦΑΝΕΛΕΣ",
+    "catNEWIN": "ΝΕΑ ΕΙΔΗ",
+    "catSALES": "ΕΚΠΤΩΣΕΙΣ"
+  },
+  "RelatedProducts": {
+    "morePrefix": "ΠΕΡΙΣΣΟΤΕΡΑ",
+    "catTSHIRTS": "T-SHIRTS",
+    "catHOODIES": "ΦΟΥΤΕΡ",
+    "catZIPPERS": "ΦΕΡΜΟΥΑΡ",
+    "catTANKTOPS": "ΦΑΝΕΛΕΣ",
+    "catNEWIN": "ΝΕΑ ΕΙΔΗ",
+    "catSALES": "ΕΚΠΤΩΣΕΙΣ"
+  },
+  "RecentlyViewedStrip": {
+    "heading": "ΠΡΟΣΦΑΤΑ ΕΙΔΑΤΕ"
+  },
+  "SizeTable": {
+    "size": "ΜΕΓΕΘΟΣ",
+    "intl": "INTL",
+    "eu": "EU",
+    "uk": "UK",
+    "chest": "ΣΤΗΘΟΣ",
+    "waist": "ΜΕΣΗ",
+    "hip": "ΙΣΧΙΑ",
+    "length": "ΜΗΚΟΣ",
+    "sleeve": "ΜΑΝΙΚΙ"
   }
 }

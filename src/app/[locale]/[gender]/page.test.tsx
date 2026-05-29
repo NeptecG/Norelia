@@ -11,6 +11,14 @@ vi.mock('@/data/products', () => ({
 }))
 vi.mock('next/navigation', () => ({ notFound: vi.fn(() => { throw new Error('NOTFOUND') }) }))
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string) => {
+    const map: Record<string, string> = {
+      men: 'MEN', women: 'WOMEN', styles: 'styles',
+    }
+    return map[key] ?? key
+  },
+}))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/men',

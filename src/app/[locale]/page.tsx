@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { Hero } from '@/components/home/hero'
 import { Marquee } from '@/components/home/marquee'
 import { FeaturedCarousel } from '@/components/home/featured-carousel'
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
   description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const t = await getTranslations('Home')
+
   const newProducts      = PRODUCTS.filter((p) => p.tag === 'NEW')
   const trendingProducts = PRODUCTS.slice(0, 8)
   const saleProducts     = PRODUCTS.filter((p) => p.salePrice !== undefined)
@@ -19,20 +22,20 @@ export default function HomePage() {
       <Hero />
       <Marquee dark={true} />
       <FeaturedCarousel
-        title="NEW IN COLLECTION"
-        subtitle="JUST ARRIVED"
+        title={t('newInTitle')}
+        subtitle={t('newInSubtitle')}
         products={newProducts}
         viewAllHref="/men?filter=NEWIN"
       />
       <FeaturedCarousel
-        title="TRENDING"
-        subtitle="THIS SEASON"
+        title={t('trendingTitle')}
+        subtitle={t('trendingSubtitle')}
         products={trendingProducts}
         viewAllHref="/men"
       />
       <FeaturedCarousel
-        title="ON SALE"
-        subtitle="LIMITED TIME OFFERS"
+        title={t('onSaleTitle')}
+        subtitle={t('onSaleSubtitle')}
         products={saleProducts}
         viewAllHref="/men?filter=SALES"
       />

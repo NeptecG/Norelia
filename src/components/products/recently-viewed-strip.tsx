@@ -1,10 +1,12 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { Link } from '@/navigation'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 
 export function RecentlyViewedStrip() {
+  const t = useTranslations('RecentlyViewedStrip')
   const { recentlyViewed } = useUIStore()
   if (recentlyViewed.length === 0) return null
 
@@ -12,7 +14,7 @@ export function RecentlyViewedStrip() {
     <section className="py-12 border-t border-border-subtle">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px]">
         <h2 className="font-display text-3xl text-on-surface leading-none mb-6">
-          RECENTLY VIEWED
+          {t('heading')}
         </h2>
         {/* scroll-snap horizontal strip; children snap to start on swipe */}
         <div

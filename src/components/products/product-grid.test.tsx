@@ -4,6 +4,25 @@ import { render, screen } from '@testing-library/react'
 import { ProductGrid } from './product-grid'
 import type { Product } from '@/types'
 
+// Mock next-intl — return English display strings so label assertions pass
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const map: Record<string, string> = {
+      filterAll:      'ALL',
+      filterTShirts:  'T-SHIRTS',
+      filterHoodies:  'HOODIES',
+      filterZippers:  'ZIPPERS',
+      filterTankTops: 'TANK TOPS',
+      filterNewIn:    'NEW IN',
+      filterSales:    'SALES',
+      nonFound:       'NONE FOUND',
+      comingSoon:     'COMING SOON',
+      checkBackSoon:  'Check back soon for new arrivals.',
+    }
+    return map[key] ?? key
+  },
+}))
+
 // Mock ProductCard — keeps tests independent of ProductCard internals
 vi.mock('@/components/products/product-card', () => ({
   ProductCard: ({ product }: { product: { name: string } }) => (

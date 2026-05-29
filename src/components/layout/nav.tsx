@@ -97,6 +97,16 @@ export function Nav() {
   ).slice(0, 7)
 
   // Store values
+  // Translated dropdown category labels — built once from t() to stay TypeScript-safe
+  const catLabels: Record<string, string> = {
+    'New In':    t('catNewIn'),
+    'T-Shirts':  t('catTShirts'),
+    'Hoodies':   t('catHoodies'),
+    'Zippers':   t('catZippers'),
+    'Tank Tops': t('catTankTops'),
+    'Sales':     t('catSales'),
+  }
+
   const { toggleSidePanel, setShowSignIn } = useUIStore()
   const { cartCount } = useCartStore()
   const { favorites } = useFavoritesStore()
@@ -170,7 +180,7 @@ export function Nav() {
                         )}
                       >
                         <span className="relative">
-                          {cat}
+                          {catLabels[cat] ?? cat}
                           <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
                         </span>
                       </Link>
@@ -219,7 +229,7 @@ export function Nav() {
                         )}
                       >
                         <span className="relative">
-                          {cat}
+                          {catLabels[cat] ?? cat}
                           <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px scale-x-0 group-hover/item:scale-x-100 transition-transform origin-left duration-[250ms]', cat === 'Sales' ? 'bg-destructive' : 'bg-on-surface')} />
                         </span>
                       </Link>
@@ -508,7 +518,7 @@ export function Nav() {
               onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
               className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
             >
-              {cat}
+              {catLabels[cat] ?? cat}
             </Link>
           ))}
 
@@ -527,7 +537,7 @@ export function Nav() {
               onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
               className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
             >
-              {cat}
+              {catLabels[cat] ?? cat}
             </Link>
           ))}
 

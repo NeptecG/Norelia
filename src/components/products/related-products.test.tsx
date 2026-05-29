@@ -3,6 +3,20 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
 vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string) => {
+    const map: Record<string, string> = {
+      morePrefix: 'MORE',
+      catTSHIRTS: 'T-SHIRTS',
+      catHOODIES: 'HOODIES',
+      catZIPPERS: 'ZIPPERS',
+      catTANKTOPS: 'TANK TOPS',
+      catNEWIN:   'NEW IN',
+      catSALES:   'SALE',
+    }
+    return map[key] ?? key
+  },
+}))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
   usePathname: () => '/',
@@ -20,12 +34,12 @@ import type { Product } from '@/types'
 const PROD: Product = { id: 1, name: 'TEST TEE', cat: 'TSHIRTS', gender: 'men', code: '100001', description: 'desc', price: '€45', tag: '', img: '/a.jpg' }
 
 describe('RelatedProducts', () => {
-  it('renders MORE TSHIRTS heading', () => {
-    render(<RelatedProducts product={PROD} />)
+  it('renders MORE T-SHIRTS heading', async () => {
+    render(await RelatedProducts({ product: PROD }))
     expect(screen.getByText(/MORE/i)).toBeTruthy()
   })
-  it('renders up to 4 related products (excludes current)', () => {
-    render(<RelatedProducts product={PROD} />)
+  it('renders up to 4 related products (excludes current)', async () => {
+    render(await RelatedProducts({ product: PROD }))
     // Should show products from TSHIRTS category, not id=1
     const images = document.querySelectorAll('img')
     expect(images.length).toBeGreaterThan(0)

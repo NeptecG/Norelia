@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { ProductGrid } from '@/components/products/product-grid'
 import { byGender, CAT_SLUG_TO_FILTER } from '@/lib/utils'
 
@@ -56,13 +57,15 @@ export default async function GenderPage({ params, searchParams }: Props) {
     // invalid filter → full pool, no active tab
   }
 
+  const tG = await getTranslations('GenderPage')
+
   return (
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <ProductGrid
           products={products}
-          title={gender === 'men' ? 'MEN' : 'WOMEN'}
-          subtitle={`${products.length} styles`}
+          title={gender === 'men' ? tG('men') : tG('women')}
+          subtitle={`${products.length} ${tG('styles')}`}
           activeFilter={activeFilter}
           filterBase={`/${gender}`}
           genderContext={g}

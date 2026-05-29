@@ -2,6 +2,12 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const map: Record<string, string> = { heading: 'RECENTLY VIEWED' }
+    return map[key] ?? key
+  },
+}))
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))
 vi.mock('@/navigation', () => ({ Link: ({ href, children }: { href: string; children: React.ReactNode }) => <a href={href}>{children}</a> }))
 vi.mock('next/image', () => ({ default: ({ alt }: { alt: string }) => React.createElement('img', { alt }) }))

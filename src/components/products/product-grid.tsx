@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
 import { Link } from '@/navigation'
 import { cn } from '@/lib/utils'
 import { ProductCard } from '@/components/products/product-card'
@@ -18,21 +21,6 @@ interface FilterTab {
   label: string
 }
 
-const ALL_TABS: FilterTab[] = [
-  { key: 'ALL',      label: 'ALL' },
-  { key: 'TSHIRTS',  label: 'T-SHIRTS' },
-  { key: 'HOODIES',  label: 'HOODIES' },
-  { key: 'ZIPPERS',  label: 'ZIPPERS' },
-  { key: 'TANKTOPS', label: 'TANK TOPS' },
-  { key: 'NEWIN',    label: 'NEW IN' },
-  { key: 'SALES',    label: 'SALES' },
-]
-
-function getEmptyHeading(activeFilter?: string): string {
-  if (activeFilter === 'NEWIN' || activeFilter === 'SALES') return 'NONE FOUND'
-  return 'COMING SOON'
-}
-
 export function ProductGrid({
   products,
   title = 'Ready to Wear',
@@ -42,9 +30,25 @@ export function ProductGrid({
   filterBase = '',
   genderContext,
 }: Props) {
+  const t = useTranslations('ProductGrid')
+
+  const ALL_TABS: FilterTab[] = [
+    { key: 'ALL',      label: t('filterAll') },
+    { key: 'TSHIRTS',  label: t('filterTShirts') },
+    { key: 'HOODIES',  label: t('filterHoodies') },
+    { key: 'ZIPPERS',  label: t('filterZippers') },
+    { key: 'TANKTOPS', label: t('filterTankTops') },
+    { key: 'NEWIN',    label: t('filterNewIn') },
+    { key: 'SALES',    label: t('filterSales') },
+  ]
+
   const tabs = genderContext === 'women'
-    ? ALL_TABS.filter(t => t.key !== 'TANKTOPS')
+    ? ALL_TABS.filter(tab => tab.key !== 'TANKTOPS')
     : ALL_TABS
+
+  const emptyHeading = (activeFilter === 'NEWIN' || activeFilter === 'SALES')
+    ? t('nonFound')
+    : t('comingSoon')
 
   return (
     <section aria-label={title} className="w-full">
@@ -103,10 +107,10 @@ export function ProductGrid({
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <p className="font-display text-6xl uppercase text-on-surface-muted">
-            {getEmptyHeading(activeFilter)}
+            {emptyHeading}
           </p>
           <p className="mt-3 font-body text-sm text-on-surface-muted">
-            Check back soon for new arrivals.
+            {t('checkBackSoon')}
           </p>
         </div>
       )}

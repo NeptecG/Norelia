@@ -16,7 +16,17 @@ vi.mock('next-intl/server', () => ({
   getMessages: async () => ({}),
   getLocale: async () => 'en',
 }))
-vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    // SizeTable column headers need uppercase values; all other keys fall back to the key name
+    const map: Record<string, string> = {
+      size: 'SIZE', intl: 'INTL', eu: 'EU', uk: 'UK',
+      chest: 'CHEST', waist: 'WAIST', hip: 'HIP',
+      length: 'LENGTH', sleeve: 'SLEEVE',
+    }
+    return map[key] ?? key
+  },
+}))
 vi.mock('@/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
   usePathname: () => '/',

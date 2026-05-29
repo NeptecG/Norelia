@@ -5,8 +5,7 @@ import Image from 'next/image'
 import { Link, useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { Heart, Truck, Shield, RotateCcw, Ruler, ChevronLeft } from 'lucide-react'
-import { cn, catLabel, catLabelPlural, getStock } from '@/lib/utils'
-import { NAV_CAT_TO_SLUG } from '@/lib/constants'
+import { cn, FILTER_TO_SLUG, getStock } from '@/lib/utils'
 import { SIZES } from '@/data/sizes'
 import { GCOLORS } from '@/data/colors'
 import { useCartStore } from '@/stores/cart-store'
@@ -59,10 +58,24 @@ export function ProductPage({ product, initialColor, from }: Props) {
     ? (from === 'women' ? 'women' : 'men')
     : product.gender
   const genderHref  = effectiveGender === 'women' ? '/women' : '/men'
-  const genderLabel = effectiveGender === 'women' ? 'Women' : 'Men'
-  const catKey      = catLabelPlural(product.cat)
-  const catSlug     = NAV_CAT_TO_SLUG[catKey] ?? ''
+  const catSlug     = FILTER_TO_SLUG[product.cat] ?? ''
   const catHref     = `${genderHref}/${catSlug}`
+
+  // Translated cat labels — singular for eyebrow, plural for breadcrumb
+  const catSingularMap: Record<string, string> = {
+    TSHIRTS:  t('catSingularTSHIRTS'),
+    HOODIES:  t('catSingularHOODIES'),
+    ZIPPERS:  t('catSingularZIPPERS'),
+    TANKTOPS: t('catSingularTANKTOPS'),
+  }
+  const catPluralMap: Record<string, string> = {
+    TSHIRTS:  t('catPluralTSHIRTS'),
+    HOODIES:  t('catPluralHOODIES'),
+    ZIPPERS:  t('catPluralZIPPERS'),
+    TANKTOPS: t('catPluralTANKTOPS'),
+    NEWIN:    t('catPluralNEWIN'),
+    SALES:    t('catPluralSALES'),
+  }
 
   // Active image: back view if available and selected, otherwise front
   const activeImg = activeImageSide === 'back' && product.imgBack ? product.imgBack : product.img
@@ -103,7 +116,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           className="flex items-center gap-2 py-3 pr-4 md:py-2 md:pr-3 font-body text-sm md:text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
         >
           <ChevronLeft size={18} strokeWidth={1.5} className="md:w-[15px] md:h-[15px]" />
-          Back
+          {t('back')}
         </button>
       </div>
 
@@ -118,7 +131,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
             {/* Front thumbnail */}
             <button
               type="button"
-              aria-label="View front"
+              aria-label={t('viewFront')}
               onClick={() => setActiveImageSide('front')}
               className={cn(
                 'relative w-[54px] aspect-[3/4] overflow-hidden border transition-colors',
@@ -139,7 +152,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
             {/* Back thumbnail — placeholder until imgBack is set */}
             <button
               type="button"
-              aria-label="View back"
+              aria-label={t('viewBack')}
               onClick={() => setActiveImageSide('back')}
               className={cn(
                 'relative w-[54px] aspect-[3/4] overflow-hidden border transition-colors bg-surface-raised flex items-end justify-center pb-1',
@@ -159,7 +172,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
               ) : (
                 /* Placeholder label until back photo is uploaded */
                 <span className="font-body text-[7px] tracking-[0.1em] uppercase text-on-surface-muted">
-                  Back
+                  {t('backView')}
                 </span>
               )}
             </button>
@@ -184,11 +197,15 @@ export function ProductPage({ product, initialColor, from }: Props) {
           {/* Breadcrumbs */}
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-1 font-body text-[10px] tracking-[0.12em] uppercase text-on-surface-muted">
-              <li><Link href="/">Home</Link></li>
+              <li><Link href="/">{t('breadcrumbHome')}</Link></li>
               <li aria-hidden="true"> / </li>
-              <li><Link href={genderHref}>{genderLabel}</Link></li>
+              <li>
+                <Link href={genderHref}>
+                  {effectiveGender === 'women' ? t('breadcrumbWomen') : t('breadcrumbMen')}
+                </Link>
+              </li>
               <li aria-hidden="true"> / </li>
-              <li><Link href={catHref}>{catLabelPlural(product.cat)}</Link></li>
+              <li><Link href={catHref}>{catPluralMap[product.cat] ?? product.cat}</Link></li>
               <li aria-hidden="true"> / </li>
               <li aria-current="page" data-testid="breadcrumb-current">
                 {product.name}
@@ -196,9 +213,9 @@ export function ProductPage({ product, initialColor, from }: Props) {
             </ol>
           </nav>
 
-          {/* Category + Name + Product code */}
+          {/* Category eyebrow + Name + Product code */}
           <p className="font-body text-[9px] tracking-[0.22em] uppercase text-on-surface-muted mt-6">
-            {catLabel(product.cat)}
+            {catSingularMap[product.cat] ?? product.cat}
           </p>
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mt-1">
             {product.name}
@@ -220,7 +237,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           {/* Color swatches */}
           <div className="mt-6">
             <p className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-2">
-              COLOR: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{selectedColor.name}</span>
+              {t('colorLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{selectedColor.name}</span>
             </p>
             <div className="flex gap-2">
               {GCOLORS.map((c) => (
@@ -289,12 +306,12 @@ export function ProductPage({ product, initialColor, from }: Props) {
           {/* Qty stepper */}
           <div className="mt-5 flex items-center gap-4">
             <span className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface">
-              QTY
+              {t('qtyLabel')}
             </span>
             <div className="flex items-center border border-border">
               <button
                 type="button"
-                aria-label="Decrease quantity"
+                aria-label={t('decreaseQty')}
                 disabled={qty <= 1}
                 onClick={() => setQty(q => Math.max(1, q - 1))}
                 className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
@@ -306,7 +323,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
               </span>
               <button
                 type="button"
-                aria-label="Increase quantity"
+                aria-label={t('increaseQty')}
                 disabled={qty >= stock}
                 onClick={() => setQty(q => Math.min(stock, q + 1))}
                 className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"

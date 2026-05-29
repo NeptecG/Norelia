@@ -125,9 +125,9 @@
     --color-border-val:           #212121;
     --color-border-subtle-val:    #e0e0e0;
 
-    /* Font variable bridges — Noto Sans for both display and body, all locales */
-    --font-display-var: var(--font-noto, Impact, sans-serif);
-    --font-body-var: var(--font-noto, "Helvetica Neue", sans-serif);
+    /* Font bridges — Bebas Neue for display (Latin), Open Sans for body + Greek display fallback */
+    --font-display-var: var(--font-bebas), var(--font-opensans), Impact, sans-serif;
+    --font-body-var: var(--font-opensans), "Helvetica Neue", sans-serif;
   }
 
   .dark {

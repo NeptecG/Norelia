@@ -5,6 +5,21 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 
+// Mock next-intl/server — return English display strings so title assertions pass
+vi.mock('next-intl/server', () => ({
+  getTranslations: async () => (key: string) => {
+    const map: Record<string, string> = {
+      newInTitle:       'NEW IN COLLECTION',
+      newInSubtitle:    'JUST ARRIVED',
+      trendingTitle:    'TRENDING',
+      trendingSubtitle: 'THIS SEASON',
+      onSaleTitle:      'ON SALE',
+      onSaleSubtitle:   'LIMITED TIME OFFERS',
+    }
+    return map[key] ?? key
+  },
+}))
+
 // Mock child components
 vi.mock('@/components/home/hero', () => ({
   Hero: () => <div data-testid="hero" />,

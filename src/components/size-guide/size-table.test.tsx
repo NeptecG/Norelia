@@ -1,7 +1,19 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { SizeTable } from './size-table'
 import type { SizeRow } from '@/types'
+
+// Mock next-intl — return English column header strings so assertions pass
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const map: Record<string, string> = {
+      size: 'SIZE', intl: 'INTL', eu: 'EU', uk: 'UK',
+      chest: 'CHEST', waist: 'WAIST', hip: 'HIP',
+      length: 'LENGTH', sleeve: 'SLEEVE',
+    }
+    return map[key] ?? key
+  },
+}))
 
 // ---------------------------------------------------------------------------
 // Fixtures

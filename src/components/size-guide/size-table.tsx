@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import type { SizeRow } from '@/types'
 
@@ -17,6 +20,7 @@ const tdClass = cn(
 )
 
 export function SizeTable({ rows, mini }: Props) {
+  const t = useTranslations('SizeTable')
   const hasHip = rows.some((r) => r.hip !== undefined)
 
   return (
@@ -24,19 +28,19 @@ export function SizeTable({ rows, mini }: Props) {
       <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th className={thClass}>SIZE</th>
+            <th className={thClass}>{t('size')}</th>
             {!mini && (
               <>
-                <th className={thClass}>INTL</th>
-                <th className={thClass}>EU</th>
-                <th className={thClass}>UK</th>
+                <th className={thClass}>{t('intl')}</th>
+                <th className={thClass}>{t('eu')}</th>
+                <th className={thClass}>{t('uk')}</th>
               </>
             )}
-            <th className={thClass}>CHEST</th>
-            <th className={thClass}>WAIST</th>
-            {hasHip && <th className={thClass}>HIP</th>}
-            <th className={thClass}>LENGTH</th>
-            <th className={thClass}>SLEEVE</th>
+            <th className={thClass}>{t('chest')}</th>
+            <th className={thClass}>{t('waist')}</th>
+            {hasHip && <th className={thClass}>{t('hip')}</th>}
+            <th className={thClass}>{t('length')}</th>
+            <th className={thClass}>{t('sleeve')}</th>
           </tr>
         </thead>
         <tbody>

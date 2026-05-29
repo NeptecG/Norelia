@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { ProductGrid } from '@/components/products/product-grid'
 import { byGender, CAT_SLUG_TO_FILTER, catLabelPlural } from '@/lib/utils'
 
@@ -47,13 +48,24 @@ export default async function CategoryPage({ params }: Props) {
     products = pool.filter(p => p.cat === filter)
   }
 
+  const tG = await getTranslations('GenderPage')
+
+  const catTitleMap: Record<string, string> = {
+    TSHIRTS:  tG('catTSHIRTS'),
+    HOODIES:  tG('catHOODIES'),
+    ZIPPERS:  tG('catZIPPERS'),
+    TANKTOPS: tG('catTANKTOPS'),
+    NEWIN:    tG('catNEWIN'),
+    SALES:    tG('catSALES'),
+  }
+
   return (
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <ProductGrid
           products={products}
-          title={catLabelPlural(filter).toUpperCase()}
-          subtitle={gender === 'men' ? 'MEN' : 'WOMEN'}
+          title={catTitleMap[filter] ?? catLabelPlural(filter).toUpperCase()}
+          subtitle={gender === 'men' ? tG('men') : tG('women')}
           activeFilter={filter}
           filterBase={`/${gender}`}
           genderContext={g}

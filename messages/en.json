@@ -17,7 +17,13 @@
     "closePanel": "Close",
     "searchTooltip": "Search",
     "favoritesTooltip": "Favorites",
-    "cartTooltip": "Cart"
+    "cartTooltip": "Cart",
+    "catNewIn": "New In",
+    "catTShirts": "T-Shirts",
+    "catHoodies": "Hoodies",
+    "catZippers": "Zippers",
+    "catTankTops": "Tank Tops",
+    "catSales": "Sales"
   },
   "Hero": {
     "srHeading": "NORELIA. Premium Streetwear",
@@ -42,7 +48,15 @@
   "ProductGrid": {
     "nonFound": "NONE FOUND",
     "comingSoon": "COMING SOON",
-    "styles": "styles"
+    "styles": "styles",
+    "filterAll": "ALL",
+    "filterTShirts": "T-SHIRTS",
+    "filterHoodies": "HOODIES",
+    "filterZippers": "ZIPPERS",
+    "filterTankTops": "TANK TOPS",
+    "filterNewIn": "NEW IN",
+    "filterSales": "SALES",
+    "checkBackSoon": "Check back soon for new arrivals."
   },
   "ProductCard": {
     "addToFavorites": "Add to favorites",
@@ -72,7 +86,28 @@
     "measurementsCm": "measurements in cm",
     "freeShippingBadge": "Free shipping €60+",
     "secureCheckout": "Secure checkout",
-    "returnsPolicy": "30-day returns"
+    "returnsPolicy": "30-day returns",
+    "back": "Back",
+    "breadcrumbHome": "Home",
+    "breadcrumbMen": "Men",
+    "breadcrumbWomen": "Women",
+    "colorLabel": "COLOR",
+    "qtyLabel": "QTY",
+    "viewFront": "View front",
+    "viewBack": "View back",
+    "backView": "Back",
+    "decreaseQty": "Decrease quantity",
+    "increaseQty": "Increase quantity",
+    "catSingularTSHIRTS": "T-Shirt",
+    "catSingularHOODIES": "Hoodie",
+    "catSingularZIPPERS": "Zip Hoodie",
+    "catSingularTANKTOPS": "Tank Top",
+    "catPluralTSHIRTS": "T-Shirts",
+    "catPluralHOODIES": "Hoodies",
+    "catPluralZIPPERS": "Zippers",
+    "catPluralTANKTOPS": "Tank Tops",
+    "catPluralNEWIN": "New In",
+    "catPluralSALES": "Sale"
   },
   "SidePanel": {
     "cart": "MY CART",
@@ -274,6 +309,35 @@
   "GenderPage": {
     "men": "MEN",
     "women": "WOMEN",
-    "styles": "styles"
+    "styles": "styles",
+    "catTSHIRTS": "T-SHIRTS",
+    "catHOODIES": "HOODIES",
+    "catZIPPERS": "ZIPPERS",
+    "catTANKTOPS": "TANK TOPS",
+    "catNEWIN": "NEW IN",
+    "catSALES": "SALE"
+  },
+  "RelatedProducts": {
+    "morePrefix": "MORE",
+    "catTSHIRTS": "T-SHIRTS",
+    "catHOODIES": "HOODIES",
+    "catZIPPERS": "ZIPPERS",
+    "catTANKTOPS": "TANK TOPS",
+    "catNEWIN": "NEW IN",
+    "catSALES": "SALE"
+  },
+  "RecentlyViewedStrip": {
+    "heading": "RECENTLY VIEWED"
+  },
+  "SizeTable": {
+    "size": "SIZE",
+    "intl": "INTL",
+    "eu": "EU",
+    "uk": "UK",
+    "chest": "CHEST",
+    "waist": "WAIST",
+    "hip": "HIP",
+    "length": "LENGTH",
+    "sleeve": "SLEEVE"
   }
 }

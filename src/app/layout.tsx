@@ -1,14 +1,23 @@
 import type { Metadata } from 'next'
-import { Noto_Sans } from 'next/font/google'
+import { Bebas_Neue, Open_Sans } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import './globals.css'
 import { BRAND } from '@/lib/constants'
 
-// Noto Sans — full Latin + Greek coverage, used for both display and body across all locales
-const notoSans = Noto_Sans({
+// Bebas Neue — condensed all-caps display font for English headings and brand marks
+const bebasNeue = Bebas_Neue({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-bebas',
+  display: 'swap',
+})
+
+// Open Sans — clean humanist sans with full Greek + Latin support, used for all body text
+// and as the Greek fallback for display (Bebas has no Greek glyphs)
+const openSans = Open_Sans({
   subsets: ['latin', 'greek'],
-  weight: ['300', '400', '500', '700'],
-  variable: '--font-noto',
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-opensans',
   display: 'swap',
 })
 
@@ -23,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale}
-      className={`${notoSans.variable}`}
+      className={`${bebasNeue.variable} ${openSans.variable}`}
     >
       <body className="font-body bg-surface text-on-surface antialiased">
         {children}
