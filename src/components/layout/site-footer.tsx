@@ -36,7 +36,7 @@ function BrandColumn({ t }: { t: TFooter }) {
   return (
     <div>
       <FooterHeading>{t('premiumStreetware')}</FooterHeading>
-      <p className={cn('font-display text-[22px] tracking-[0.2em] text-on-surface mb-7')}>
+      <p className={cn('font-brand text-[22px] tracking-[0.2em] text-on-surface mb-7')}>
         {BRAND}
       </p>
       <div className="flex gap-4">

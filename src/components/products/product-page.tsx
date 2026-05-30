@@ -260,9 +260,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface">
-                {t('sizeLabel')}{selectedSize
-                  ? <span className="normal-case tracking-normal font-normal text-on-surface-muted ml-1">{selectedSize}</span>
-                  : null}
+                {t('sizeLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{selectedSize ?? ''}</span>
               </span>
               {/* Ruler icon replaces arrow per design feedback */}
               <button

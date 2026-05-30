@@ -60,6 +60,7 @@
   /* Norelia font tokens */
   --font-display: var(--font-display-var, Impact, sans-serif);
   --font-body: var(--font-body-var, "Helvetica Neue", sans-serif);
+  --font-brand: var(--font-brand-var, Impact, sans-serif);
 
   /* Ticker animation */
   --animate-ticker: ticker 22s linear infinite;
@@ -128,6 +129,8 @@
     /* Font bridges — Fira Sans Condensed for both display and body (full Greek + Latin) */
     --font-display-var: var(--font-fira), "Arial Narrow", sans-serif;
     --font-body-var: var(--font-fira), "Helvetica Neue", sans-serif;
+    /* Bebas Neue reserved for the NORELIA. brand wordmark (font-brand utility) */
+    --font-brand-var: var(--font-bebas), Impact, sans-serif;
   }
 
   .dark {

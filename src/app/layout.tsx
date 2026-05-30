@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Fira_Sans_Condensed } from 'next/font/google'
+import { Fira_Sans_Condensed, Bebas_Neue } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import './globals.css'
 import { BRAND } from '@/lib/constants'
@@ -10,6 +10,15 @@ const firaSans = Fira_Sans_Condensed({
   subsets: ['latin', 'greek'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-fira',
+  display: 'swap',
+})
+
+// Bebas Neue — reserved for the NORELIA. brand wordmark only (Latin-only, no Greek
+// needed since the wordmark is the same in both locales).
+const bebasNeue = Bebas_Neue({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-bebas',
   display: 'swap',
 })
 
@@ -24,7 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale}
-      className={firaSans.variable}
+      className={`${firaSans.variable} ${bebasNeue.variable}`}
     >
       <body className="font-body bg-surface text-on-surface antialiased">
         {children}

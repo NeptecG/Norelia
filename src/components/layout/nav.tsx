@@ -121,7 +121,7 @@ export function Nav() {
         <div className="max-w-[1440px] mx-auto px-[60px] flex items-center justify-between h-[54px] relative z-10">
 
           {/* Brand */}
-          <Link href="/" className="font-display text-[22px] tracking-[0.2em] text-on-surface shrink-0">
+          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0">
             {BRAND}
           </Link>
 
