@@ -22,7 +22,7 @@ type FrontPresetId = 'logo' | 'standard' | 'oversized'
 type BackPresetId  = 'standard' | 'oversized'
 
 interface DesignImgState { el: HTMLImageElement | null; x: number; y: number; w: number; h: number }
-interface PrintPreset    { id: string; cm: string; label: string; desc: string; svgX: number; svgY: number; svgW: number; svgH: number }
+interface PrintPreset    { id: string; cm: string; label: string; desc: string; descKey: string; svgX: number; svgY: number; svgW: number; svgH: number }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -31,14 +31,14 @@ const CW = 272
 const CH = 310
 
 const FRONT_PRESETS: PrintPreset[] = [
-  { id: 'logo',      cm: '8×8 cm',   label: 'Logo',      desc: 'Left Breast',  svgX: 211, svgY: 128, svgW: 62,  svgH: 62  },
-  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Chest', svgX: 157, svgY: 160, svgW: 86,  svgH: 86  },
-  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Chest', svgX: 132, svgY: 150, svgW: 136, svgH: 136 },
+  { id: 'logo',      cm: '8×8 cm',   label: 'Logo',      desc: 'Left Breast',  descKey: 'presetDescLeftBreast',  svgX: 211, svgY: 128, svgW: 62,  svgH: 62  },
+  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Chest', descKey: 'presetDescCentreChest', svgX: 157, svgY: 160, svgW: 86,  svgH: 86  },
+  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Chest', descKey: 'presetDescCentreChest', svgX: 132, svgY: 150, svgW: 136, svgH: 136 },
 ]
 
 const BACK_PRESETS: PrintPreset[] = [
-  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Back',  svgX: 157, svgY: 155, svgW: 86,  svgH: 86  },
-  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Back',  svgX: 132, svgY: 145, svgW: 136, svgH: 136 },
+  { id: 'standard',  cm: '20×20 cm', label: 'Standard',  desc: 'Centre Back',  descKey: 'presetDescCentreBack',  svgX: 157, svgY: 155, svgW: 86,  svgH: 86  },
+  { id: 'oversized', cm: '30×30 cm', label: 'Oversized', desc: 'Centre Back',  descKey: 'presetDescCentreBack',  svgX: 132, svgY: 145, svgW: 136, svgH: 136 },
 ]
 
 const GARMENT_TYPES:  GarmentType[] = ['tshirt', 'hoodie', 'zipper']
@@ -50,16 +50,17 @@ const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surfa
 
 // ─── Order schema ─────────────────────────────────────────────────────────────
 
-const orderSchema = z.object({
-  name:    z.string().min(2, 'Name is required'),
-  phone:   z.string().min(4, 'Phone is required'),
-  email:   z.string().email('Valid email required'),
-  address: z.string().min(3, 'Address is required'),
-  city:    z.string().min(2, 'City is required'),
-  zip:     z.string().min(3, 'Postcode is required'),
+// Type-only schema — no validation messages, used solely for type inference
+const _orderSchemaShape = z.object({
+  name:    z.string(),
+  phone:   z.string(),
+  email:   z.string().email(),
+  address: z.string(),
+  city:    z.string(),
+  zip:     z.string(),
   notes:   z.string().max(500).optional(),
 })
-export type OrderFields = z.infer<typeof orderSchema>
+export type OrderFields = z.infer<typeof _orderSchemaShape>
 
 // ─── Sub-component interfaces ─────────────────────────────────────────────────
 
@@ -352,8 +353,15 @@ export function SideToggle({ side, hasDesign, onToggle }: SideToggleProps) {
 export function PrintPresetSelector({
   side, frontPreset, backPreset, onFrontChange, onBackChange,
 }: PrintPresetSelectorProps) {
+  const t       = useTranslations('GarmentDesigner')
   const presets = side === 'front' ? FRONT_PRESETS : BACK_PRESETS
   const active  = side === 'front' ? frontPreset : backPreset
+
+  const presetLabelMap: Record<string, string> = {
+    logo:      t('presetLogo'),
+    standard:  t('presetStandard'),
+    oversized: t('presetOversized'),
+  }
 
   function handleChange(id: string) {
     if (side === 'front') onFrontChange(id as FrontPresetId)
@@ -362,7 +370,7 @@ export function PrintPresetSelector({
 
   return (
     <div className="mt-2.5">
-      <p className={cn(LABEL_CLS, 'mb-1.5')}>Print Area Guide</p>  {/* intentionally not translated — technical label */}
+      <p className={cn(LABEL_CLS, 'mb-1.5')}>{t('printAreaGuide')}</p>
       <div className="flex gap-1">
         {presets.map((p) => (
           <button
@@ -377,9 +385,9 @@ export function PrintPresetSelector({
                 : 'bg-surface text-on-surface-muted border-border-subtle hover:border-on-surface',
             )}
           >
-            <span className="block font-body text-[9px] font-bold tracking-[0.16em] uppercase">{p.label}</span>
+            <span className="block font-body text-[9px] font-bold tracking-[0.16em] uppercase">{presetLabelMap[p.id] ?? p.label}</span>
             <span className="block font-body text-[8px] opacity-65 mt-0.5">{p.cm}</span>
-            <span className="block font-body text-[7px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{p.desc}</span>
+            <span className="block font-body text-[7px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{t(p.descKey as 'presetDescLeftBreast')}</span>
           </button>
         ))}
       </div>
@@ -782,6 +790,12 @@ export function OrderSummaryTable({
     zipper: t('garmentZipper'),
   }
 
+  const presetLabelMap: Record<string, string> = {
+    logo:      t('presetLogo'),
+    standard:  t('presetStandard'),
+    oversized: t('presetOversized'),
+  }
+
   const sides = hasDesign.front && hasDesign.back
     ? t('frontAndBack')
     : hasDesign.front ? t('frontOnly') : t('backOnly')
@@ -793,8 +807,8 @@ export function OrderSummaryTable({
     [t('rowFit'),       fit === 'oversized' ? t('fitOversizedFull') : t('fitNormalFull')],
     [t('rowPrint'),     printMethod === 'dtg' ? t('printDtgFull') : t('printEmbroideryFull')],
     [t('rowSides'),     sides],
-    ...(hasDesign.front ? [[t('rowPosFront'), `${frontP.label}, ${frontP.cm}`] as [string, string]] : []),
-    ...(hasDesign.back  ? [[t('rowPosBack'),  `${backP.label}, ${backP.cm}`]  as [string, string]] : []),
+    ...(hasDesign.front ? [[t('rowPosFront'), `${presetLabelMap[frontP.id] ?? frontP.label}, ${frontP.cm}`] as [string, string]] : []),
+    ...(hasDesign.back  ? [[t('rowPosBack'),  `${presetLabelMap[backP.id]  ?? backP.label}, ${backP.cm}`]  as [string, string]] : []),
     [t('rowUnitPrice'), price !== null ? `€${price.toFixed(2)}` : '-'],
     [t('rowQty'),       String(qty)],
     [t('rowTotal'),     total !== null ? `€${total.toFixed(2)}` : '-'],
@@ -822,8 +836,18 @@ export function OrderSummaryTable({
 
 export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
   const t = useTranslations('GarmentDesigner')
+  // Schema created inside the component so validation messages are locale-aware
+  const schema = React.useMemo(() => z.object({
+    name:    z.string().min(2, t('validationName')),
+    phone:   z.string().min(4, t('validationPhone')),
+    email:   z.string().email(t('validationEmail')),
+    address: z.string().min(3, t('validationAddress')),
+    city:    z.string().min(2, t('validationCity')),
+    zip:     z.string().min(3, t('validationZip')),
+    notes:   z.string().max(500).optional(),
+  }), [t])
   const { register, handleSubmit, formState: { errors } } = useForm<OrderFields>({
-    resolver: zodResolver(orderSchema),
+    resolver: zodResolver(schema),
   })
 
   const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-sm bg-surface border border-on-surface text-on-surface focus:outline-none'
@@ -844,7 +868,7 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
       </div>
       <div className="mb-3.5">
         <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldEmail')}</label>
-        <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder="customer@email.com"/>
+        <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder={t('emailPlaceholder')}/>
         {errors.email && <p className="font-body text-xs text-destructive mt-1">{errors.email.message}</p>}
       </div>
       <div className="mb-3.5">
@@ -1154,7 +1178,7 @@ export function GarmentDesigner() {
       setStep('success')
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
-      setSendErr('Error: ' + msg)
+      setSendErr(t('sendErrorPrefix') + ': ' + msg)
     } finally {
       setIsSubmitting(false)
     }
@@ -1230,14 +1254,14 @@ export function GarmentDesigner() {
             {showEjs && (
               <div className="border border-on-surface border-t-0 p-4 bg-surface-raised">
                 <p className="font-body text-[11px] text-on-surface-muted leading-relaxed mb-3">
-                  Sign up at emailjs.com → connect service → create template → paste credentials.
+                  {t('emailjsNote')}
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                   {([
-                    ['Recipient Email', 'shop@gmail.com',  ejsRecip, setEjsRecip],
-                    ['Public Key',      'xxxxxxxxxxxx',    ejsKey,   setEjsKey  ],
-                    ['Service ID',      'service_xxx',     ejsSvc,   setEjsSvc  ],
-                    ['Template ID',     'template_xxx',    ejsTpl,   setEjsTpl  ],
+                    [t('emailjsRecipientLabel'), 'shop@gmail.com',  ejsRecip, setEjsRecip],
+                    [t('emailjsPublicKeyLabel'),  'xxxxxxxxxxxx',    ejsKey,   setEjsKey  ],
+                    [t('emailjsServiceLabel'),    'service_xxx',     ejsSvc,   setEjsSvc  ],
+                    [t('emailjsTemplateLabel'),   'template_xxx',    ejsTpl,   setEjsTpl  ],
                   ] as [string, string, string, (v: string) => void][]).map(([l, ph, v, s]) => (
                     <div key={l}>
                       <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{l}</p>

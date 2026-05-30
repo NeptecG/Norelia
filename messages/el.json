@@ -230,7 +230,9 @@
     "specialInstructions": "Ειδικές Οδηγίες (προαιρετικά)",
     "notesPlaceholder": "Δώρο, σημειώσεις παράδοσης, κ.λπ.",
     "placeOrderLabel": "Ολοκλήρωση παραγγελίας",
-    "placeOrder": "ΟΛΟΚΛΗΡΩΣΗ ΠΑΡΑΓΓΕΛΙΑΣ"
+    "placeOrder": "ΟΛΟΚΛΗΡΩΣΗ ΠΑΡΑΓΓΕΛΙΑΣ",
+    "couponOffLabel": "έκπτωση",
+    "couponSavedLabel": "εξοικονομήσατε"
   },
   "ScrollToTop": {
     "label": "Επιστροφή στην αρχή",
@@ -478,6 +480,26 @@
     "emailjsSettings": "Ρυθμίσεις EmailJS",
     "uploadFirst": "Ανέβασε πρώτα ένα σχέδιο.",
     "oversizedSurcharge": "+€4 oversized",
-    "embroiderySurcharge": "+€7 κέντημα"
+    "embroiderySurcharge": "+€7 κέντημα",
+    "printAreaGuide": "Οδηγός Εκτύπωσης",
+    "presetLogo": "Logo",
+    "presetStandard": "Κανονικό",
+    "presetOversized": "Oversized",
+    "presetDescLeftBreast": "Αριστερό Στήθος",
+    "presetDescCentreChest": "Κέντρο Στήθους",
+    "presetDescCentreBack": "Κέντρο Πλάτης",
+    "validationName": "Το όνομα είναι υποχρεωτικό",
+    "validationPhone": "Το τηλέφωνο είναι υποχρεωτικό",
+    "validationEmail": "Απαιτείται έγκυρο email",
+    "validationAddress": "Η διεύθυνση είναι υποχρεωτική",
+    "validationCity": "Η πόλη είναι υποχρεωτική",
+    "validationZip": "Ο ταχυδρομικός κώδικας είναι υποχρεωτικός",
+    "emailPlaceholder": "customer@email.com",
+    "emailjsNote": "Εγγραφή στο emailjs.com, σύνδεση υπηρεσίας, δημιουργία template και επικόλληση των στοιχείων.",
+    "emailjsRecipientLabel": "Email Παραλήπτη",
+    "emailjsPublicKeyLabel": "Δημόσιο Κλειδί",
+    "emailjsServiceLabel": "Service ID",
+    "emailjsTemplateLabel": "Template ID",
+    "sendErrorPrefix": "Σφάλμα"
   }
 }

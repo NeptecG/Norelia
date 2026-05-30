@@ -230,7 +230,9 @@
     "specialInstructions": "Special Instructions (optional)",
     "notesPlaceholder": "Gift wrap, delivery notes, etc.",
     "placeOrderLabel": "Place order",
-    "placeOrder": "PLACE ORDER"
+    "placeOrder": "PLACE ORDER",
+    "couponOffLabel": "off",
+    "couponSavedLabel": "saved"
   },
   "ScrollToTop": {
     "label": "Scroll to top",
@@ -478,6 +480,26 @@
     "emailjsSettings": "EmailJS Settings",
     "uploadFirst": "Upload at least one design first.",
     "oversizedSurcharge": "+€4 oversized",
-    "embroiderySurcharge": "+€7 embroidery"
+    "embroiderySurcharge": "+€7 embroidery",
+    "printAreaGuide": "Print Area Guide",
+    "presetLogo": "Logo",
+    "presetStandard": "Standard",
+    "presetOversized": "Oversized",
+    "presetDescLeftBreast": "Left Breast",
+    "presetDescCentreChest": "Centre Chest",
+    "presetDescCentreBack": "Centre Back",
+    "validationName": "Name is required",
+    "validationPhone": "Phone is required",
+    "validationEmail": "Valid email required",
+    "validationAddress": "Address is required",
+    "validationCity": "City is required",
+    "validationZip": "Postcode is required",
+    "emailPlaceholder": "customer@email.com",
+    "emailjsNote": "Sign up at emailjs.com, connect a service, create a template, then paste credentials below.",
+    "emailjsRecipientLabel": "Recipient Email",
+    "emailjsPublicKeyLabel": "Public Key",
+    "emailjsServiceLabel": "Service ID",
+    "emailjsTemplateLabel": "Template ID",
+    "sendErrorPrefix": "Error"
   }
 }

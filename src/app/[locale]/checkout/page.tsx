@@ -230,10 +230,10 @@ export function OrderSummary({
           {appliedCoupon ? (
             <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
               <p className="font-body text-xs text-success tracking-wide">
-                {appliedCoupon} · {Math.round(discountRate * 100)}% off ✓
+                {appliedCoupon} · {Math.round(discountRate * 100)}% {t('couponOffLabel')} ✓
                 {discountAmt > 0 && (
                   <span className="ml-1 text-on-surface/40 font-normal normal-case">
-                    (saved €{discountAmt.toFixed(2)})
+                    ({t('couponSavedLabel')} €{discountAmt.toFixed(2)})
                   </span>
                 )}
               </p>
