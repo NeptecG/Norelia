@@ -132,7 +132,7 @@ export function Nav() {
             <Link
               href="/"
               aria-current={pathname === '/' ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
             >
               {t('home')}
               <span className={cn(
@@ -153,7 +153,7 @@ export function Nav() {
                 aria-expanded={activeMenu === 'men'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/men') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 {t('men')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' || pathname.startsWith('/men') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
@@ -202,7 +202,7 @@ export function Nav() {
                 aria-expanded={activeMenu === 'women'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/women') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 {t('women')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' || pathname.startsWith('/women') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
@@ -243,7 +243,7 @@ export function Nav() {
             <Link
               href="/studio"
               aria-current={pathname.startsWith('/studio') ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
             >
               {t('designYourOwn')}
               <span className={cn(
@@ -501,12 +501,12 @@ export function Nav() {
       {mobMenuOpen && (
         <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2">
 
-          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('home')}</Link>
+          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('home')}</Link>
 
           {/* Men accordion */}
           <button
             onClick={() => setMobExpanded(e => e === 'men' ? null : 'men')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7"
+            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
           >
             <span>{t('men')}</span>
             <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'men' ? '−' : '+'}</span>
@@ -525,7 +525,7 @@ export function Nav() {
           {/* Women accordion */}
           <button
             onClick={() => setMobExpanded(e => e === 'women' ? null : 'women')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7"
+            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
           >
             <span>{t('women')}</span>
             <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'women' ? '−' : '+'}</span>
@@ -541,7 +541,7 @@ export function Nav() {
             </Link>
           ))}
 
-          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('designYourOwn')}</Link>
+          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('designYourOwn')}</Link>
 
           <button
             onClick={() => { setShowSignIn(true); setMobMenuOpen(false); setMobExpanded(null) }}
