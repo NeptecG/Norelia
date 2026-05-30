@@ -122,9 +122,7 @@ function ContactColumn({ t }: { t: TFooter }) {
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         {t('saturday')}
       </p>
-      <div className="mt-1">
-        <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
-      </div>
+      <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
     </div>
   )
 }
