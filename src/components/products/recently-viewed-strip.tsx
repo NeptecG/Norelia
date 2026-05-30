@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/navigation'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { RECENTLY_VIEWED_MAX } from '@/lib/constants'
 import { useUIStore } from '@/stores/ui-store'
 
 export function RecentlyViewedStrip() {
@@ -24,7 +25,7 @@ export function RecentlyViewedStrip() {
             '[&>*]:[scroll-snap-align:start]',
           )}
         >
-          {recentlyViewed.slice(0, 8).map(product => (
+          {recentlyViewed.slice(0, RECENTLY_VIEWED_MAX).map(product => (
             <Link
               key={product.id}
               href={`/product/${product.code}`}

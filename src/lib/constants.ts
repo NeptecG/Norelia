@@ -17,7 +17,7 @@ export const NAV_CAT_TO_SLUG: Record<string, string> = {
 
 export const STORAGE_TTL_MS         = 7 * 24 * 60 * 60 * 1000  // 7 days
 export const TOAST_DURATION_MS      = 2500
-export const RECENTLY_VIEWED_MAX    = 8
+export const RECENTLY_VIEWED_MAX    = 6
 export const SCROLL_TOP_THRESHOLD   = 400
 export const CART_COOLDOWN_MS       = 1000
 export const FAV_COOLDOWN_MS        = 1000
