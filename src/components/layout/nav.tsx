@@ -274,7 +274,7 @@ export function Nav() {
                 className="group relative flex items-center text-on-surface/82 hover:text-on-surface transition-colors"
               >
                 <Search size={16} />
-                <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[50px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+                <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[110px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
                   {t('searchTooltip')}
                 </span>
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
@@ -331,7 +331,7 @@ export function Nav() {
                   </span>
                 )}
               </span>
-              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[62px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[110px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
                 {t('favoritesTooltip')}
               </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
@@ -351,7 +351,7 @@ export function Nav() {
                   </span>
                 )}
               </span>
-              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[36px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
+              <span className="overflow-hidden opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[110px] transition-[opacity,max-width] duration-200 ease-out pointer-events-none ml-1.5 font-body text-[9px] tracking-[0.18em] uppercase whitespace-nowrap">
                 {t('cartTooltip')}
               </span>
               <span className="absolute -bottom-1 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
