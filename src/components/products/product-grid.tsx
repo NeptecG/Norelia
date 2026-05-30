@@ -53,7 +53,7 @@ export function ProductGrid({
   return (
     <section aria-label={title} className="w-full">
       {/* Section header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-8 md:mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-body text-xs uppercase tracking-widest text-on-surface-muted">
             {subtitle}

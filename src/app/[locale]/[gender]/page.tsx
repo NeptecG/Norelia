@@ -61,7 +61,7 @@ export default async function GenderPage({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-screen pt-20 bg-surface">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-16 md:py-[60px]">
         <ProductGrid
           products={products}
           title={gender === 'men' ? tG('men') : tG('women')}
