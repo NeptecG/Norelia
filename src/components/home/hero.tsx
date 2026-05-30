@@ -100,7 +100,7 @@ function HeroHalf({
       <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1">
         {/* SHOP eyebrow — fades in on hover */}
         <motion.span
-          className="font-body text-[9px] tracking-[0.3em] uppercase text-white/60"
+          className="font-body text-[11px] tracking-[0.3em] uppercase text-white/60"
           variants={eyebrowVariants}
           animate={animateState}
           transition={{ duration: 0.25 }}
