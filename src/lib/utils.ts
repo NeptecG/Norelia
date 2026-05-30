@@ -62,26 +62,3 @@ export const FILTER_TO_SLUG: Record<string, string> = {
   SALES:    'sale',
 }
 
-export function catLabel(cat: string): string {
-  const map: Record<string, string> = {
-    TSHIRTS:  'T-Shirt',
-    HOODIES:  'Hoodie',
-    ZIPPERS:  'Zip Hoodie',
-    TANKTOPS: 'Tank Top',
-    NEWIN:    'New In',
-    SALES:    'Sale',
-  }
-  return map[cat] ?? cat
-}
-
-export function catLabelPlural(cat: string): string {
-  const map: Record<string, string> = {
-    TSHIRTS:  'T-Shirts',
-    HOODIES:  'Hoodies',
-    ZIPPERS:  'Zippers',
-    TANKTOPS: 'Tank Tops',
-    NEWIN:    'New In',
-    SALES:    'Sale',
-  }
-  return map[cat] ?? cat
-}

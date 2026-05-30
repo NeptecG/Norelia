@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ProductGrid } from '@/components/products/product-grid'
-import { byGender, CAT_SLUG_TO_FILTER, catLabelPlural } from '@/lib/utils'
+import { byGender, CAT_SLUG_TO_FILTER } from '@/lib/utils'
 
 const VALID_GENDERS = ['men', 'women']
 const VALID_CATS    = Object.keys(CAT_SLUG_TO_FILTER)
@@ -18,13 +18,23 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { gender, category } = await params
+  const { locale, gender, category } = await params
   const filter = CAT_SLUG_TO_FILTER[category]
   if (!filter || !VALID_GENDERS.includes(gender)) return {}
-  const genderLabel = gender === 'men' ? 'Men' : 'Women'
+  const tG = await getTranslations({ locale, namespace: 'GenderPage' })
+  const catNames: Record<string, string> = {
+    TSHIRTS:  tG('catTSHIRTS'),
+    HOODIES:  tG('catHOODIES'),
+    ZIPPERS:  tG('catZIPPERS'),
+    TANKTOPS: tG('catTANKTOPS'),
+    NEWIN:    tG('catNEWIN'),
+    SALES:    tG('catSALES'),
+  }
+  const genderLabel = gender === 'men' ? tG('men') : tG('women')
+  const catName     = catNames[filter] ?? filter
   return {
-    title: `${catLabelPlural(filter)} · ${genderLabel}`,
-    description: `Shop ${genderLabel.toLowerCase()}'s ${catLabelPlural(filter).toLowerCase()} from Norelia.`,
+    title:       `${catName} · ${genderLabel}`,
+    description: `Shop ${genderLabel.toLowerCase()} ${catName.toLowerCase()} from Norelia.`,
   }
 }
 
@@ -64,7 +74,7 @@ export default async function CategoryPage({ params }: Props) {
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <ProductGrid
           products={products}
-          title={catTitleMap[filter] ?? catLabelPlural(filter).toUpperCase()}
+          title={catTitleMap[filter] ?? filter}
           subtitle={gender === 'men' ? tG('men') : tG('women')}
           activeFilter={filter}
           filterBase={`/${gender}`}
