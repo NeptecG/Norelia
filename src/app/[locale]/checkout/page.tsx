@@ -9,14 +9,14 @@ import { Trash2 } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
-import { parsePriceNumber, catLabel, getStock } from '@/lib/utils'
+import { parsePriceNumber, getStock } from '@/lib/utils'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import type { CartItem } from '@/types'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
 // ---------------------------------------------------------------------------
-// CartTableRow — one <tr> per cart item, matches NOIR column layout
+// CartTableRow — one <tr> per cart item
 // ---------------------------------------------------------------------------
 
 interface CartTableRowProps {
@@ -29,8 +29,18 @@ interface CartTableRowProps {
 }
 
 export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, onRemove }: CartTableRowProps) {
+  const t = useTranslations('CheckoutPage')
   const unitPrice = item.salePrice != null ? item.salePrice : parsePriceNumber(item.price)
   const lineTotal = (unitPrice * item.qty).toFixed(2)
+
+  const catLabelMap: Record<string, string> = {
+    TSHIRTS:  t('catSingularTSHIRTS'),
+    HOODIES:  t('catSingularHOODIES'),
+    ZIPPERS:  t('catSingularZIPPERS'),
+    TANKTOPS: t('catSingularTANKTOPS'),
+    NEWIN:    t('catSingularNEWIN'),
+    SALES:    t('catSingularSALES'),
+  }
 
   return (
     <motion.tr
@@ -48,7 +58,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
           </div>
           <div className="min-w-0">
             <p className="font-body text-[9px] tracking-[0.18em] uppercase text-on-surface/50 mb-1">
-              {catLabel(item.cat)}
+              {catLabelMap[item.cat] ?? item.cat}
             </p>
             <p className="font-display text-xl text-on-surface leading-tight">
               {item.name}
@@ -65,7 +75,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
         <div className="flex items-center border border-border w-fit mx-auto">
           <button
             type="button"
-            aria-label="Decrease quantity"
+            aria-label={t('decreaseQty')}
             disabled={item.qty <= 1}
             onClick={() => onDecrement(item.id)}
             className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
@@ -77,7 +87,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
           </span>
           <button
             type="button"
-            aria-label="Increase quantity"
+            aria-label={t('increaseQty')}
             disabled={item.qty >= stock}
             onClick={() => onIncrement(item.id)}
             className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
@@ -91,7 +101,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
       <td className="py-5 px-4 align-middle text-center">
         <button
           type="button"
-          aria-label={`Remove ${item.name} from cart`}
+          aria-label={t('removeFromCart', { name: item.name })}
           onClick={() => onRemove(item.id)}
           className="text-on-surface/40 hover:text-destructive transition-colors"
         >
@@ -120,7 +130,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
 }
 
 // ---------------------------------------------------------------------------
-// OrderSummary — right panel (dark box, kept per user request)
+// OrderSummary — right panel (dark box)
 // ---------------------------------------------------------------------------
 
 interface OrderSummaryProps {
@@ -148,36 +158,36 @@ export function OrderSummary({
   onCouponChange, onCouponApply, onCouponRemove,
   onNotesChange, onPlaceOrder,
 }: OrderSummaryProps) {
+  const t = useTranslations('CheckoutPage')
   const freeShipping = afterDiscount >= FREE_SHIPPING_THRESHOLD
   const remaining    = (FREE_SHIPPING_THRESHOLD - afterDiscount).toFixed(2)
   const progressPct  = Math.min((afterDiscount / FREE_SHIPPING_THRESHOLD) * 100, 100)
 
   return (
-    // `dark` forces dark-mode tokens so text-on-surface is readable on bg-surface-alt
     <aside className="dark lg:sticky lg:top-24 h-fit bg-surface-alt border border-border">
 
       {/* ── Heading ── */}
       <div className="px-6 pt-6 pb-5 border-b border-border">
-        <h2 className="font-display text-2xl text-on-surface tracking-widest">ORDER SUMMARY</h2>
+        <h2 className="font-display text-2xl text-on-surface tracking-widest">{t('orderSummary')}</h2>
       </div>
 
       <div className="px-6 py-5">
         {/* ── Subtotal (excl. VAT) ── */}
         <div className="flex justify-between font-body text-sm mb-2.5">
-          <span className="text-on-surface/60">Subtotal</span>
+          <span className="text-on-surface/60">{t('subtotal')}</span>
           <span className="text-on-surface">€{exVat.toFixed(2)}</span>
         </div>
 
         {/* ── VAT (24%) ── */}
         <div className="flex justify-between font-body text-sm mb-5 pb-5 border-b border-border">
-          <span className="text-on-surface/60">VAT (24%)</span>
+          <span className="text-on-surface/60">{t('vat')}</span>
           <span className="text-on-surface">€{vatAmt.toFixed(2)}</span>
         </div>
 
         {/* ── Grand Total ── */}
         <div className="flex justify-between items-baseline mb-4">
           <span className="font-body text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface">
-            Grand Total
+            {t('grandTotal')}
           </span>
           <span className="font-display text-3xl text-on-surface">€{grandTotal.toFixed(2)}</span>
         </div>
@@ -185,11 +195,11 @@ export function OrderSummary({
         {/* ── Shipping note ── */}
         <div className="mb-5 pb-5 border-b border-border">
           {freeShipping ? (
-            <p className="font-body text-xs text-success tracking-wide">✓ Free shipping included</p>
+            <p className="font-body text-xs text-success tracking-wide">✓ {t('freeShipping')}</p>
           ) : (
             <>
               <p className="font-body text-xs text-on-surface/50 mb-2">
-                Add €{remaining} more for free shipping
+                {t('addMoreForFreeShipping', { amount: remaining })}
               </p>
               {/* CSS custom property drives dynamic width — avoids inline style={} */}
               <div
@@ -198,7 +208,7 @@ export function OrderSummary({
                 aria-valuenow={Math.round(progressPct)}
                 aria-valuemin={0}
                 aria-valuemax={100}
-                aria-label="Free shipping progress"
+                aria-label={t('shippingProgressLabel')}
               >
                 <div
                   className="h-full bg-on-surface transition-all duration-500 [width:var(--progress-w)]"
@@ -215,7 +225,7 @@ export function OrderSummary({
             htmlFor="coupon-code"
             className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
           >
-            Coupon Code
+            {t('couponCode')}
           </label>
           {appliedCoupon ? (
             <div className="flex items-center justify-between bg-success/10 border border-success/30 px-3 py-2">
@@ -229,11 +239,11 @@ export function OrderSummary({
               </p>
               <button
                 type="button"
-                aria-label="Remove coupon"
+                aria-label={t('removeCoupon')}
                 onClick={onCouponRemove}
                 className="font-body text-[10px] text-on-surface/40 hover:text-on-surface transition-colors ml-3 uppercase tracking-widest shrink-0"
               >
-                Remove
+                {t('removeCouponBtn')}
               </button>
             </div>
           ) : (
@@ -244,7 +254,7 @@ export function OrderSummary({
                 value={couponInput}
                 onChange={e => onCouponChange(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && onCouponApply()}
-                placeholder="Enter code"
+                placeholder={t('enterCode')}
                 className="flex-1 min-w-0 px-3 py-2.5 bg-on-surface/10 border border-border border-r-0 text-on-surface font-body text-[11px] uppercase tracking-widest placeholder:text-on-surface/30 placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-on-surface/50"
               />
               <button
@@ -252,7 +262,7 @@ export function OrderSummary({
                 onClick={onCouponApply}
                 className="px-4 bg-on-surface text-surface font-body text-[10px] tracking-[0.18em] uppercase transition-opacity hover:opacity-80 whitespace-nowrap"
               >
-                Apply
+                {t('apply')}
               </button>
             </div>
           )}
@@ -269,14 +279,14 @@ export function OrderSummary({
             htmlFor="order-notes"
             className="block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-2"
           >
-            Special Instructions (optional)
+            {t('specialInstructions')}
           </label>
           <textarea
             id="order-notes"
             value={orderNotes}
             onChange={e => onNotesChange(e.target.value)}
             rows={3}
-            placeholder="Gift wrap, delivery notes, etc."
+            placeholder={t('notesPlaceholder')}
             className="w-full px-3 py-2 bg-on-surface/10 border border-border text-on-surface font-body text-[11px] placeholder:text-on-surface/30 focus:outline-none focus:border-on-surface/50 resize-none"
           />
         </div>
@@ -284,11 +294,11 @@ export function OrderSummary({
         {/* ── Place Order ── */}
         <button
           type="button"
-          aria-label="Place order"
+          aria-label={t('placeOrderLabel')}
           onClick={onPlaceOrder}
           className="w-full bg-on-surface text-surface font-body text-xs tracking-[0.2em] uppercase py-4 hover:opacity-80 transition-opacity"
         >
-          PLACE ORDER
+          {t('placeOrder')}
         </button>
       </div>
     </aside>
@@ -325,16 +335,12 @@ export default function CheckoutPage() {
   }, 0)
 
   // All prices are VAT-inclusive (Greek standard 24%).
-  // afterDiscount = items total (VAT incl.) after any coupon.
-  // exVat  = afterDiscount / 1.24
-  // vatAmt = afterDiscount − exVat
-  // grandTotal = items total only (excl. shipping) — shipping shown as a separate note
   const discountRate  = appliedCoupon ? (VALID_COUPONS[appliedCoupon] ?? 0) : 0
   const discountAmt   = rawSubtotal * discountRate
   const afterDiscount = rawSubtotal - discountAmt
   const exVat         = afterDiscount / 1.24
   const vatAmt        = afterDiscount - exVat
-  const grandTotal    = afterDiscount   // items only, excl. shipping (NOIR pattern)
+  const grandTotal    = afterDiscount
 
   function handleCouponApply() {
     const code = couponInput.trim().toUpperCase()
@@ -343,7 +349,7 @@ export default function CheckoutPage() {
       setCouponError('')
       setCouponInput('')
     } else {
-      setCouponError('Invalid coupon code')
+      setCouponError(t('invalidCoupon'))
       setAppliedCoupon(null)
     }
   }
@@ -353,6 +359,8 @@ export default function CheckoutPage() {
     setCouponError('')
     setCouponInput('')
   }
+
+  const colCls = 'pb-3 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface-muted'
 
   return (
     <main className="min-h-screen pt-20 bg-surface">
@@ -365,25 +373,25 @@ export default function CheckoutPage() {
           /* ── Empty state ── */
           <div className="flex flex-col items-center justify-center py-24 gap-6">
             <p className="font-body text-base text-on-surface/60 tracking-wide">
-              Your cart is empty.
+              {t('cartEmpty')}
             </p>
             <Link
               href="/"
               className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-raised transition-colors"
             >
-              Continue Shopping
+              {t('continueShopping')}
             </Link>
           </div>
         ) : (
           /* ── Cart layout ── */
           <>
-          {/* ← Continue Shopping — only shown when cart has items (NOIR pattern) */}
+          {/* Continue Shopping link */}
           <Link
             href="/"
             className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors mb-8"
           >
             <span aria-hidden="true">←</span>
-            Continue Shopping
+            {t('continueShopping')}
           </Link>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
 
@@ -395,22 +403,11 @@ export default function CheckoutPage() {
                 <table className="w-full min-w-[560px]">
                   <thead>
                     <tr className="border-b border-border">
-                      {(['Product', 'Quantity', 'Remove', 'Price', 'Total'] as const).map((col, i) => (
-                        <th
-                          key={col}
-                          scope="col"
-                          className={[
-                            'pb-3 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface-muted',
-                            i === 0 ? 'text-left pr-6'  : '',
-                            i === 1 ? 'text-center px-4' : '',
-                            i === 2 ? 'text-center px-4' : '',
-                            i === 3 ? 'text-right px-4'  : '',
-                            i === 4 ? 'text-right pl-4'  : '',
-                          ].join(' ')}
-                        >
-                          {col}
-                        </th>
-                      ))}
+                      <th scope="col" className={`${colCls} text-left pr-6`}>{t('colProduct')}</th>
+                      <th scope="col" className={`${colCls} text-center px-4`}>{t('colQuantity')}</th>
+                      <th scope="col" className={`${colCls} text-center px-4`}>{t('colRemove')}</th>
+                      <th scope="col" className={`${colCls} text-right px-4`}>{t('colPrice')}</th>
+                      <th scope="col" className={`${colCls} text-right pl-4`}>{t('colTotal')}</th>
                     </tr>
                   </thead>
                   <tbody>

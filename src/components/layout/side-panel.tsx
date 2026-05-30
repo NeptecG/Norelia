@@ -8,7 +8,7 @@ import { Link } from '@/navigation'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { X, Trash2, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { parsePriceNumber, catLabel, getStock } from '@/lib/utils'
+import { parsePriceNumber, getStock } from '@/lib/utils'
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -63,7 +63,14 @@ function CartItemRow({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
-            {catLabel(item.cat)}
+            {({
+              TSHIRTS:  t('catSingularTSHIRTS'),
+              HOODIES:  t('catSingularHOODIES'),
+              ZIPPERS:  t('catSingularZIPPERS'),
+              TANKTOPS: t('catSingularTANKTOPS'),
+              NEWIN:    t('catSingularNEWIN'),
+              SALES:    t('catSingularSALES'),
+            } as Record<string, string>)[item.cat] ?? item.cat}
           </p>
           <Link
             href={`/product/${item.code}`}
@@ -88,7 +95,7 @@ function CartItemRow({
           )}
           {item.qty > 1 && (
             <p className="font-body text-[11px] text-on-surface-muted">
-              Total: <strong className="text-on-surface">€{total}</strong>
+              {t('total')}: <strong className="text-on-surface">€{total}</strong>
             </p>
           )}
         </div>
@@ -165,7 +172,14 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
         </Link>
         <div className="flex-1 min-w-0">
           <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
-            {catLabel(product.cat)}
+            {({
+              TSHIRTS:  t('catSingularTSHIRTS'),
+              HOODIES:  t('catSingularHOODIES'),
+              ZIPPERS:  t('catSingularZIPPERS'),
+              TANKTOPS: t('catSingularTANKTOPS'),
+              NEWIN:    t('catSingularNEWIN'),
+              SALES:    t('catSingularSALES'),
+            } as Record<string, string>)[product.cat] ?? product.cat}
           </p>
           <Link
             href={`/product/${product.code}`}
