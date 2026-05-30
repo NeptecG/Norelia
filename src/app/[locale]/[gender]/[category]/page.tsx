@@ -34,7 +34,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const catName     = catNames[filter] ?? filter
   return {
     title:       `${catName} · ${genderLabel}`,
-    description: `Shop ${genderLabel.toLowerCase()} ${catName.toLowerCase()} from Norelia.`,
+    description: tG('metaDescription', {
+      gender:   genderLabel.toLowerCase(),
+      category: catName.toLowerCase(),
+    }),
   }
 }
 

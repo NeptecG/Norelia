@@ -12,6 +12,7 @@ import { GCOLORS } from '@/data/colors'
 import { SIZES, SIZE_DATA } from '@/data/sizes'
 import { BP } from '@/data/pricing'
 import { cn, getPrice } from '@/lib/utils'
+import { useColorLabel } from '@/hooks/use-i18n-labels'
 import { useUIStore } from '@/stores/ui-store'
 import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor } from '@/types'
 
@@ -50,15 +51,16 @@ const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surfa
 
 // ─── Order schema ─────────────────────────────────────────────────────────────
 
-// Type-only schema — no validation messages, used solely for type inference
+// Type-only shape — used solely to infer OrderFields. The real validation
+// schema (with localized messages) is built inside OrderForm via useMemo.
 const _orderSchemaShape = z.object({
   name:    z.string(),
   phone:   z.string(),
-  email:   z.string().email(),
+  email:   z.string(),
   address: z.string(),
   city:    z.string(),
   zip:     z.string(),
-  notes:   z.string().max(500).optional(),
+  notes:   z.string().optional(),
 })
 export type OrderFields = z.infer<typeof _orderSchemaShape>
 
@@ -563,13 +565,13 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
 }
 
 export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
-  const t       = useTranslations('GarmentDesigner')
-  const tColors = useTranslations('GarmentColors')
+  const t          = useTranslations('GarmentDesigner')
+  const colorLabel = useColorLabel()
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
         {t('colorLabel')}:{' '}
-        <span className="normal-case tracking-normal text-on-surface">{tColors(color.name as 'Black')}</span>
+        <span className="normal-case tracking-normal text-on-surface">{colorLabel(color.name)}</span>
       </p>
       <div className="flex gap-2">
         {GCOLORS.map((c) => (
@@ -779,7 +781,8 @@ export function OrderSummaryTable({
   garmentType, color, size, fit, printMethod, hasDesign,
   frontPreset, backPreset, price, qty,
 }: OrderSummaryProps) {
-  const t      = useTranslations('GarmentDesigner')
+  const t          = useTranslations('GarmentDesigner')
+  const colorLabel = useColorLabel()
   const frontP = FRONT_PRESETS.find(p => p.id === frontPreset) ?? FRONT_PRESETS[0]
   const backP  = BACK_PRESETS.find(p => p.id === backPreset)   ?? BACK_PRESETS[0]
   const total  = price !== null && qty > 0 ? price * qty : null
@@ -802,7 +805,7 @@ export function OrderSummaryTable({
 
   const rows: [string, string][] = [
     [t('rowGarment'),   garmentLabels[garmentType]],
-    [t('rowColor'),     color.name],
+    [t('rowColor'),     colorLabel(color.name)],
     [t('rowSize'),      size ?? '-'],
     [t('rowFit'),       fit === 'oversized' ? t('fitOversizedFull') : t('fitNormalFull')],
     [t('rowPrint'),     printMethod === 'dtg' ? t('printDtgFull') : t('printEmbroideryFull')],

@@ -10,6 +10,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
 import { parsePriceNumber, getStock } from '@/lib/utils'
+import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import type { CartItem } from '@/types'
 
@@ -30,17 +31,9 @@ interface CartTableRowProps {
 
 export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, onRemove }: CartTableRowProps) {
   const t = useTranslations('CheckoutPage')
+  const catLabel = useCatLabel()
   const unitPrice = item.salePrice != null ? item.salePrice : parsePriceNumber(item.price)
   const lineTotal = (unitPrice * item.qty).toFixed(2)
-
-  const catLabelMap: Record<string, string> = {
-    TSHIRTS:  t('catSingularTSHIRTS'),
-    HOODIES:  t('catSingularHOODIES'),
-    ZIPPERS:  t('catSingularZIPPERS'),
-    TANKTOPS: t('catSingularTANKTOPS'),
-    NEWIN:    t('catSingularNEWIN'),
-    SALES:    t('catSingularSALES'),
-  }
 
   return (
     <motion.tr
@@ -58,7 +51,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
           </div>
           <div className="min-w-0">
             <p className="font-body text-[9px] tracking-[0.18em] uppercase text-on-surface/50 mb-1">
-              {catLabelMap[item.cat] ?? item.cat}
+              {catLabel(item.cat)}
             </p>
             <p className="font-display text-xl text-on-surface leading-tight">
               {item.name}

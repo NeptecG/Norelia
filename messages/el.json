@@ -1,4 +1,12 @@
 {
+  "Categories": {
+    "catSingularTSHIRTS":  "T-Shirt",
+    "catSingularHOODIES":  "Φούτερ",
+    "catSingularZIPPERS":  "Ζακέτα",
+    "catSingularTANKTOPS": "Αμάνικο",
+    "catSingularNEWIN":    "Νέα Είδη",
+    "catSingularSALES":    "Εκπτώσεις"
+  },
   "Nav": {
     "home": "ΑΡΧΙΚΗ",
     "men": "ΑΝΔΡΙΚΑ",
@@ -59,12 +67,6 @@
     "checkBackSoon": "Ελέγξτε ξανά σύντομα για νέες αφίξεις."
   },
   "ProductCard": {
-    "catSingularTSHIRTS":  "T-Shirt",
-    "catSingularHOODIES":  "Φούτερ",
-    "catSingularZIPPERS":  "Ζακέτα",
-    "catSingularTANKTOPS": "Αμάνικο",
-    "catSingularNEWIN":    "Νέα Είδη",
-    "catSingularSALES":    "Εκπτώσεις",
     "addToFavorites": "Προσθήκη στα αγαπημένα",
     "removeFromFavorites": "Αφαίρεση από τα αγαπημένα",
     "quickAdd": "ΓΡΗΓΟΡΗ ΠΡΟΣΘΗΚΗ",
@@ -104,10 +106,6 @@
     "backView": "Πίσω",
     "decreaseQty": "Μείωση ποσότητας",
     "increaseQty": "Αύξηση ποσότητας",
-    "catSingularTSHIRTS": "T-Shirt",
-    "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Ζακέτα",
-    "catSingularTANKTOPS": "Αμάνικο",
     "catPluralTSHIRTS": "T-Shirts",
     "catPluralHOODIES": "Φούτερ",
     "catPluralZIPPERS": "Ζακέτες",
@@ -131,13 +129,7 @@
     "removedFromCart": "{name} αφαιρέθηκε από το καλάθι",
     "addedToFavorites": "{name} προστέθηκε στα αγαπημένα",
     "removedFromFavorites": "{name} αφαιρέθηκε από τα αγαπημένα",
-    "total": "Σύνολο",
-    "catSingularTSHIRTS": "T-Shirt",
-    "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Ζακέτα",
-    "catSingularTANKTOPS": "Αμάνικο",
-    "catSingularNEWIN": "Νέα Είδη",
-    "catSingularSALES": "Εκπτώσεις"
+    "total": "Σύνολο"
   },
   "NewsletterBar": {
     "headline": "Μείνε ενήμερος.",
@@ -208,12 +200,6 @@
     "decreaseQty": "Μείωση ποσότητας",
     "increaseQty": "Αύξηση ποσότητας",
     "removeFromCart": "Αφαίρεση {name} από το καλάθι",
-    "catSingularTSHIRTS": "T-Shirt",
-    "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Ζακέτα",
-    "catSingularTANKTOPS": "Αμάνικο",
-    "catSingularNEWIN": "Νέα Είδη",
-    "catSingularSALES": "Εκπτώσεις",
     "orderSummary": "ΣΥΝΟΨΗ ΠΑΡΑΓΓΕΛΙΑΣ",
     "subtotal": "Υποσύνολο",
     "vat": "ΦΠΑ (24%)",
@@ -355,8 +341,9 @@
     "measureNote": "Όλες οι μετρήσεις είναι σε εκατοστά."
   },
   "GenderPage": {
-    "men": "ΑΝΔΡΑΣ",
-    "women": "ΓΥΝΑΙΚΑ",
+    "men": "ΑΝΔΡΙΚΑ",
+    "women": "ΓΥΝΑΙΚΕΙΑ",
+    "metaDescription": "Ανακάλυψε {gender} {category} από τη Norelia.",
     "styles": "στυλ",
     "catTSHIRTS": "T-SHIRTS",
     "catHOODIES": "ΦΟΥΤΕΡ",

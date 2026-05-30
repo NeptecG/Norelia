@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string) => {
+  useTranslations: () => {
     const map: Record<string, string> = {
       designFront:            'Front',
       designBack:             'Back',
@@ -112,7 +112,9 @@ vi.mock('next-intl', () => ({
       emailjsTemplateLabel:   'Template ID',
       sendErrorPrefix:        'Error',
     }
-    return map[key] ?? key
+    const t = (key: string) => map[key] ?? key
+    t.has = (key: string) => key in map
+    return t
   },
 }))
 vi.mock('@/stores/ui-store', () => ({ useUIStore: vi.fn() }))

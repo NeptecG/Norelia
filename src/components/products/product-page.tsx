@@ -6,6 +6,7 @@ import { Link, useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { Heart, Truck, Shield, RotateCcw, Ruler, ChevronLeft } from 'lucide-react'
 import { cn, FILTER_TO_SLUG, getStock } from '@/lib/utils'
+import { useCatLabel, useColorLabel } from '@/hooks/use-i18n-labels'
 import { SIZES } from '@/data/sizes'
 import { GCOLORS } from '@/data/colors'
 import { useCartStore } from '@/stores/cart-store'
@@ -23,8 +24,9 @@ interface Props {
 
 export function ProductPage({ product, initialColor, from }: Props) {
   const router = useRouter()
-  const t       = useTranslations('ProductPage')
-  const tColors = useTranslations('GarmentColors')
+  const t          = useTranslations('ProductPage')
+  const catLabel   = useCatLabel()
+  const colorLabel = useColorLabel()
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
@@ -62,13 +64,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
   const catSlug     = FILTER_TO_SLUG[product.cat] ?? ''
   const catHref     = `${genderHref}/${catSlug}`
 
-  // Translated cat labels — singular for eyebrow, plural for breadcrumb
-  const catSingularMap: Record<string, string> = {
-    TSHIRTS:  t('catSingularTSHIRTS'),
-    HOODIES:  t('catSingularHOODIES'),
-    ZIPPERS:  t('catSingularZIPPERS'),
-    TANKTOPS: t('catSingularTANKTOPS'),
-  }
+  // Plural cat labels for the breadcrumb (singular eyebrow uses the shared catLabel hook)
   const catPluralMap: Record<string, string> = {
     TSHIRTS:  t('catPluralTSHIRTS'),
     HOODIES:  t('catPluralHOODIES'),
@@ -216,7 +212,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
 
           {/* Category eyebrow + Name + Product code */}
           <p className="font-body text-[9px] tracking-[0.22em] uppercase text-on-surface-muted mt-6">
-            {catSingularMap[product.cat] ?? product.cat}
+            {catLabel(product.cat)}
           </p>
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mt-1">
             {product.name}
@@ -238,7 +234,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           {/* Color swatches */}
           <div className="mt-6">
             <p className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-2">
-              {t('colorLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{tColors(selectedColor.name as 'Black')}</span>
+              {t('colorLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{colorLabel(selectedColor.name)}</span>
             </p>
             <div className="flex gap-2">
               {GCOLORS.map((c) => (

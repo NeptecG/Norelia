@@ -110,7 +110,7 @@ function HeroHalf({
 
         {/* Gender label — always visible, brightens on hover */}
         <motion.span
-          className="font-display text-[68px] tracking-[0.14em] text-white"
+          className="font-display text-[44px] md:text-[56px] lg:text-[68px] tracking-[0.14em] text-white"
           variants={labelVariants}
           animate={animateState}
           transition={{ duration: 0.3 }}

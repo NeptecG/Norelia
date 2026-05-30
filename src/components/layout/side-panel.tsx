@@ -9,6 +9,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { X, Trash2, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { parsePriceNumber, getStock } from '@/lib/utils'
+import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -42,6 +43,7 @@ function CartItemRow({
   onNavigate,
   t,
 }: CartItemRowProps) {
+  const catLabel = useCatLabel()
   const unit = item.salePrice ?? parsePriceNumber(item.price)
   const total = (unit * item.qty).toFixed(2)
 
@@ -63,14 +65,7 @@ function CartItemRow({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
-            {({
-              TSHIRTS:  t('catSingularTSHIRTS'),
-              HOODIES:  t('catSingularHOODIES'),
-              ZIPPERS:  t('catSingularZIPPERS'),
-              TANKTOPS: t('catSingularTANKTOPS'),
-              NEWIN:    t('catSingularNEWIN'),
-              SALES:    t('catSingularSALES'),
-            } as Record<string, string>)[item.cat] ?? item.cat}
+            {catLabel(item.cat)}
           </p>
           <Link
             href={`/product/${item.code}`}
@@ -156,6 +151,7 @@ interface FavItemRowProps {
 
 function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
   const t = useTranslations('SidePanel')
+  const catLabel = useCatLabel()
   return (
     <div className="py-3.5 border-b border-border">
       <div className="flex gap-3.5 items-start">
@@ -172,14 +168,7 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
         </Link>
         <div className="flex-1 min-w-0">
           <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-1">
-            {({
-              TSHIRTS:  t('catSingularTSHIRTS'),
-              HOODIES:  t('catSingularHOODIES'),
-              ZIPPERS:  t('catSingularZIPPERS'),
-              TANKTOPS: t('catSingularTANKTOPS'),
-              NEWIN:    t('catSingularNEWIN'),
-              SALES:    t('catSingularSALES'),
-            } as Record<string, string>)[product.cat] ?? product.cat}
+            {catLabel(product.cat)}
           </p>
           <Link
             href={`/product/${product.code}`}
