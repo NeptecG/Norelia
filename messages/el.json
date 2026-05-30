@@ -1,8 +1,8 @@
 {
   "Nav": {
     "home": "ΑΡΧΙΚΗ",
-    "men": "ΑΝΔΡΑΣ",
-    "women": "ΓΥΝΑΙΚΑ",
+    "men": "ΑΝΔΡΙΚΑ",
+    "women": "ΓΥΝΑΙΚΕΙΑ",
     "designYourOwn": "ΣΧΕΔΙΑΣΕ ΤΟ ΔΙΚΟ ΣΟΥ",
     "signIn": "ΣΥΝΔΕΣΗ",
     "signInLabel": "Σύνδεση στον λογαριασμό σου",
@@ -21,15 +21,15 @@
     "catNewIn": "Νέα Είδη",
     "catTShirts": "T-Shirts",
     "catHoodies": "Φούτερ",
-    "catZippers": "Φερμουάρ",
-    "catTankTops": "Φανέλες",
+    "catZippers": "Ζακέτα",
+    "catTankTops": "Αμάνικα",
     "catSales": "Εκπτώσεις"
   },
   "Hero": {
     "srHeading": "NORELIA. Premium Streetwear",
     "shopEyebrow": "SHOP",
-    "womenLabel": "ΓΥΝΑΙΚΑ",
-    "menLabel": "ΑΝΔΡΑΣ",
+    "womenLabel": "ΓΥΝΑΙΚΕΙΑ",
+    "menLabel": "ΑΝΔΡΙΚΑ",
     "womenAriaLabel": "Shop γυναικεία",
     "menAriaLabel": "Shop ανδρικά"
   },
@@ -38,8 +38,8 @@
     "newInSubtitle": "ΜΟΛΙΣ ΕΦΤΑΣΕ",
     "trendingTitle": "ΤΑΣΕΙΣ",
     "trendingSubtitle": "ΑΥΤΗ ΤΗ ΣΕΖΟΝ",
-    "onSaleTitle": "ΣΕ ΕΚΠΤΩΣΗ",
-    "onSaleSubtitle": "ΠΕΡΙΟΡΙΣΜΕΝΕΣ ΠΡΟΣΦΟΡΕΣ"
+    "onSaleTitle": "ΕΚΠΤΩΣΕΙΣ",
+    "onSaleSubtitle": "ΠΡΟΣΦΟΡΕΣ"
   },
   "FeaturedCarousel": {
     "viewAll": "Δες Όλα",
@@ -52,8 +52,8 @@
     "filterAll": "ΟΛΑ",
     "filterTShirts": "T-SHIRTS",
     "filterHoodies": "ΦΟΥΤΕΡ",
-    "filterZippers": "ΦΕΡΜΟΥΑΡ",
-    "filterTankTops": "ΦΑΝΕΛΕΣ",
+    "filterZippers": "ΖΑΚΕΤΕΣ",
+    "filterTankTops": "ΑΜΑΝΙΚΑ",
     "filterNewIn": "ΝΕΑ",
     "filterSales": "ΕΚΠΤΩΣΕΙΣ",
     "checkBackSoon": "Ελέγξτε ξανά σύντομα για νέες αφίξεις."
@@ -100,12 +100,12 @@
     "increaseQty": "Αύξηση ποσότητας",
     "catSingularTSHIRTS": "T-Shirt",
     "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Φερμουάρ",
-    "catSingularTANKTOPS": "Φανέλα",
+    "catSingularZIPPERS": "Ζακέτα",
+    "catSingularTANKTOPS": "Αμάνικο",
     "catPluralTSHIRTS": "T-Shirts",
     "catPluralHOODIES": "Φούτερ",
-    "catPluralZIPPERS": "Φερμουάρ",
-    "catPluralTANKTOPS": "Φανέλες",
+    "catPluralZIPPERS": "Ζακέτα",
+    "catPluralTANKTOPS": "Αμάνικα",
     "catPluralNEWIN": "Νέα Είδη",
     "catPluralSALES": "Εκπτώσεις"
   },
@@ -128,8 +128,8 @@
     "total": "Σύνολο",
     "catSingularTSHIRTS": "T-Shirt",
     "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Φερμουάρ",
-    "catSingularTANKTOPS": "Φανέλα",
+    "catSingularZIPPERS": "Ζακέτα",
+    "catSingularTANKTOPS": "Αμάνικο",
     "catSingularNEWIN": "Νέα Είδη",
     "catSingularSALES": "Εκπτώσεις"
   },
@@ -204,8 +204,8 @@
     "removeFromCart": "Αφαίρεση {name} από το καλάθι",
     "catSingularTSHIRTS": "T-Shirt",
     "catSingularHOODIES": "Φούτερ",
-    "catSingularZIPPERS": "Φερμουάρ",
-    "catSingularTANKTOPS": "Φανέλα",
+    "catSingularZIPPERS": "Ζακέτα",
+    "catSingularTANKTOPS": "Αμάνικο",
     "catSingularNEWIN": "Νέα Είδη",
     "catSingularSALES": "Εκπτώσεις",
     "orderSummary": "ΣΥΝΟΨΗ ΠΑΡΑΓΓΕΛΙΑΣ",
@@ -342,7 +342,7 @@
     "womenTitle": "Γυναικεία",
     "tshirtsTab": "T-SHIRTS",
     "hoodiesTab": "ΦΟΥΤΕΡ",
-    "zippersTab": "ΦΕΡΜΟΥΑΡ",
+    "zippersTab": "ΖΑΚΕΤΕΣ",
     "studioLink": "Σχεδίασε το δικό σου →",
     "measureNote": "Όλες οι μετρήσεις είναι σε εκατοστά."
   },
@@ -352,8 +352,8 @@
     "styles": "στυλ",
     "catTSHIRTS": "T-SHIRTS",
     "catHOODIES": "ΦΟΥΤΕΡ",
-    "catZIPPERS": "ΦΕΡΜΟΥΑΡ",
-    "catTANKTOPS": "ΦΑΝΕΛΕΣ",
+    "catZIPPERS": "ΖΑΚΕΤΕΣ",
+    "catTANKTOPS": "ΑΜΑΝΙΚΑ",
     "catNEWIN": "ΝΕΑ ΕΙΔΗ",
     "catSALES": "ΕΚΠΤΩΣΕΙΣ"
   },
@@ -361,8 +361,8 @@
     "morePrefix": "ΠΕΡΙΣΣΟΤΕΡΑ",
     "catTSHIRTS": "T-SHIRTS",
     "catHOODIES": "ΦΟΥΤΕΡ",
-    "catZIPPERS": "ΦΕΡΜΟΥΑΡ",
-    "catTANKTOPS": "ΦΑΝΕΛΕΣ",
+    "catZIPPERS": "ΖΑΚΕΤΕΣ",
+    "catTANKTOPS": "ΑΜΑΝΙΚΑ",
     "catNEWIN": "ΝΕΑ ΕΙΔΗ",
     "catSALES": "ΕΚΠΤΩΣΕΙΣ"
   },
@@ -380,6 +380,12 @@
     "length": "ΜΗΚΟΣ",
     "sleeve": "ΜΑΝΙΚΙ"
   },
+  "GarmentColors": {
+    "White":    "Λευκό",
+    "Black":    "Μαύρο",
+    "Grey":     "Γκρι",
+    "Bordeaux": "Μπορντό"
+  },
   "GarmentDesigner": {
     "designFront": "Εμπρός",
     "designBack": "Πίσω",
@@ -396,7 +402,7 @@
     "garmentLabel": "Ρούχο",
     "garmentTShirt": "T-Shirt",
     "garmentHoodie": "Φούτερ",
-    "garmentZipper": "Φερμουάρ",
+    "garmentZipper": "Ζακέτα",
     "designLabel": "Το Σχέδιό σου",
     "uploadAriaLabel": "Ανεβάστε το σχέδιό σας",
     "uploadCta": "Κλικ ή σύρε εικόνα εδώ",

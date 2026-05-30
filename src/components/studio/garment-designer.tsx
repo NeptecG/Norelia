@@ -555,12 +555,13 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
 }
 
 export function ColorSwatches({ color, onChange }: ColorSwatchesProps) {
-  const t = useTranslations('GarmentDesigner')
+  const t       = useTranslations('GarmentDesigner')
+  const tColors = useTranslations('GarmentColors')
   return (
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
         {t('colorLabel')}:{' '}
-        <span className="normal-case tracking-normal text-on-surface">{color.name}</span>
+        <span className="normal-case tracking-normal text-on-surface">{tColors(color.name as 'Black')}</span>
       </p>
       <div className="flex gap-2">
         {GCOLORS.map((c) => (

@@ -23,7 +23,8 @@ interface Props {
 
 export function ProductPage({ product, initialColor, from }: Props) {
   const router = useRouter()
-  const t = useTranslations('ProductPage')
+  const t       = useTranslations('ProductPage')
+  const tColors = useTranslations('GarmentColors')
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
@@ -237,7 +238,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           {/* Color swatches */}
           <div className="mt-6">
             <p className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-2">
-              {t('colorLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{selectedColor.name}</span>
+              {t('colorLabel')}: <span className="normal-case tracking-normal font-normal text-on-surface-muted">{tColors(selectedColor.name as 'Black')}</span>
             </p>
             <div className="flex gap-2">
               {GCOLORS.map((c) => (
@@ -263,7 +264,9 @@ export function ProductPage({ product, initialColor, from }: Props) {
           <div className="mt-6">
             <div className="flex items-center justify-between mb-3">
               <span className="font-body text-[10px] tracking-[0.18em] uppercase text-on-surface">
-                {t('sizeLabel')}
+                {t('sizeLabel')}{selectedSize
+                  ? <span className="normal-case tracking-normal font-normal text-on-surface-muted ml-1">{selectedSize}</span>
+                  : null}
               </span>
               {/* Ruler icon replaces arrow per design feedback */}
               <button

@@ -380,6 +380,12 @@
     "length": "LENGTH",
     "sleeve": "SLEEVE"
   },
+  "GarmentColors": {
+    "White":    "White",
+    "Black":    "Black",
+    "Grey":     "Grey",
+    "Bordeaux": "Bordeaux"
+  },
   "GarmentDesigner": {
     "designFront": "Front",
     "designBack": "Back",
