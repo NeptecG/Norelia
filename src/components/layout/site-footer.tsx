@@ -110,6 +110,16 @@ function ContactColumn({ t }: { t: TFooter }) {
   return (
     <div>
       <FooterHeading>{t('contact')}</FooterHeading>
+      {/*
+        IMPORTANT — do NOT remove the flex wrapper below.
+        Without it, mixing block <p> elements with the inline-block FooterLink
+        creates an anonymous inline formatting context whose line-box strut
+        (based on the inherited 16px body font) adds ~25px of phantom space
+        before "Our Studio", pushing it below Privacy Policy in InfoColumn.
+        The flex wrapper normalises all items to block-level flex items,
+        matching InfoColumn exactly and keeping "Our Studio" row-aligned
+        with "Privacy Policy".
+      */}
       <div className="flex flex-col items-start">
         <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/80 mb-2.5">
           hello@norelia.com
