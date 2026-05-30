@@ -10,7 +10,7 @@ type TFooter = Awaited<ReturnType<typeof getTranslations<'SiteFooter'>>>
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-body text-[9px] tracking-[0.25em] uppercase text-on-surface/65 mb-5">
+    <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/65 mb-5">
       {children}
     </p>
   )
@@ -94,6 +94,7 @@ function InfoColumn({ t }: { t: TFooter }) {
       <FooterHeading>{t('information')}</FooterHeading>
       <div className="flex flex-col items-start">
         <FooterLink href="/about">{t('about')}</FooterLink>
+        <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
         <FooterLink href="/size-guide">{t('sizeGuide')}</FooterLink>
         <FooterLink href="/shipping">{t('shipping')}</FooterLink>
         <FooterLink href="/returns">{t('returns')}</FooterLink>
@@ -122,7 +123,6 @@ function ContactColumn({ t }: { t: TFooter }) {
       <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
         {t('saturday')}
       </p>
-      <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
     </div>
   )
 }
