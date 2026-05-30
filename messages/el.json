@@ -59,6 +59,12 @@
     "checkBackSoon": "Ελέγξτε ξανά σύντομα για νέες αφίξεις."
   },
   "ProductCard": {
+    "catSingularTSHIRTS":  "T-Shirt",
+    "catSingularHOODIES":  "Φούτερ",
+    "catSingularZIPPERS":  "Ζακέτα",
+    "catSingularTANKTOPS": "Αμάνικο",
+    "catSingularNEWIN":    "Νέα Είδη",
+    "catSingularSALES":    "Εκπτώσεις",
     "addToFavorites": "Προσθήκη στα αγαπημένα",
     "removeFromFavorites": "Αφαίρεση από τα αγαπημένα",
     "quickAdd": "ΓΡΗΓΟΡΗ ΠΡΟΣΘΗΚΗ",

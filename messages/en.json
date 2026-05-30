@@ -59,6 +59,12 @@
     "checkBackSoon": "Check back soon for new arrivals."
   },
   "ProductCard": {
+    "catSingularTSHIRTS":  "T-Shirt",
+    "catSingularHOODIES":  "Hoodie",
+    "catSingularZIPPERS":  "Zip Hoodie",
+    "catSingularTANKTOPS": "Tank Top",
+    "catSingularNEWIN":    "New In",
+    "catSingularSALES":    "Sale",
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
     "quickAdd": "QUICK ADD",

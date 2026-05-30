@@ -6,7 +6,7 @@ import { Heart } from 'lucide-react'
 import { Link, useRouter, usePathname } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
-import { cn, catLabel, getStock } from '@/lib/utils'
+import { cn, getStock } from '@/lib/utils'
 import { useFavoritesStore } from '@/stores/favorites-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
@@ -27,6 +27,14 @@ export function ProductCard({ product, priority = false }: Props) {
   const router         = useRouter()
   const pathname       = usePathname()
   const t              = useTranslations('ProductCard')
+  const catLabelMap: Record<string, string> = {
+    TSHIRTS:  t('catSingularTSHIRTS'),
+    HOODIES:  t('catSingularHOODIES'),
+    ZIPPERS:  t('catSingularZIPPERS'),
+    TANKTOPS: t('catSingularTANKTOPS'),
+    NEWIN:    t('catSingularNEWIN'),
+    SALES:    t('catSingularSALES'),
+  }
   const [hovering, setHovering]           = useState(false)
   const [sizePickerOpen, setSizePickerOpen] = useState(false)
 
@@ -204,7 +212,7 @@ export function ProductCard({ product, priority = false }: Props) {
         {/* Info — padded block matching NOIR card layout; pl-5 gives 20px left breathing room */}
         <div className="bg-surface pl-5 pr-4 pt-4 pb-5 space-y-[5px]">
           <p className="font-body text-[11px] uppercase tracking-[0.12em] text-on-surface-muted">
-            {catLabel(product.cat)}
+            {catLabelMap[product.cat] ?? product.cat}
           </p>
           <p className="font-body text-[13px] font-semibold uppercase tracking-[0.06em] text-on-surface">
             {product.name}
