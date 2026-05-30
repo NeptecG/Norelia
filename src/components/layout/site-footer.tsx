@@ -110,19 +110,21 @@ function ContactColumn({ t }: { t: TFooter }) {
   return (
     <div>
       <FooterHeading>{t('contact')}</FooterHeading>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/80 mb-2.5">
-        hello@norelia.com
-      </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        +30 26820 00000
-      </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        {t('hours')}
-      </p>
-      <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
-        {t('saturday')}
-      </p>
-      <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
+      <div className="flex flex-col items-start">
+        <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/80 mb-2.5">
+          hello@norelia.com
+        </p>
+        <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+          +30 26820 00000
+        </p>
+        <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+          {t('hours')}
+        </p>
+        <p className="font-body text-[11px] tracking-[0.12em] text-on-surface/60 mb-2.5">
+          {t('saturday')}
+        </p>
+        <FooterLink href="/our-studio">{t('ourStudio')}</FooterLink>
+      </div>
     </div>
   )
 }
