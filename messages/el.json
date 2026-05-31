@@ -376,10 +376,10 @@
     "sleeve": "ΜΑΝΙΚΙ"
   },
   "GarmentColors": {
-    "White":    "Λευκο",
-    "Black":    "Μαυρο",
+    "White":    "Λευκό",
+    "Black":    "Μαύρο",
     "Grey":     "Γκρι",
-    "Bordeaux": "Μπορντο"
+    "Bordeaux": "Μπορντό"
   },
   "GarmentDesigner": {
     "designFront": "Εμπρος",

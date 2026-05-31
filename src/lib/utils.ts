@@ -35,6 +35,22 @@ export function getPrice(
   return base + fitExtra + pmExtra
 }
 
+/**
+ * Removes Greek tonos (acute accent) from a string while preserving the
+ * dialytika (ϊ, ϋ). Use this ONLY when an accented Greek value must be rendered
+ * through CSS `text-transform: uppercase`: uppercasing a tonos produces a
+ * broken-looking artifact (e.g. Μαύρο becomes ΜΑΎΡΟ). The source string stays
+ * accented for normal-case displays; strip only at the uppercase render site.
+ */
+export function stripGreekTonos(input: string): string {
+  // NFD decomposes precomposed accents into base char + combining mark, so we
+  // can drop the varia/tonos/perispomeni marks but keep dialytika (U+0308).
+  return input
+    .normalize('NFD')
+    .replace(/[̀́͂]/g, '')
+    .normalize('NFC')
+}
+
 export function parsePriceNumber(price: string): number {
   return parseFloat(price.replace('€', ''))
 }

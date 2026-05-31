@@ -11,7 +11,7 @@ import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
 import { SIZES, SIZE_DATA } from '@/data/sizes'
 import { BP } from '@/data/pricing'
-import { cn, getPrice } from '@/lib/utils'
+import { cn, getPrice, stripGreekTonos } from '@/lib/utils'
 import { useColorLabel } from '@/hooks/use-i18n-labels'
 import { useUIStore } from '@/stores/ui-store'
 import type { GarmentType, SizeKey, FitType, PrintMethod, GarmentColor } from '@/types'
@@ -806,7 +806,9 @@ export function OrderSummaryTable({
 
   const rows: [string, string][] = [
     [t('rowGarment'),   garmentLabels[garmentType]],
-    [t('rowColor'),     colorLabel(color.name)],
+    // color is accented for normal-case displays; this table is CSS-uppercased,
+    // so strip the tonos here to avoid the ΜΑΎΡΟ artifact (see stripGreekTonos)
+    [t('rowColor'),     stripGreekTonos(colorLabel(color.name))],
     [t('rowSize'),      size ?? '-'],
     [t('rowFit'),       fit === 'oversized' ? t('fitOversizedFull') : t('fitNormalFull')],
     [t('rowPrint'),     printMethod === 'dtg' ? t('printDtgFull') : t('printEmbroideryFull')],

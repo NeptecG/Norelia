@@ -158,6 +158,7 @@ vi.mock('@/data/sizes', () => ({
 vi.mock('@/lib/utils', () => ({
   cn: (...c: string[]) => c.filter(Boolean).join(' '),
   getPrice: vi.fn(() => 24.99),
+  stripGreekTonos: (s: string) => s,
 }))
 vi.mock('@emailjs/browser', () => ({
   default: { send: vi.fn().mockResolvedValue({ status: 200 }) },
