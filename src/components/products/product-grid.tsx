@@ -58,7 +58,8 @@ export function ProductGrid({
           <p className="font-body text-xs uppercase tracking-widest text-on-surface-muted">
             {subtitle}
           </p>
-          <h2 className="font-display text-5xl uppercase leading-none text-on-surface">
+          {/* title nudged -3px (-ml-[3px]) to sit a touch further left, matching the home carousels */}
+          <h2 className="font-display text-5xl uppercase leading-none text-on-surface -ml-[3px]">
             {title}
           </h2>
         </div>
