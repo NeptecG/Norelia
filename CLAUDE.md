@@ -52,14 +52,20 @@ Never use raw Tailwind color scales (`bg-zinc-900`, `text-gray-500`) inside comp
 
 ## Greek text (accents)
 
-- **Default to UNACCENTED Greek everywhere.** Greek strings get NO tonos/accents by default.
-- **Accents are allowed ONLY in these places:**
-  - the footer
-  - footer links
-  - the product page — *only* the product description
-  - the cookies / GDPR banner screen
-- **Everywhere else, accent only when explicitly ordered** to for that specific string.
-- Reason: most UI renders uppercase (`uppercase`), and CSS-uppercasing accented Greek produces a tonos-on-caps artifact (e.g. `Αναζήτηση` → `ΑΝΑΖΉΤΗΣΗ`). The brand aesthetic is clean all-caps.
+**The hard rule is about CASE, not location.** CSS-uppercasing accented Greek
+produces a tonos-on-caps artifact (e.g. `Αναζήτηση` → `ΑΝΑΖΉΤΗΣΗ`), which looks broken.
+
+- **Any string rendered uppercase (CSS `text-transform: uppercase`) MUST be stored WITHOUT tonos/accents.** This is non-negotiable and applies everywhere — including the footer (its tagline/secure lines are uppercased), nav, cards, headings, table headers, buttons, eyebrows, step labels, etc. Keep the dialytika (ϊ, ϋ) — only the tonos is dropped.
+- **Normal-case (mixed/lowercase) text KEEPS proper Greek accents.** This is correct Greek and causes no artifact — e.g. body prose, validation messages, input placeholders, helper sub-labels, the `από` price prefix, footer links, product description, cookies-banner body, the size-guide popup title.
+- When adding/editing a Greek string, ask: *does its element (or an ancestor) have `uppercase`?* If yes → no accents. If no → accents are fine.
+- **How to audit:** run the site, open the browser console, and scan for offenders:
+  ```js
+  [...document.querySelectorAll('*')].flatMap(e=>[...e.childNodes])
+    .filter(n=>n.nodeType===3 && /[άέήίόύώΐΰΆΈΉΊΌΎΏ]/.test(n.textContent)
+      && getComputedStyle(n.parentElement).textTransform==='uppercase')
+    .map(n=>n.textContent.trim())
+  ```
+  An empty array means no artifacts.
 
 ## Never
 
