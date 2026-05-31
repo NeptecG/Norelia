@@ -265,7 +265,7 @@ export function Nav() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder={t('searchPlaceholder')}
-                  className="absolute right-[calc(100%+8px)] top-1/2 -translate-y-1/2 w-[220px] bg-on-surface/13 border-none outline-none font-body text-[10px] tracking-[0.1em] text-on-surface placeholder:text-on-surface/40 px-2.5 h-7 z-[601]"
+                  className="absolute right-[calc(100%+8px)] top-1/2 -translate-y-1/2 w-[190px] bg-on-surface/13 border-none outline-none font-body text-[10px] tracking-[0.1em] text-on-surface placeholder:text-on-surface/40 px-2.5 h-7 z-[601]"
                 />
               )}
               <button
