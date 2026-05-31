@@ -21,7 +21,7 @@ export default async function OurStudioPage() {
         <p className="font-body text-[10px] tracking-[0.28em] uppercase text-on-surface/40 mb-2">
           {t('eyebrow', { brand: BRAND })}
         </p>
-        <h1 className="font-display text-[64px] tracking-[0.06em] text-on-surface leading-none mb-12">
+        <h1 className="font-display text-[64px] tracking-[0.06em] text-on-surface leading-none mb-12 -ml-[3px]">
           {t('heading')}
         </h1>
       </div>

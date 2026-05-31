@@ -52,7 +52,7 @@ export default async function SizeGuidePage({ searchParams }: Props) {
         <p className="font-body text-[10px] tracking-[0.3em] text-on-surface/40 mb-3 uppercase">
           {t('eyebrow')}
         </p>
-        <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-4">
+        <h1 className="font-display text-4xl tracking-[0.12em] text-on-surface mb-4 -ml-[3px]">
           {t('heading')}
         </h1>
 
