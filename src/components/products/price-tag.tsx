@@ -12,12 +12,27 @@ const sizeClass: Record<NonNullable<Props['size']>, string> = {
   lg: 'text-lg',
 }
 
+// Detach a leading currency symbol (€) from the amount with a hair of space,
+// so "€45" doesn't read as if the glyphs are touching. em-based so it scales
+// with the price font size.
+function withCurrencyGap(price: string) {
+  const match = price.match(/^(\D+)(.*)$/)
+  if (!match) return price
+  return (
+    <>
+      {/* mr-[0.12em]: subtle gap after the currency symbol, scales with font size */}
+      <span className="mr-[0.12em]">{match[1]}</span>
+      {match[2]}
+    </>
+  )
+}
+
 export function PriceTag({ price, salePrice, size = 'md' }: Props) {
   const cls = sizeClass[size]
 
   if (!salePrice) {
     return (
-      <p className={`font-body font-medium text-on-surface ${cls}`}>{price}</p>
+      <p className={`font-body font-medium text-on-surface ${cls}`}>{withCurrencyGap(price)}</p>
     )
   }
 
@@ -25,8 +40,11 @@ export function PriceTag({ price, salePrice, size = 'md' }: Props) {
 
   return (
     <div className={`flex items-center gap-1.5 ${cls}`}>
-      <span className="font-body line-through text-on-surface-muted">{price}</span>
-      <span className="font-body font-bold text-destructive">€{salePrice}</span>
+      <span className="font-body line-through text-on-surface-muted">{withCurrencyGap(price)}</span>
+      <span className="font-body font-bold text-destructive">
+        {/* mr-[0.12em]: same subtle gap after the € on the sale price */}
+        <span className="mr-[0.12em]">€</span>{salePrice}
+      </span>
       {/* inline-flex + lining-nums + tabular-nums: keeps − and digits on same optical baseline */}
       <span className="rounded bg-destructive px-1.5 py-[0.2em] text-[0.75em] font-bold text-surface inline-flex items-center self-center lining-nums tabular-nums leading-none">
         −{pct}%

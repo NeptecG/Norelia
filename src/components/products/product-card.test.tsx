@@ -98,11 +98,16 @@ describe('ProductCard', () => {
 
   it('renders sale indicator when salePrice exists', () => {
     render(<ProductCard product={{ ...baseProduct, price: '€45', salePrice: 27 }} />)
+    // Currency symbol renders in its own span, so price text is split across
+    // nodes — match the innermost element whose combined textContent is the price.
+    const byPrice = (text: string) =>
+      screen.getByText((_, el) =>
+        el?.textContent === text && Array.from(el?.children ?? []).every(c => c.textContent !== text),
+      )
     // Original price should be struck through
-    const original = screen.getByText('€45')
-    expect(original).toHaveClass('line-through')
+    expect(byPrice('€45')).toHaveClass('line-through')
     // Sale price shown
-    expect(screen.getByText('€27')).toBeInTheDocument()
+    expect(byPrice('€27')).toBeInTheDocument()
   })
 
   it('calls toggleFavorite when heart button is clicked', () => {

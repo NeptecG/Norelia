@@ -2,18 +2,26 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { PriceTag } from './price-tag'
 
+// The currency symbol renders in its own span (for a small gap), so the price
+// text is split across nodes. Match on the innermost element whose combined
+// textContent equals the price.
+const byPrice = (text: string) =>
+  screen.getByText((_, el) =>
+    el?.textContent === text && Array.from(el?.children ?? []).every(c => c.textContent !== text),
+  )
+
 describe('PriceTag', () => {
   it('renders regular price when no salePrice', () => {
     render(<PriceTag price="€45" />)
-    expect(screen.getByText('€45')).toBeInTheDocument()
+    expect(byPrice('€45')).toBeInTheDocument()
   })
 
   it('renders sale price with strikethrough and badge when salePrice given', () => {
     render(<PriceTag price="€45" salePrice={27} />)
-    const original = screen.getByText('€45')
+    const original = byPrice('€45')
     expect(original).toBeInTheDocument()
     expect(original).toHaveClass('line-through')
-    expect(screen.getByText('€27')).toBeInTheDocument()
+    expect(byPrice('€27')).toBeInTheDocument()
     expect(screen.getByText(/[−-]\d+%/)).toBeInTheDocument()
   })
 
