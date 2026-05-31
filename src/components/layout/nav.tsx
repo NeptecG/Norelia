@@ -118,7 +118,8 @@ export function Nav() {
   if (!isMobile) {
     return (
       <nav className="dark sticky top-0 z-[100] bg-surface-alt border-b border-border">
-        <div className="max-w-[1440px] mx-auto px-[60px] flex items-center justify-between h-[54px] relative z-10">
+        {/* 3-col grid (1fr auto 1fr) centres the nav links in the bar regardless of brand/icon widths */}
+        <div className="max-w-[1440px] mx-auto px-[60px] grid grid-cols-[1fr_auto_1fr] items-center h-[54px] relative z-10">
 
           {/* Brand */}
           <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0">
@@ -255,7 +256,7 @@ export function Nav() {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-5 justify-self-end">
 
             {/* Search */}
             <div ref={searchRef} className="relative flex items-center gap-2">
