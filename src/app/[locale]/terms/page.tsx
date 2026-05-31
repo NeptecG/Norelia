@@ -21,7 +21,7 @@ export default async function TermsPage() {
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
             {t('eyebrow')}
           </p>
-          <h1 className="font-display text-7xl md:text-[7rem] text-on-surface leading-none whitespace-pre-line -ml-[3px]">
+          <h1 className="font-display text-7xl md:text-[7rem] text-on-surface leading-none whitespace-pre-line -ml-[0.0625em]">
             {t('heading')}
           </h1>
         </div>

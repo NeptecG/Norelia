@@ -21,7 +21,7 @@ export default async function AboutPage() {
           <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-3">
             {t('eyebrow')}
           </p>
-          <h1 className="font-display text-7xl md:text-[88px] tracking-[0.04em] text-on-surface leading-[0.95] -ml-[3px]">
+          <h1 className="font-display text-7xl md:text-[88px] tracking-[0.04em] text-on-surface leading-[0.95] -ml-[0.0625em]">
             {t('heading', { brand: BRAND })}
           </h1>
         </div>
