@@ -372,7 +372,7 @@ describe('GarmentDesigner', () => {
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Jane Doe' } })
-    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '5555' } })
+    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '6940000000' } })
     fireEvent.change(screen.getByLabelText(/email/i),     { target: { value: 'jane@example.com' } })
     fireEvent.change(screen.getByLabelText(/address/i),   { target: { value: '123 Main St' } })
     fireEvent.change(screen.getByLabelText(/city/i),      { target: { value: 'Athens' } })
@@ -395,7 +395,7 @@ describe('GarmentDesigner', () => {
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Test User' } })
-    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '5555' } })
+    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '6940000000' } })
     fireEvent.change(screen.getByLabelText(/email/i),     { target: { value: 'test@example.com' } })
     fireEvent.change(screen.getByLabelText(/address/i),   { target: { value: '1 Test St' } })
     fireEvent.change(screen.getByLabelText(/city/i),      { target: { value: 'Athens' } })
@@ -417,7 +417,7 @@ describe('GarmentDesigner', () => {
     fireEvent.click(screen.getByRole('button', { name: /place order/i }))
 
     fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: 'Jane Doe' } })
-    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '5555' } })
+    fireEvent.change(screen.getByLabelText(/phone/i),     { target: { value: '6940000000' } })
     fireEvent.change(screen.getByLabelText(/email/i),     { target: { value: 'jane@example.com' } })
     fireEvent.change(screen.getByLabelText(/address/i),   { target: { value: '123 Main St' } })
     fireEvent.change(screen.getByLabelText(/city/i),      { target: { value: 'Athens' } })

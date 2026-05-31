@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
 import { Upload, ArrowLeft, Check, Ruler } from 'lucide-react'
@@ -46,8 +46,8 @@ const GARMENT_TYPES:  GarmentType[] = ['tshirt', 'hoodie', 'zipper']
 const FIT_TYPES:      FitType[]     = ['normal', 'oversized']
 const PRINT_METHODS:  PrintMethod[] = ['dtg', 'embroidery']
 
-// Below Tailwind's standard scale — intentional for all control labels throughout the designer
-const LABEL_CLS = 'font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted'
+// Control labels throughout the designer (bumped up per design feedback)
+const LABEL_CLS = 'font-body text-[11px] tracking-[0.2em] uppercase text-on-surface-muted'
 
 // ─── Order schema ─────────────────────────────────────────────────────────────
 
@@ -335,7 +335,7 @@ export function SideToggle({ side, hasDesign, onToggle }: SideToggleProps) {
           aria-pressed={side === s}
           className={cn(
             'flex-1 py-2.5 flex items-center justify-center gap-1.5',
-            'font-body text-[9px] tracking-[0.2em] uppercase transition-colors',
+            'font-body text-[11px] tracking-[0.2em] uppercase transition-colors',
             side === s
               ? 'bg-on-surface text-surface'
               : 'bg-surface text-on-surface hover:bg-on-surface/10',
@@ -387,9 +387,9 @@ export function PrintPresetSelector({
                 : 'bg-surface text-on-surface-muted border-border-subtle hover:border-on-surface',
             )}
           >
-            <span className="block font-body text-[9px] font-bold tracking-[0.16em] uppercase">{presetLabelMap[p.id] ?? p.label}</span>
-            <span className="block font-body text-[8px] opacity-65 mt-0.5">{p.cm}</span>
-            <span className="block font-body text-[7px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{t(p.descKey as 'presetDescLeftBreast')}</span>
+            <span className="block font-body text-[11px] font-bold tracking-[0.16em] uppercase">{presetLabelMap[p.id] ?? p.label}</span>
+            <span className="block font-body text-[10px] opacity-65 mt-0.5">{p.cm}</span>
+            <span className="block font-body text-[9px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{t(p.descKey as 'presetDescLeftBreast')}</span>
           </button>
         ))}
       </div>
@@ -406,7 +406,7 @@ export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLi
         <button
           type="button"
           onClick={onRemoveFront}
-          className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
+          className="font-body text-[11px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
         >
           {t('removeFront')}
         </button>
@@ -415,7 +415,7 @@ export function RemoveLinks({ hasDesign, onRemoveFront, onRemoveBack }: RemoveLi
         <button
           type="button"
           onClick={onRemoveBack}
-          className="font-body text-[9px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
+          className="font-body text-[11px] tracking-[0.15em] uppercase text-destructive underline decoration-destructive/40 hover:decoration-destructive transition-colors"
         >
           {t('removeBack')}
         </button>
@@ -439,11 +439,11 @@ export function MeasurementsPanel({
           type="button"
           onClick={onToggle}
           className={cn(
-            'flex items-center gap-1.5 font-body text-[9px] tracking-[0.16em] uppercase transition-colors',
+            'flex items-center gap-1.5 font-body text-[11px] tracking-[0.16em] uppercase transition-colors',
             show ? 'text-on-surface' : 'text-on-surface-muted',
           )}
         >
-          <Ruler size={12}/>
+          <Ruler size={14}/>
           {show ? t('hideMeasurements') : t('showMeasurements')}
         </button>
         {show && (
@@ -454,7 +454,7 @@ export function MeasurementsPanel({
                 type="button"
                 onClick={() => onGenderChange(g)}
                 className={cn(
-                  'font-body text-[8px] tracking-[0.14em] uppercase px-2 py-0.5 border transition-colors',
+                  'font-body text-[10px] tracking-[0.14em] uppercase px-2 py-0.5 border transition-colors',
                   gender === g
                     ? 'bg-on-surface text-surface border-on-surface'
                     : 'bg-transparent text-on-surface-muted border-border-subtle hover:border-on-surface',
@@ -476,8 +476,8 @@ export function MeasurementsPanel({
             ...(mData.waist ? [{ key: 'measureWaist', value: `${mData.waist} cm` }] : []),
           ].map(({ key, value }) => (
             <div key={key} className="border border-border-subtle p-2 text-center">
-              <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{t(key as 'measureLength')}</p>
-              <p className="font-display text-base text-on-surface">{value}</p>
+              <p className={cn(LABEL_CLS, 'text-[10px] mb-1')}>{t(key as 'measureLength')}</p>
+              <p className="font-display text-lg text-on-surface">{value}</p>
             </div>
           ))}
         </div>
@@ -510,11 +510,11 @@ export function GarmentTypeSelector({ value, onChange }: GarmentTypeSelectorProp
                 : 'bg-surface text-on-surface hover:bg-on-surface/10',
             )}
           >
-            <span className="block font-body text-[10px] tracking-[0.18em] uppercase font-bold">
+            <span className="block font-body text-[12px] tracking-[0.18em] uppercase font-bold">
               {garmentLabels[g]}
             </span>
-            <span className="block font-body text-[9px] opacity-50 mt-0.5">
-              from €{BP[g]['S'].toFixed(2)}
+            <span className="block font-body text-[11px] opacity-50 mt-0.5">
+              {t('from')} €{BP[g]['S'].toFixed(2)}
             </span>
           </button>
         ))}
@@ -529,7 +529,7 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
     <div>
       <p className={cn(LABEL_CLS, 'mb-1.5')}>
         {t('designLabel')}{' '}
-        <span className="normal-case tracking-normal text-on-surface-muted">
+        <span className="uppercase tracking-[0.12em] text-on-surface-muted">
           ({side === 'front' ? t('designFront') : t('designBack')})
         </span>
       </p>
@@ -548,8 +548,8 @@ export function DesignUploadZone({ side, fileRef, onFilePick }: DesignUploadZone
         aria-label={t('uploadAriaLabel')}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileRef.current?.click() }}
       >
-        <Upload size={16} className="mx-auto mb-2 text-on-surface-muted"/>
-        <p className="font-body text-[11px] text-on-surface-muted tracking-[0.08em]">
+        <Upload size={18} className="mx-auto mb-2 text-on-surface-muted"/>
+        <p className="font-body text-[13px] text-on-surface-muted tracking-[0.08em]">
           {t('uploadCta')}
         </p>
       </div>
@@ -611,7 +611,7 @@ export function SizeSelector({ size, onChange }: SizeSelectorProps) {
             aria-pressed={size === s}
             onClick={() => onChange(s)}
             className={cn(
-              'px-3 py-1.5 font-body text-[10px] tracking-[0.15em] border transition-colors',
+              'px-3.5 py-2 font-body text-[12px] tracking-[0.15em] border transition-colors',
               size === s
                 ? 'bg-on-surface text-surface border-on-surface'
                 : 'bg-surface text-on-surface border-border-subtle hover:border-on-surface',
@@ -644,10 +644,10 @@ export function FitSelector({ fit, onChange }: FitSelectorProps) {
                 : 'bg-surface text-on-surface hover:bg-on-surface/10',
             )}
           >
-            <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
+            <span className="block font-body text-[12px] tracking-[0.15em] uppercase font-bold">
               {f === 'normal' ? t('fitNormal') : t('fitOversized')}
             </span>
-            <span className="block font-body text-[9px] opacity-50 mt-0.5">
+            <span className="block font-body text-[11px] opacity-50 mt-0.5">
               {f === 'normal' ? t('fitNormalSub') : t('fitOversizedSub')}
             </span>
           </button>
@@ -676,10 +676,10 @@ export function PrintMethodSelector({ printMethod, onChange }: PrintMethodSelect
                 : 'bg-surface text-on-surface hover:bg-on-surface/10',
             )}
           >
-            <span className="block font-body text-[10px] tracking-[0.15em] uppercase font-bold">
+            <span className="block font-body text-[12px] tracking-[0.15em] uppercase font-bold">
               {p === 'dtg' ? t('printDtg') : t('printEmbroidery')}
             </span>
-            <span className="block font-body text-[9px] opacity-50 mt-0.5">
+            <span className="block font-body text-[11px] opacity-50 mt-0.5">
               {p === 'dtg' ? t('printDtgSub') : t('printEmbroiderySub')}
             </span>
           </button>
@@ -700,7 +700,7 @@ export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
           onClick={() => onChange(Math.max(1, qty - 1))}
           aria-label={t('decreaseQty')}
           className={cn(
-            'w-9 h-9 flex items-center justify-center font-body text-lg leading-none transition-colors',
+            'w-10 h-10 flex items-center justify-center font-body text-xl leading-none transition-colors',
             qty <= 1 ? 'text-on-surface-muted cursor-default' : 'text-on-surface hover:bg-on-surface/10',
           )}
         >
@@ -716,13 +716,13 @@ export function QuantityStepper({ qty, onChange }: QuantityStepperProps) {
             onChange(Math.max(1, parseInt(raw, 10)))
           }}
           aria-label={t('qtyAriaLabel')}
-          className="w-11 h-9 text-center font-body text-sm font-bold text-on-surface bg-transparent border-none outline-none"
+          className="w-12 h-10 text-center font-body text-base font-bold text-on-surface bg-transparent border-none outline-none"
         />
         <button
           type="button"
           onClick={() => onChange(qty + 1)}
           aria-label={t('increaseQty')}
-          className="w-9 h-9 flex items-center justify-center font-body text-lg leading-none text-on-surface hover:bg-on-surface/10 transition-colors"
+          className="w-10 h-10 flex items-center justify-center font-body text-xl leading-none text-on-surface hover:bg-on-surface/10 transition-colors"
         >
           +
         </button>
@@ -746,18 +746,18 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, on
   return (
     <div className="pt-5 border-t border-border-subtle">
       <div className="flex items-baseline gap-2.5 mb-1">
-        <span className="font-display text-4xl text-on-surface">
+        <span className="font-display text-5xl text-on-surface">
           {total !== null ? `€${total.toFixed(2)}` : '-'}
         </span>
-        {fit === 'oversized'          && <span className="font-body text-[11px] text-on-surface-muted">{t('oversizedSurcharge')}</span>}
-        {printMethod === 'embroidery' && <span className="font-body text-[11px] text-on-surface-muted">{t('embroiderySurcharge')}</span>}
+        {fit === 'oversized'          && <span className="font-body text-[13px] text-on-surface-muted">{t('oversizedSurcharge')}</span>}
+        {printMethod === 'embroidery' && <span className="font-body text-[13px] text-on-surface-muted">{t('embroiderySurcharge')}</span>}
       </div>
       {price !== null && qty > 1 && (
-        <p className="font-body text-[10px] text-on-surface-muted mb-1">
+        <p className="font-body text-[12px] text-on-surface-muted mb-1">
           €{price.toFixed(2)} × {qty}
         </p>
       )}
-      <p className="font-body text-[10px] text-on-surface-muted tracking-[0.06em] mb-4">
+      <p className="font-body text-[12px] text-on-surface-muted tracking-[0.06em] mb-4">
         {t('inclPrinting')}
       </p>
       <button
@@ -765,7 +765,7 @@ export function PriceDisplay({ price, qty, fit, printMethod, size, hasDesign, on
         onClick={onPlaceOrder}
         disabled={!canOrder}
         className={cn(
-          'w-full py-4 font-body text-[10px] tracking-[0.22em] uppercase font-bold transition-opacity',
+          'w-full py-4 font-body text-[12px] tracking-[0.22em] uppercase font-bold transition-opacity',
           canOrder
             ? 'bg-on-surface text-surface hover:opacity-80'
             : 'bg-on-surface/30 text-surface/60 cursor-not-allowed',
@@ -823,11 +823,11 @@ export function OrderSummaryTable({
         <div
           key={k}
           className={cn(
-            'flex justify-between py-1.5 font-body text-sm',
+            'flex justify-between py-2 font-body text-base',
             i < a.length - 1 ? 'border-b border-border-subtle' : 'font-bold pt-3 mt-1',
           )}
         >
-          <span className="font-body text-[9px] tracking-[0.18em] uppercase text-on-surface-muted">
+          <span className="font-body text-[11px] tracking-[0.18em] uppercase text-on-surface-muted">
             {k}
           </span>
           <span className="uppercase text-on-surface">{v}</span>
@@ -837,58 +837,115 @@ export function OrderSummaryTable({
   )
 }
 
+// Red required-field marker shown inside an empty input (top-left); hidden once
+// the field has any value. pointer-events-none so it never blocks typing.
+function RequiredMark({ show }: { show: boolean }) {
+  if (!show) return null
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute left-2.5 top-1.5 text-destructive font-body text-sm leading-none"
+    >
+      *
+    </span>
+  )
+}
+
 export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
   const t = useTranslations('GarmentDesigner')
   // Schema created inside the component so validation messages are locale-aware
   const schema = React.useMemo(() => z.object({
     name:    z.string().min(2, t('validationName')),
-    phone:   z.string().min(4, t('validationPhone')),
+    phone:   z.string().min(8, t('validationPhone')),
     email:   z.string().email(t('validationEmail')),
     address: z.string().min(3, t('validationAddress')),
     city:    z.string().min(2, t('validationCity')),
     zip:     z.string().min(3, t('validationZip')),
     notes:   z.string().max(500).optional(),
   }), [t])
-  const { register, handleSubmit, formState: { errors } } = useForm<OrderFields>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<OrderFields>({
     resolver: zodResolver(schema),
   })
 
-  const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-sm bg-surface border border-on-surface text-on-surface focus:outline-none'
+  // Live values drive the empty-state required asterisks (useWatch is React-Compiler safe)
+  const v = useWatch({ control })
+
+  const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-base bg-surface border border-on-surface text-on-surface focus:outline-none'
+  const ERR_CLS   = 'font-body text-sm text-destructive mt-1'
+
+  // Phone: allow only digits, spaces and a leading +. Zip: digits only.
+  // Sanitize before RHF reads the value so letters can never be entered (incl. paste).
+  const phoneReg = register('phone')
+  const zipReg   = register('zip')
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <div className="grid grid-cols-2 gap-4 mb-3.5">
         <div>
           <label htmlFor="order-name" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldName')}</label>
-          <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder={t('placeholderName')}/>
-          {errors.name && <p className="font-body text-xs text-destructive mt-1">{errors.name.message}</p>}
+          <div className="relative">
+            <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder={t('placeholderName')}/>
+            <RequiredMark show={!v.name}/>
+          </div>
+          {errors.name && <p className={ERR_CLS}>{errors.name.message}</p>}
         </div>
         <div>
           <label htmlFor="order-phone" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldPhone')}</label>
-          <input id="order-phone" {...register('phone')} inputMode="tel" className={INPUT_CLS} placeholder="+30 6940000000"/>
-          {errors.phone && <p className="font-body text-xs text-destructive mt-1">{errors.phone.message}</p>}
+          <div className="relative">
+            <input
+              id="order-phone"
+              {...phoneReg}
+              onChange={(e) => { e.target.value = e.target.value.replace(/[^\d+\s]/g, ''); phoneReg.onChange(e) }}
+              inputMode="tel"
+              maxLength={16}
+              className={INPUT_CLS}
+              placeholder="+30 6940000000"
+            />
+            <RequiredMark show={!v.phone}/>
+          </div>
+          {errors.phone && <p className={ERR_CLS}>{errors.phone.message}</p>}
         </div>
       </div>
       <div className="mb-3.5">
         <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldEmail')}</label>
-        <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder={t('emailPlaceholder')}/>
-        {errors.email && <p className="font-body text-xs text-destructive mt-1">{errors.email.message}</p>}
+        <div className="relative">
+          <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder={t('emailPlaceholder')}/>
+          <RequiredMark show={!v.email}/>
+        </div>
+        {errors.email && <p className={ERR_CLS}>{errors.email.message}</p>}
       </div>
       <div className="mb-3.5">
         <label htmlFor="order-address" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldAddress')}</label>
-        <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder={t('placeholderStreet')}/>
-        {errors.address && <p className="font-body text-xs text-destructive mt-1">{errors.address.message}</p>}
+        <div className="relative">
+          <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder={t('placeholderStreet')}/>
+          <RequiredMark show={!v.address}/>
+        </div>
+        {errors.address && <p className={ERR_CLS}>{errors.address.message}</p>}
       </div>
       <div className="grid grid-cols-2 gap-4 mb-3.5">
         <div>
           <label htmlFor="order-city" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldCity')}</label>
-          <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder={t('placeholderCity')}/>
-          {errors.city && <p className="font-body text-xs text-destructive mt-1">{errors.city.message}</p>}
+          <div className="relative">
+            <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder={t('placeholderCity')}/>
+            <RequiredMark show={!v.city}/>
+          </div>
+          {errors.city && <p className={ERR_CLS}>{errors.city.message}</p>}
         </div>
         <div>
           <label htmlFor="order-zip" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldZip')}</label>
-          <input id="order-zip" {...register('zip')} className={INPUT_CLS} placeholder="10431"/>
-          {errors.zip && <p className="font-body text-xs text-destructive mt-1">{errors.zip.message}</p>}
+          <div className="relative">
+            <input
+              id="order-zip"
+              {...zipReg}
+              onChange={(e) => { e.target.value = e.target.value.replace(/\D/g, ''); zipReg.onChange(e) }}
+              inputMode="numeric"
+              maxLength={5}
+              className={INPUT_CLS}
+              placeholder="10431"
+            />
+            <RequiredMark show={!v.zip}/>
+          </div>
+          {errors.zip && <p className={ERR_CLS}>{errors.zip.message}</p>}
         </div>
       </div>
       <div className="mb-6">
@@ -904,7 +961,7 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-4 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
+        className="w-full py-4 bg-on-surface text-surface font-body text-[12px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
       >
         {isLoading ? t('sendingOrder') : t('sendOrder')}
       </button>
@@ -920,21 +977,21 @@ export function OrderSuccess({ orderId, onReset }: OrderSuccessProps) {
       <div className="w-14 h-14 bg-on-surface flex items-center justify-center mx-auto mb-6">
         <Check size={26} className="text-surface"/>
       </div>
-      <h3 className="font-display text-4xl tracking-[0.1em] text-on-surface mb-2.5">
+      <h3 className="font-display text-5xl tracking-[0.1em] text-on-surface mb-2.5">
         {t('orderReceived')}
       </h3>
-      <p className="font-body text-sm text-on-surface-muted mb-3 leading-relaxed">
+      <p className="font-body text-base text-on-surface-muted mb-3 leading-relaxed">
         {t('orderConfirmBody')}
       </p>
       {orderId && (
-        <p className="font-body text-[11px] tracking-[0.14em] text-on-surface-muted mb-8">
+        <p className="font-body text-[13px] tracking-[0.14em] text-on-surface-muted mb-8">
           {t('orderIdPrefix')} {orderId}
         </p>
       )}
       <button
         type="button"
         onClick={onReset}
-        className="px-8 py-3.5 bg-on-surface text-surface font-body text-[10px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity"
+        className="px-8 py-3.5 bg-on-surface text-surface font-body text-[12px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity"
       >
         {t('designAnother')}
       </button>
@@ -952,16 +1009,16 @@ export function StepIndicator({ step }: StepIndicatorProps) {
   const activeIdx = STEPS.findIndex(s => s.key === step)
 
   return (
-    <div className="flex items-center gap-2 mb-8" aria-label={t('stepsAriaLabel')}>
+    <div className="flex items-center gap-3 mb-10" aria-label={t('stepsAriaLabel')}>
       {STEPS.map(({ key, label }, i) => {
         const isActive = key === step
         const isDone   = i < activeIdx
         return (
           <React.Fragment key={key}>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <span
                 className={cn(
-                  'w-6 h-6 rounded-full flex items-center justify-center font-body text-[10px]',
+                  'w-9 h-9 rounded-full flex items-center justify-center font-body text-[14px] font-semibold',
                   isActive ? 'bg-on-surface text-surface'           :
                   isDone   ? 'bg-on-surface/30 text-on-surface'     :
                              'bg-surface-raised text-on-surface-muted border border-border-subtle',
@@ -971,7 +1028,7 @@ export function StepIndicator({ step }: StepIndicatorProps) {
               </span>
               <span
                 className={cn(
-                  LABEL_CLS, 'tracking-[0.15em]',
+                  LABEL_CLS, 'text-[13px] tracking-[0.15em]',
                   isActive ? 'text-on-surface' : 'text-on-surface-muted',
                 )}
               >
@@ -1215,13 +1272,13 @@ export function GarmentDesigner() {
           <button
             type="button"
             onClick={() => setStep('design')}
-            className="flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface mb-8 hover:opacity-70 transition-opacity"
+            className="flex items-center gap-2 font-body text-[12px] tracking-[0.18em] uppercase text-on-surface mb-8 hover:opacity-70 transition-opacity"
           >
-            <ArrowLeft size={14}/>
+            <ArrowLeft size={16}/>
             {t('backToDesigner')}
           </button>
 
-          <h3 className="font-display text-3xl tracking-[0.1em] text-on-surface border-b border-on-surface pb-3.5 mb-5">
+          <h3 className="font-display text-4xl tracking-[0.1em] text-on-surface border-b border-on-surface pb-3.5 mb-5">
             {t('orderSummaryHeading')}
           </h3>
 
@@ -1238,7 +1295,7 @@ export function GarmentDesigner() {
             qty={qty}
           />
 
-          <h3 className="font-display text-2xl tracking-[0.1em] text-on-surface mb-4">
+          <h3 className="font-display text-3xl tracking-[0.1em] text-on-surface mb-4">
             {t('customerDetailsHeading')}
           </h3>
 
@@ -1249,14 +1306,14 @@ export function GarmentDesigner() {
             <button
               type="button"
               onClick={() => setShowEjs(!showEjs)}
-              className="w-full flex justify-between items-center border border-on-surface px-4 py-2.5 font-body text-[10px] tracking-[0.18em] uppercase hover:bg-on-surface/5 transition-colors"
+              className="w-full flex justify-between items-center border border-on-surface px-4 py-2.5 font-body text-[12px] tracking-[0.18em] uppercase hover:bg-on-surface/5 transition-colors"
             >
               <span>{t('emailjsSettings')}</span>
               <span className="text-lg leading-none">{showEjs ? '−' : '+'}</span>
             </button>
             {showEjs && (
               <div className="border border-on-surface border-t-0 p-4 bg-surface-raised">
-                <p className="font-body text-[11px] text-on-surface-muted leading-relaxed mb-3">
+                <p className="font-body text-[13px] text-on-surface-muted leading-relaxed mb-3">
                   {t('emailjsNote')}
                 </p>
                 <div className="grid grid-cols-2 gap-3">
@@ -1267,13 +1324,13 @@ export function GarmentDesigner() {
                     [t('emailjsTemplateLabel'),   'template_xxx',    ejsTpl,   setEjsTpl  ],
                   ] as [string, string, string, (v: string) => void][]).map(([l, ph, v, s]) => (
                     <div key={l}>
-                      <p className={cn(LABEL_CLS, 'text-[8px] mb-1')}>{l}</p>
+                      <p className={cn(LABEL_CLS, 'text-[10px] mb-1')}>{l}</p>
                       <input
                         type="text"
                         placeholder={ph}
                         value={v}
                         onChange={(e) => s(e.target.value)}
-                        className="w-full px-2.5 py-2 font-body text-xs bg-surface border border-on-surface text-on-surface focus:outline-none"
+                        className="w-full px-2.5 py-2 font-body text-sm bg-surface border border-on-surface text-on-surface focus:outline-none"
                       />
                     </div>
                   ))}
