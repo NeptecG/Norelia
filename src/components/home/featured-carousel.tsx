@@ -58,13 +58,13 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
         {/* Header row */}
         <div className="flex items-end justify-between mb-8 md:mb-10">
           <div>
-            {/* eyebrow nudged -2px (-ml-0.5) to optically align its first letter with the display title below */}
             {subtitle && (
-              <p className="font-body text-[11px] tracking-widest uppercase text-on-surface-muted mb-1 -ml-0.5">
+              <p className="font-body text-[11px] tracking-widest uppercase text-on-surface-muted mb-1">
                 {subtitle}
               </p>
             )}
-            <h2 className="font-display text-5xl text-on-surface leading-none">
+            {/* title nudged -2px (-ml-0.5) to sit a touch further left, per design */}
+            <h2 className="font-display text-5xl text-on-surface leading-none -ml-0.5">
               {title}
             </h2>
           </div>
