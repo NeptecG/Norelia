@@ -50,6 +50,13 @@ Each should render a static skeleton that matches the page layout (card grid, pr
 Use semantic Tailwind only: `bg-surface`, `text-on-surface`, `bg-surface-alt`, `text-destructive`, `text-success`, `border-border`, etc.
 Never use raw Tailwind color scales (`bg-zinc-900`, `text-gray-500`) inside components.
 
+## Greek text (accents)
+
+- **Default to UNACCENTED Greek.** Do not add tonos/accents to Greek strings unless the user explicitly orders it for that specific string.
+- Reason: most UI text renders uppercase (`uppercase`), and CSS-uppercasing accented Greek produces a tonos-on-caps artifact (e.g. `Αναζήτηση` → `ΑΝΑΖΉΤΗΣΗ`). The brand aesthetic is clean all-caps.
+- This applies to all-caps/uppercased labels, headings, nav, toasts (the toast component uppercases its text), buttons, table keys, etc.
+- Exception: when the user explicitly asks for accents on a specific normal-case string (e.g. price prefix `από`, input placeholders, lowercase helper/sub-labels), keep them — accents are correct there and cause no artifact.
+
 ## Never
 
 - Never import from `framer-motion` — use `motion` only
