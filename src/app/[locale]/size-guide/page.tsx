@@ -125,12 +125,6 @@ export default async function SizeGuidePage({ searchParams }: Props) {
             <li className="font-body text-[12px] text-on-surface-muted leading-[1.7]">{t('measureWaist')}</li>
             <li className="font-body text-[12px] text-on-surface-muted leading-[1.7]">{t('measureHip')}</li>
           </ul>
-          <Link
-            href="/studio"
-            className="inline-block mt-5 font-body text-[11px] tracking-[0.15em] text-on-surface-muted hover:text-on-surface transition-colors"
-          >
-            {t('studioLink')}
-          </Link>
         </div>
 
         <p className="mt-6 font-body text-xs text-on-surface-muted">{t('measureNote')}</p>

@@ -28,7 +28,7 @@ export function SizeMiniGuide({ product, open, onClose }: Props) {
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose() }}>
       <DialogContent className="dark bg-surface-alt max-w-2xl overflow-auto" showCloseButton>
         <DialogTitle className="font-display text-2xl tracking-[0.12em]">
-          {t('sizeGuide')}
+          {t('sizeGuideHeading')}
         </DialogTitle>
         <p className="font-body text-[10px] text-on-surface/50 mb-4">
           {product.name} · {t('measurementsCm')}
