@@ -49,6 +49,19 @@ const PRINT_METHODS:  PrintMethod[] = ['dtg', 'embroidery']
 // Control labels throughout the designer (bumped up per design feedback)
 const LABEL_CLS = 'font-body text-[11px] tracking-[0.2em] uppercase text-on-surface-muted'
 
+type GarmentT = ReturnType<typeof useTranslations<'GarmentDesigner'>>
+
+// Localized label for a print-area preset id (logo / standard / oversized).
+// Single source of truth — used by both PrintPresetSelector and OrderSummaryTable.
+function presetLabel(t: GarmentT, id: string): string {
+  switch (id) {
+    case 'logo':      return t('presetLogo')
+    case 'standard':  return t('presetStandard')
+    case 'oversized': return t('presetOversized')
+    default:          return id
+  }
+}
+
 // ─── Order schema ─────────────────────────────────────────────────────────────
 
 // Type-only shape — used solely to infer OrderFields. The real validation
@@ -359,12 +372,6 @@ export function PrintPresetSelector({
   const presets = side === 'front' ? FRONT_PRESETS : BACK_PRESETS
   const active  = side === 'front' ? frontPreset : backPreset
 
-  const presetLabelMap: Record<string, string> = {
-    logo:      t('presetLogo'),
-    standard:  t('presetStandard'),
-    oversized: t('presetOversized'),
-  }
-
   function handleChange(id: string) {
     if (side === 'front') onFrontChange(id as FrontPresetId)
     else                  onBackChange(id as BackPresetId)
@@ -387,7 +394,7 @@ export function PrintPresetSelector({
                 : 'bg-surface text-on-surface-muted border-border-subtle hover:border-on-surface',
             )}
           >
-            <span className="block font-body text-[11px] font-bold tracking-[0.16em] uppercase">{presetLabelMap[p.id] ?? p.label}</span>
+            <span className="block font-body text-[11px] font-bold tracking-[0.16em] uppercase">{presetLabel(t, p.id)}</span>
             <span className="block font-body text-[10px] opacity-65 mt-0.5">{p.cm}</span>
             <span className="block font-body text-[9px] uppercase tracking-[0.06em] opacity-50 mt-0.5">{t(p.descKey as 'presetDescLeftBreast')}</span>
           </button>
@@ -793,12 +800,6 @@ export function OrderSummaryTable({
     zipper: t('garmentZipper'),
   }
 
-  const presetLabelMap: Record<string, string> = {
-    logo:      t('presetLogo'),
-    standard:  t('presetStandard'),
-    oversized: t('presetOversized'),
-  }
-
   const sides = hasDesign.front && hasDesign.back
     ? t('frontAndBack')
     : hasDesign.front ? t('frontOnly') : t('backOnly')
@@ -810,8 +811,8 @@ export function OrderSummaryTable({
     [t('rowFit'),       fit === 'oversized' ? t('fitOversizedFull') : t('fitNormalFull')],
     [t('rowPrint'),     printMethod === 'dtg' ? t('printDtgFull') : t('printEmbroideryFull')],
     [t('rowSides'),     sides],
-    ...(hasDesign.front ? [[t('rowPosFront'), `${presetLabelMap[frontP.id] ?? frontP.label}, ${frontP.cm}`] as [string, string]] : []),
-    ...(hasDesign.back  ? [[t('rowPosBack'),  `${presetLabelMap[backP.id]  ?? backP.label}, ${backP.cm}`]  as [string, string]] : []),
+    ...(hasDesign.front ? [[t('rowPosFront'), `${presetLabel(t, frontP.id)}, ${frontP.cm}`] as [string, string]] : []),
+    ...(hasDesign.back  ? [[t('rowPosBack'),  `${presetLabel(t, backP.id)}, ${backP.cm}`]  as [string, string]] : []),
     [t('rowUnitPrice'), price !== null ? `€${price.toFixed(2)}` : '-'],
     [t('rowQty'),       String(qty)],
     [t('rowTotal'),     total !== null ? `€${total.toFixed(2)}` : '-'],

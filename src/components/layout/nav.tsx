@@ -121,8 +121,8 @@ export function Nav() {
         {/* 3-col grid (1fr auto 1fr) centres the nav links in the bar regardless of brand/icon widths */}
         <div className="max-w-[1440px] mx-auto px-[60px] grid grid-cols-[1fr_auto_1fr] items-center h-[54px] relative z-10">
 
-          {/* Brand */}
-          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0">
+          {/* Brand — justify-self-start so the grid cell doesn't stretch the link's click area */}
+          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0 justify-self-start">
             {BRAND}
           </Link>
 
