@@ -10,7 +10,8 @@ type TFooter = Awaited<ReturnType<typeof getTranslations<'SiteFooter'>>>
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/65 mb-5">
+    // -ml-[3px]: same optical left-nudge used on display titles, for footer column titles
+    <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/65 mb-5 -ml-[3px]">
       {children}
     </p>
   )
@@ -22,7 +23,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   return (
     <Link
       href={href}
-      className="relative group inline-block font-body text-[11px] tracking-[0.12em] text-on-surface/80 hover:text-on-surface transition-colors duration-200 mb-2.5"
+      className="relative group inline-block font-body text-[11px] tracking-[0.12em] text-on-surface/80 hover:text-on-surface transition-colors duration-200 mb-2.5 -ml-[3px]"
     >
       {children}
       <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
