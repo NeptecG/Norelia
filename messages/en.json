@@ -19,7 +19,7 @@
     "cartWithCount": "Cart ({count} items)",
     "favoritesLabel": "Favorites",
     "favoritesWithCount": "Favorites ({count})",
-    "searchPlaceholder": "Search products...",
+    "searchPlaceholder": "Type name or code to search",
     "noResults": "No results for \"{query}\"",
     "menuLabel": "Menu",
     "closePanel": "Close",
