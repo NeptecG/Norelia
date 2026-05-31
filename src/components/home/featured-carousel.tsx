@@ -63,8 +63,8 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
                 {subtitle}
               </p>
             )}
-            {/* title nudged -2px (-ml-0.5) to sit a touch further left, per design */}
-            <h2 className="font-display text-5xl text-on-surface leading-none -ml-0.5">
+            {/* title nudged -3px (-ml-[3px]) to sit a touch further left, per design */}
+            <h2 className="font-display text-5xl text-on-surface leading-none -ml-[3px]">
               {title}
             </h2>
           </div>
