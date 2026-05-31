@@ -50,7 +50,7 @@
     "onSaleSubtitle": "ΠΡΟΣΦΟΡΕΣ"
   },
   "FeaturedCarousel": {
-    "viewAll": "Δες Όλα",
+    "viewAll": "Ολα",
     "goToPage": "Σελίδα {n}"
   },
   "ProductGrid": {
@@ -75,7 +75,7 @@
     "addedToFavorites": "Προστέθηκε στα αγαπημένα",
     "removedFromFavorites": "Αφαιρέθηκε από τα αγαπημένα",
     "noMoreStock": "Δεν υπάρχει άλλο {size} για {name}",
-    "sizeAdded": "{name}, {size} προστέθηκε"
+    "sizeAdded": "{name}, {size} προστέθηκε στο καλάθι"
   },
   "ProductPage": {
     "sizeLabel": "Μέγεθος",
