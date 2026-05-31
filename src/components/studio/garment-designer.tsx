@@ -844,7 +844,7 @@ function RequiredMark({ show }: { show: boolean }) {
   return (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute left-2.5 top-1.5 text-destructive font-body text-sm leading-none"
+      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-destructive font-body text-base leading-none"
     >
       *
     </span>
