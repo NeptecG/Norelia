@@ -49,7 +49,7 @@ export default async function CompanyPage() {
                 key={label}
                 className="grid grid-cols-1 sm:grid-cols-[220px_1fr] sm:items-baseline gap-1.5 sm:gap-8 py-6 border-b border-border-subtle"
               >
-                <dt className="font-body text-[10px] tracking-[0.22em] uppercase text-on-surface/45">{label}</dt>
+                <dt className="font-body text-[10px] font-medium tracking-[0.22em] uppercase text-on-surface/60">{label}</dt>
                 <dd className="font-body text-[15px] text-on-surface leading-relaxed tracking-[0.01em]">{value}</dd>
               </div>
             ))}
