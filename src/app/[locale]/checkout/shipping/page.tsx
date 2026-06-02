@@ -172,7 +172,7 @@ export default function CheckoutShippingPage() {
                       price={shippingWaived
                         ? (
                           <span className="flex items-baseline gap-2">
-                            <span className="line-through text-on-surface/35 text-xs">€{HOME_DELIVERY_COST.toFixed(2)}</span>
+                            <span className="line-through text-on-surface/35">€{HOME_DELIVERY_COST.toFixed(2)}</span>
                             <span className="text-success">{t('free')}</span>
                           </span>
                         )
