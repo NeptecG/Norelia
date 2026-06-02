@@ -26,16 +26,18 @@ const CARD = (
   </svg>
 )
 
-// IRIS — four-segment colour ring + wordmark
+// IRIS — five-segment colour wheel (red, orange, lime, teal, blue) + wordmark,
+// matching the real IRIS payments mark
 const IRIS = (
   <svg width="50" height="24" viewBox="0 0 52 24" fill="none" aria-hidden="true">
-    <g transform="translate(10,12)" fill="none" strokeWidth="4.4">
-      <circle r="6.6" stroke="#E2231A" strokeDasharray="8 33" transform="rotate(-50)" />
-      <circle r="6.6" stroke="#2D9CDB" strokeDasharray="8 33" transform="rotate(40)" />
-      <circle r="6.6" stroke="#F2A20C" strokeDasharray="8 33" transform="rotate(130)" />
-      <circle r="6.6" stroke="#27AE60" strokeDasharray="8 33" transform="rotate(220)" />
+    <g transform="translate(10,12)" fill="none" strokeWidth="5">
+      <circle r="6.6" stroke="#1D71B8" strokeDasharray="7.3 34.2" transform="rotate(-90)" />
+      <circle r="6.6" stroke="#00A19A" strokeDasharray="7.3 34.2" transform="rotate(-18)" />
+      <circle r="6.6" stroke="#8DC63F" strokeDasharray="7.3 34.2" transform="rotate(54)" />
+      <circle r="6.6" stroke="#F39200" strokeDasharray="7.3 34.2" transform="rotate(126)" />
+      <circle r="6.6" stroke="#E2231A" strokeDasharray="7.3 34.2" transform="rotate(198)" />
     </g>
-    <text x="23" y="16" fill="#3A3A3A" fontSize="12.5" fontWeight="800" fontFamily="Arial, sans-serif">IRIS</text>
+    <text x="22" y="16" fill="#58595B" fontSize="12.5" fontWeight="800" fontFamily="Arial, sans-serif">IRIS</text>
   </svg>
 )
 
