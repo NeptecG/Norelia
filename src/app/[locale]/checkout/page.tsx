@@ -360,11 +360,10 @@ export default function CheckoutPage() {
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
 
-        {/* Page heading */}
-        <h1 className="font-display text-6xl text-on-surface leading-none mb-10">{t('title')}</h1>
-
         {isEmpty ? (
           /* ── Empty state ── */
+          <>
+          <h1 className="font-display text-6xl text-on-surface leading-none mb-10">{t('title')}</h1>
           <div className="flex flex-col items-center justify-center py-24 gap-6">
             <p className="font-body text-base text-on-surface/60 tracking-wide">
               {t('cartEmpty')}
@@ -376,12 +375,14 @@ export default function CheckoutPage() {
               {t('continueShopping')}
             </Link>
           </div>
+          </>
         ) : (
           /* ── Cart layout ── */
           <>
-          <StepIndicator current={0} />
-          {/* Continue Shopping link */}
+          {/* Continue Shopping link, then progress, then the title — matches the other steps */}
           <BackLink href="/" label={t('continueShopping')} />
+          <StepIndicator current={0} />
+          <h1 className="font-display text-6xl text-on-surface leading-none mb-10">{t('title')}</h1>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
 
             {/* Items column */}

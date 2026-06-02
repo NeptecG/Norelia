@@ -15,12 +15,9 @@ import { StepIndicator } from '@/components/checkout/step-indicator'
 import { OptionCard } from '@/components/checkout/option-card'
 import { CheckoutSummary } from '@/components/checkout/checkout-summary'
 import { BackLink } from '@/components/checkout/back-link'
+import { FIELD_INPUT as INPUT_CLS, FIELD_LABEL as LABEL_CLS, FIELD_ERR as ERR_CLS, Req } from '@/components/checkout/fields'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
-
-const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-sm bg-surface border border-border text-on-surface placeholder:text-on-surface/30 focus:outline-none focus:border-on-surface transition-colors'
-const LABEL_CLS = 'block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-1.5'
-const ERR_CLS   = 'font-body text-[11px] text-destructive mt-1'
 
 // Reveal box that attaches under the selected option card
 const REVEAL_CLS = 'border border-on-surface border-t-0 -mt-px px-5 md:px-6 pt-4 pb-5'
@@ -41,10 +38,6 @@ const ICON_STORE = (
     <path d="M4 9h16v11H4z" /><path d="M3 9l1.5-4h15L21 9" /><path d="M9 20v-5h6v5" />
   </svg>
 )
-
-function Req() {
-  return <span className="text-destructive" aria-hidden="true"> *</span>
-}
 
 interface ShippingFields {
   deliveryMethod: 'home' | 'pickup' | 'store'
@@ -180,7 +173,7 @@ export default function CheckoutShippingPage() {
 
               {/* Delivery method */}
               <motion.section {...sectionMotion(0)} aria-label={t('deliveryMethod')} className="mb-12">
-                <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-4">{t('deliveryMethod')}</p>
+                <p className="font-body text-[11px] tracking-[0.2em] uppercase text-on-surface-muted mb-4">{t('deliveryMethod')}</p>
 
                 <div className="space-y-3">
                   {/* Home delivery + revealed address form */}

@@ -26,10 +26,10 @@ export function OptionCard({ value, selected, title, register, desc, price, icon
       <input type="radio" {...register} value={value} className="sr-only" />
       {icon && <span className="shrink-0 flex items-center text-on-surface/65">{icon}</span>}
       <span className="min-w-0 flex-1">
-        <span className="block font-display text-lg text-on-surface leading-tight">{title}</span>
-        {desc && <span className="block font-body text-[11px] text-on-surface-muted mt-0.5">{desc}</span>}
+        <span className="block font-display text-xl text-on-surface leading-tight">{title}</span>
+        {desc && <span className="block font-body text-[13px] text-on-surface-muted mt-0.5">{desc}</span>}
       </span>
-      {price != null && <span className="shrink-0 font-body text-sm text-on-surface">{price}</span>}
+      {price != null && <span className="shrink-0 font-body text-[15px] text-on-surface">{price}</span>}
       {selected && (
         <svg className="shrink-0 text-on-surface" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M20 6L9 17l-5-5" />

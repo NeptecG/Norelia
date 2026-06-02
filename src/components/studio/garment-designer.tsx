@@ -2,11 +2,12 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { z } from 'zod'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
 import { Upload, Check, Ruler } from 'lucide-react'
 import { Arrow } from '@/components/icons/arrow'
+import { FIELD_INPUT, FIELD_LABEL, FIELD_ERR, Req } from '@/components/checkout/fields'
 import { useTranslations } from 'next-intl'
 import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
@@ -841,20 +842,6 @@ export function OrderSummaryTable({
   )
 }
 
-// Red required-field marker shown inside an empty input (top-left); hidden once
-// the field has any value. pointer-events-none so it never blocks typing.
-function RequiredMark({ show }: { show: boolean }) {
-  if (!show) return null
-  return (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-destructive font-body text-base leading-none"
-    >
-      *
-    </span>
-  )
-}
-
 export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
   const t = useTranslations('GarmentDesigner')
   // Schema created inside the component so validation messages are locale-aware
@@ -867,15 +854,9 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
     zip:     z.string().min(3, t('validationZip')),
     notes:   z.string().max(500).optional(),
   }), [t])
-  const { register, handleSubmit, control, formState: { errors } } = useForm<OrderFields>({
+  const { register, handleSubmit, formState: { errors } } = useForm<OrderFields>({
     resolver: zodResolver(schema),
   })
-
-  // Live values drive the empty-state required asterisks (useWatch is React-Compiler safe)
-  const v = useWatch({ control })
-
-  const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-base bg-surface border border-on-surface text-on-surface focus:outline-none'
-  const ERR_CLS   = 'font-body text-sm text-destructive mt-1'
 
   // Phone: allow only digits, spaces and a leading +. Zip: digits only.
   // Sanitize before RHF reads the value so letters can never be entered (incl. paste).
@@ -884,88 +865,70 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="grid grid-cols-2 gap-4 mb-3.5">
-        <div>
-          <label htmlFor="order-name" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldName')}</label>
-          <div className="relative">
-            <input id="order-name" {...register('name')} className={INPUT_CLS} placeholder={t('placeholderName')}/>
-            <RequiredMark show={!v.name}/>
-          </div>
-          {errors.name && <p className={ERR_CLS}>{errors.name.message}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="sm:col-span-2">
+          <label htmlFor="order-name" className={FIELD_LABEL}>{t('fieldName')}<Req /></label>
+          <input id="order-name" {...register('name')} className={FIELD_INPUT} placeholder={t('placeholderName')} autoComplete="name" />
+          {errors.name && <p className={FIELD_ERR}>{errors.name.message}</p>}
+        </div>
+        <div className="sm:col-span-2">
+          <label htmlFor="order-email" className={FIELD_LABEL}>{t('fieldEmail')}<Req /></label>
+          <input id="order-email" type="email" {...register('email')} className={FIELD_INPUT} placeholder={t('emailPlaceholder')} autoComplete="email" />
+          {errors.email && <p className={FIELD_ERR}>{errors.email.message}</p>}
+        </div>
+        <div className="sm:col-span-2">
+          <label htmlFor="order-address" className={FIELD_LABEL}>{t('fieldAddress')}<Req /></label>
+          <input id="order-address" {...register('address')} className={FIELD_INPUT} placeholder={t('placeholderStreet')} autoComplete="street-address" />
+          {errors.address && <p className={FIELD_ERR}>{errors.address.message}</p>}
         </div>
         <div>
-          <label htmlFor="order-phone" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldPhone')}</label>
-          <div className="relative">
-            <input
-              id="order-phone"
-              {...phoneReg}
-              onChange={(e) => { e.target.value = e.target.value.replace(/[^\d+\s]/g, ''); phoneReg.onChange(e) }}
-              inputMode="tel"
-              maxLength={16}
-              className={INPUT_CLS}
-              placeholder="+30 6940000000"
-            />
-            <RequiredMark show={!v.phone}/>
-          </div>
-          {errors.phone && <p className={ERR_CLS}>{errors.phone.message}</p>}
-        </div>
-      </div>
-      <div className="mb-3.5">
-        <label htmlFor="order-email" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldEmail')}</label>
-        <div className="relative">
-          <input id="order-email" type="email" {...register('email')} className={INPUT_CLS} placeholder={t('emailPlaceholder')}/>
-          <RequiredMark show={!v.email}/>
-        </div>
-        {errors.email && <p className={ERR_CLS}>{errors.email.message}</p>}
-      </div>
-      <div className="mb-3.5">
-        <label htmlFor="order-address" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldAddress')}</label>
-        <div className="relative">
-          <input id="order-address" {...register('address')} className={INPUT_CLS} placeholder={t('placeholderStreet')}/>
-          <RequiredMark show={!v.address}/>
-        </div>
-        {errors.address && <p className={ERR_CLS}>{errors.address.message}</p>}
-      </div>
-      <div className="grid grid-cols-2 gap-4 mb-3.5">
-        <div>
-          <label htmlFor="order-city" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldCity')}</label>
-          <div className="relative">
-            <input id="order-city" {...register('city')} className={INPUT_CLS} placeholder={t('placeholderCity')}/>
-            <RequiredMark show={!v.city}/>
-          </div>
-          {errors.city && <p className={ERR_CLS}>{errors.city.message}</p>}
+          <label htmlFor="order-city" className={FIELD_LABEL}>{t('fieldCity')}<Req /></label>
+          <input id="order-city" {...register('city')} className={FIELD_INPUT} placeholder={t('placeholderCity')} autoComplete="address-level2" />
+          {errors.city && <p className={FIELD_ERR}>{errors.city.message}</p>}
         </div>
         <div>
-          <label htmlFor="order-zip" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldZip')}</label>
-          <div className="relative">
-            <input
-              id="order-zip"
-              {...zipReg}
-              onChange={(e) => { e.target.value = e.target.value.replace(/\D/g, ''); zipReg.onChange(e) }}
-              inputMode="numeric"
-              maxLength={5}
-              className={INPUT_CLS}
-              placeholder="10431"
-            />
-            <RequiredMark show={!v.zip}/>
-          </div>
-          {errors.zip && <p className={ERR_CLS}>{errors.zip.message}</p>}
+          <label htmlFor="order-zip" className={FIELD_LABEL}>{t('fieldZip')}<Req /></label>
+          <input
+            id="order-zip"
+            {...zipReg}
+            onChange={(e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); zipReg.onChange(e) }}
+            inputMode="numeric"
+            maxLength={5}
+            className={FIELD_INPUT}
+            placeholder={t('placeholderZip')}
+            autoComplete="postal-code"
+          />
+          {errors.zip && <p className={FIELD_ERR}>{errors.zip.message}</p>}
         </div>
-      </div>
-      <div className="mb-6">
-        <label htmlFor="order-notes" className={cn(LABEL_CLS, 'block mb-1')}>{t('fieldNotes')}</label>
-        <textarea
-          id="order-notes"
-          {...register('notes')}
-          rows={3}
-          className={cn(INPUT_CLS, 'resize-none')}
-          placeholder={t('placeholderNotes')}
-        />
+        <div className="sm:col-span-2">
+          <label htmlFor="order-phone" className={FIELD_LABEL}>{t('fieldPhone')}<Req /></label>
+          <input
+            id="order-phone"
+            {...phoneReg}
+            onChange={(e) => { e.target.value = e.target.value.replace(/[^\d+\s]/g, '').slice(0, 16); phoneReg.onChange(e) }}
+            inputMode="tel"
+            maxLength={16}
+            className={FIELD_INPUT}
+            placeholder={t('placeholderPhone')}
+            autoComplete="tel"
+          />
+          {errors.phone && <p className={FIELD_ERR}>{errors.phone.message}</p>}
+        </div>
+        <div className="sm:col-span-2">
+          <label htmlFor="order-notes" className={FIELD_LABEL}>{t('fieldNotes')}</label>
+          <textarea
+            id="order-notes"
+            {...register('notes')}
+            rows={3}
+            className={cn(FIELD_INPUT, 'resize-none')}
+            placeholder={t('placeholderNotes')}
+          />
+        </div>
       </div>
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full py-4 bg-on-surface text-surface font-body text-[12px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
+        className="w-full mt-6 py-4 bg-on-surface text-surface font-body text-[12px] tracking-[0.22em] uppercase font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
       >
         {isLoading ? t('sendingOrder') : t('sendOrder')}
       </button>

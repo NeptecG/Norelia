@@ -122,7 +122,7 @@ export default function CheckoutPaymentPage() {
             <motion.div {...sectionMotion(0)}>
               <h1 className="font-display text-4xl md:text-5xl text-on-surface leading-none mb-8">{t('heading')}</h1>
 
-              <p className="font-body text-[10px] tracking-[0.2em] uppercase text-on-surface-muted mb-4">{t('paymentMethod')}</p>
+              <p className="font-body text-[11px] tracking-[0.2em] uppercase text-on-surface-muted mb-4">{t('paymentMethod')}</p>
               <div className="space-y-3" role="radiogroup" aria-label={t('paymentMethod')}>
                 {methods.map(m => (
                   <OptionCard
@@ -138,7 +138,7 @@ export default function CheckoutPaymentPage() {
                 ))}
               </div>
 
-              <p className="flex items-center gap-2 mt-6 font-body text-[11px] tracking-[0.04em] text-on-surface-muted">
+              <p className="flex items-center gap-2 mt-6 font-body text-[12px] tracking-[0.04em] text-on-surface-muted">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" />
                 </svg>

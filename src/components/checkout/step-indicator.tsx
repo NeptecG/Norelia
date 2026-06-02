@@ -23,12 +23,12 @@ export function StepIndicator({ current }: { current: 0 | 1 | 2 }) {
             <span
               aria-current={active ? 'step' : undefined}
               className={cn(
-                'flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase',
+                'flex items-center gap-2 font-body text-[11px] tracking-[0.18em] uppercase',
                 reached ? 'text-on-surface' : 'text-on-surface/35',
               )}
             >
               <span className={cn(
-                'flex items-center justify-center size-5 rounded-full border text-[9px]',
+                'flex items-center justify-center size-6 rounded-full border text-[10px]',
                 active
                   ? 'border-on-surface bg-on-surface text-surface'
                   : reached ? 'border-on-surface' : 'border-on-surface/30',
