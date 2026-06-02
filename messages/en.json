@@ -311,16 +311,16 @@
     "heading": "Company Details",
     "intro": "{brand} is operated by the company registered below. These details are published in line with Greek e-commerce law.",
     "labelGemi": "GEMI NUMBER",
-    "valueGemi": "156720504000",
+    "valueGemi": "163094827000",
     "labelOffice": "REGISTERED OFFICE",
-    "valueOffice": "Ermou 2, 54625 Thessaloniki, Greece",
-    "labelCapital": "SHARE CAPITAL",
-    "valueCapital": "€75,200.00",
+    "valueOffice": "G. Giannioti 216, 48100 Preveza, Greece",
+    "labelPartners": "PARTNERS",
+    "valuePartners": "Zervas Fotis (75%), Theofylas Dimosthenis (25%)",
     "labelManagers": "MANAGERS",
-    "valueManagers": "Petros Gkioulekas, Georgios Gkioulekas",
+    "valueManagers": "Zervas Fotis, Theofylas Dimosthenis",
     "contactHeading": "Contact",
-    "email": "support@lobster.gr",
-    "tel": "+30 2312317583"
+    "email": "hello@norelia.com",
+    "tel": "+30 26820 00000"
   },
   "ScrollToTop": {
     "label": "Scroll to top",

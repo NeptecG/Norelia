@@ -12,10 +12,10 @@ export default async function CompanyPage() {
   const t = await getTranslations('Company')
 
   const rows: [string, string][] = [
-    [t('labelGemi'),     t('valueGemi')],
-    [t('labelOffice'),   t('valueOffice')],
-    [t('labelCapital'),  t('valueCapital')],
-    [t('labelManagers'), t('valueManagers')],
+    [t('labelGemi'),      t('valueGemi')],
+    [t('labelOffice'),    t('valueOffice')],
+    [t('labelPartners'),  t('valuePartners')],
+    [t('labelManagers'),  t('valueManagers')],
   ]
 
   return (
