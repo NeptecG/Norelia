@@ -7,23 +7,29 @@ import { parsePriceNumber } from '@/lib/utils'
 import { HOME_DELIVERY_COST } from '@/lib/constants'
 import type { CartItem } from '@/types'
 
-interface ShippingSummaryProps {
+interface CheckoutSummaryProps {
   items:          CartItem[]
   productValue:   number
   shippingCost:   number
-  shippingWaived: boolean   // home delivery selected but over the free threshold
+  shippingWaived: boolean                              // home delivery, waived over the free threshold
+  extraFee?:      { label: string; amount: number }    // e.g. cash-on-delivery surcharge
   total:          number
   deliveryDate:   string
   gift:           boolean
   onToggleGift:   () => void
+  ctaLabel:       string
+  ctaAriaLabel:   string
+  backHref:       string
+  backLabel:      string
 }
 
-// Dark, sticky order summary — mirrors the cart page's OrderSummary aside so the
-// two checkout steps feel like one continuous surface.
-export function ShippingSummary({
-  items, productValue, shippingCost, shippingWaived,
+// Dark, sticky order summary shared by the delivery and payment steps. The CTA
+// is a submit button, so the parent step wraps its grid in a <form>.
+export function CheckoutSummary({
+  items, productValue, shippingCost, shippingWaived, extraFee,
   total, deliveryDate, gift, onToggleGift,
-}: ShippingSummaryProps) {
+  ctaLabel, ctaAriaLabel, backHref, backLabel,
+}: CheckoutSummaryProps) {
   const t = useTranslations('CheckoutShipping')
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0)
 
@@ -94,7 +100,7 @@ export function ShippingSummary({
           <span className="text-on-surface">€{productValue.toFixed(2)}</span>
         </div>
 
-        <div className="flex justify-between font-body text-sm mb-5 pb-5 border-b border-border">
+        <div className={`flex justify-between font-body text-sm ${extraFee ? 'mb-2.5' : 'mb-5 pb-5 border-b border-border'}`}>
           <span className="text-on-surface/60">{t('rowShipping')}</span>
           {shippingCost === 0 ? (
             <span className="flex items-baseline gap-2">
@@ -108,6 +114,13 @@ export function ShippingSummary({
           )}
         </div>
 
+        {extraFee && (
+          <div className="flex justify-between font-body text-sm mb-5 pb-5 border-b border-border">
+            <span className="text-on-surface/60">{extraFee.label}</span>
+            <span className="text-on-surface">€{extraFee.amount.toFixed(2)}</span>
+          </div>
+        )}
+
         {/* ── Total ── */}
         <div className="flex justify-between items-baseline mb-1.5">
           <span className="font-body text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface">
@@ -117,22 +130,22 @@ export function ShippingSummary({
         </div>
         <p className="font-body text-[10px] tracking-[0.04em] text-on-surface/40 mb-6">{t('vatIncluded')}</p>
 
-        {/* ── Continue to payment (submits the delivery form) ── */}
+        {/* ── Primary CTA (submits the step's form) ── */}
         <button
           type="submit"
-          aria-label={t('toPaymentLabel')}
+          aria-label={ctaAriaLabel}
           className="group w-full flex items-center justify-center gap-2 bg-on-surface text-surface font-body text-xs tracking-[0.2em] uppercase py-4 hover:opacity-80 transition-opacity"
         >
-          {t('toPayment')}
+          {ctaLabel}
           <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
         </button>
 
-        {/* ── Back to cart ── */}
+        {/* ── Back link ── */}
         <Link
-          href="/checkout"
+          href={backHref}
           className="block text-center mt-4 font-body text-[11px] tracking-[0.04em] text-on-surface/55 hover:text-on-surface transition-colors underline underline-offset-4 decoration-on-surface/25"
         >
-          {t('backToCart')}
+          {backLabel}
         </Link>
       </div>
     </aside>

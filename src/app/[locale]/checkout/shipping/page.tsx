@@ -1,19 +1,19 @@
 'use client'
 
-import { Fragment, useMemo, useState } from 'react'
-import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import type { UseFormRegisterReturn } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useTranslations, useLocale } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
-import { Link } from '@/navigation'
+import { Link, useRouter } from '@/navigation'
 import { useCartStore } from '@/stores/cart-store'
-import { useUIStore } from '@/stores/ui-store'
+import { useCheckoutStore } from '@/stores/checkout-store'
 import { cn, parsePriceNumber } from '@/lib/utils'
 import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, ESTIMATED_DELIVERY_DAYS } from '@/lib/constants'
-import { ShippingSummary } from '@/components/checkout/shipping-summary'
+import { StepIndicator } from '@/components/checkout/step-indicator'
+import { OptionCard } from '@/components/checkout/option-card'
+import { CheckoutSummary } from '@/components/checkout/checkout-summary'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
@@ -21,7 +21,10 @@ const INPUT_CLS = 'w-full px-3 py-2.5 font-body text-sm bg-surface border border
 const LABEL_CLS = 'block font-body text-[9px] tracking-[0.2em] uppercase text-on-surface-muted mb-1.5'
 const ERR_CLS   = 'font-body text-[11px] text-destructive mt-1'
 
-// Delivery-method icons — module-level JSX elements (not nested components)
+// Reveal box that attaches under the selected option card
+const REVEAL_CLS = 'border border-on-surface border-t-0 -mt-px px-5 md:px-6 pt-4 pb-5'
+
+// Delivery-method icons — module-level JSX (not nested components)
 const ICON_TRUCK = (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17.5" cy="18" r="1.6" />
@@ -38,81 +41,10 @@ const ICON_STORE = (
   </svg>
 )
 
-// Required-field marker
 function Req() {
   return <span className="text-destructive" aria-hidden="true"> *</span>
 }
 
-// ── Step indicator ───────────────────────────────────────────────────────────
-function StepIndicator({ labels }: { labels: [string, string, string] }) {
-  return (
-    <div className="flex items-center gap-3 mb-10">
-      {labels.map((label, i) => {
-        const active = i === 1 // delivery is the current step
-        return (
-          <Fragment key={label}>
-            {i > 0 && <span className="h-px w-5 sm:w-8 bg-border" aria-hidden="true" />}
-            <span
-              aria-current={active ? 'step' : undefined}
-              className={cn(
-                'flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase',
-                active ? 'text-on-surface' : 'text-on-surface/35',
-              )}
-            >
-              <span className={cn(
-                'flex items-center justify-center size-5 rounded-full border text-[9px]',
-                active ? 'border-on-surface' : 'border-on-surface/30',
-              )}>
-                {i + 1}
-              </span>
-              <span className="hidden sm:inline">{label}</span>
-            </span>
-          </Fragment>
-        )
-      })}
-    </div>
-  )
-}
-
-// ── Selectable radio card (delivery method + receipt type) ───────────────────
-interface OptionCardProps {
-  value:    string
-  selected: boolean
-  title:    string
-  register: UseFormRegisterReturn
-  desc?:    string
-  price?:   ReactNode
-  icon?:    ReactNode
-}
-function OptionCard({ value, selected, title, register, desc, price, icon }: OptionCardProps) {
-  return (
-    <label className={cn(
-      'relative flex items-center gap-4 border cursor-pointer transition-colors pl-6 pr-5 py-4',
-      selected ? 'border-on-surface bg-surface-raised/50' : 'border-border hover:border-on-surface/40',
-    )}>
-      {/* Signature red hairline on the selected option */}
-      <span aria-hidden="true" className={cn('absolute left-0 top-0 bottom-0 w-[2px] transition-colors', selected ? 'bg-destructive' : 'bg-transparent')} />
-      <input type="radio" {...register} value={value} className="sr-only" />
-      <span className={cn(
-        'shrink-0 size-[18px] rounded-full border flex items-center justify-center transition-colors',
-        selected ? 'border-on-surface' : 'border-on-surface/40',
-      )}>
-        {selected && <span className="size-2.5 rounded-full bg-on-surface" />}
-      </span>
-      {icon && <span className="shrink-0 text-on-surface/65">{icon}</span>}
-      <span className="min-w-0 flex-1">
-        <span className="block font-display text-lg text-on-surface leading-tight">{title}</span>
-        {desc && <span className="block font-body text-[11px] text-on-surface-muted mt-0.5">{desc}</span>}
-      </span>
-      {price != null && <span className="shrink-0 font-body text-sm text-on-surface">{price}</span>}
-    </label>
-  )
-}
-
-// Reveal box that attaches under the selected option card
-const REVEAL_CLS = 'border border-on-surface border-t-0 -mt-px px-5 md:px-6 pt-4 pb-5'
-
-// ── Form contract ─────────────────────────────────────────────────────────────
 interface ShippingFields {
   deliveryMethod: 'home' | 'pickup' | 'store'
   receiptType:    'receipt' | 'invoice'
@@ -131,13 +63,12 @@ export default function CheckoutShippingPage() {
   const t       = useTranslations('CheckoutShipping')
   const locale  = useLocale()
   const reduced = useReducedMotion() ?? false
+  const router  = useRouter()
   const { cartLines } = useCartStore()
-  const { setShowCheckoutModal } = useUIStore()
+  const { gift, setGift, setDelivery } = useCheckoutStore()
 
-  const [gift, setGift] = useState(false)
-
-  // Locale-aware validation schema. Address fields are required only for home
-  // delivery; invoice fields only when an invoice is requested.
+  // Locale-aware validation. Address fields required only for home delivery;
+  // invoice fields only when an invoice is requested.
   const schema = useMemo(() => z.object({
     deliveryMethod: z.enum(['home', 'pickup', 'store']),
     receiptType:    z.enum(['receipt', 'invoice']),
@@ -181,7 +112,6 @@ export default function CheckoutShippingPage() {
   const isStore   = deliveryMethod === 'store'
   const isInvoice = receiptType === 'invoice'
 
-  // Sanitized registrations (digits-only postal/vat; phone digits, space, +)
   const phoneReg  = register('phone')
   const postalReg = register('postal')
   const vatReg    = register('vatNumber')
@@ -194,7 +124,6 @@ export default function CheckoutShippingPage() {
   const shippingWaived = isHome && freeQualified
   const total          = productValue + shippingCost
 
-  // Estimated delivery date: today + N working days, formatted for the locale.
   const deliveryDate = useMemo(() => {
     const d = new Date()
     let added = 0
@@ -209,8 +138,10 @@ export default function CheckoutShippingPage() {
   const sectionMotion = (delay: number) =>
     reduced ? {} : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4, delay, ease: EASE } }
 
-  // Payment is not wired yet — the validated CTA opens the existing notice modal.
-  const onValid = () => setShowCheckoutModal(true)
+  const onValid = (data: ShippingFields) => {
+    setDelivery(data.deliveryMethod, shippingCost)
+    router.push('/checkout/payment')
+  }
 
   if (isEmpty) {
     return (
@@ -243,7 +174,7 @@ export default function CheckoutShippingPage() {
           {t('back')}
         </Link>
 
-        <StepIndicator labels={[t('stepCart'), t('stepDelivery'), t('stepPayment')]} />
+        <StepIndicator current={1} />
 
         <form onSubmit={handleSubmit(onValid)} noValidate>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
@@ -397,7 +328,7 @@ export default function CheckoutShippingPage() {
 
             {/* ── Right: order summary ── */}
             <motion.div {...sectionMotion(0.12)}>
-              <ShippingSummary
+              <CheckoutSummary
                 items={lines}
                 productValue={productValue}
                 shippingCost={shippingCost}
@@ -405,7 +336,11 @@ export default function CheckoutShippingPage() {
                 total={total}
                 deliveryDate={deliveryDate}
                 gift={gift}
-                onToggleGift={() => setGift(g => !g)}
+                onToggleGift={() => setGift(!gift)}
+                ctaLabel={t('toPayment')}
+                ctaAriaLabel={t('toPaymentLabel')}
+                backHref="/checkout"
+                backLabel={t('backToCart')}
               />
             </motion.div>
           </div>

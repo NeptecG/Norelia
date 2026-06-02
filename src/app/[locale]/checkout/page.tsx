@@ -11,6 +11,7 @@ import { useCartStore } from '@/stores/cart-store'
 import { parsePriceNumber, getStock } from '@/lib/utils'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
+import { StepIndicator } from '@/components/checkout/step-indicator'
 import type { CartItem } from '@/types'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
@@ -377,6 +378,7 @@ export default function CheckoutPage() {
         ) : (
           /* ── Cart layout ── */
           <>
+          <StepIndicator current={0} />
           {/* Continue Shopping link */}
           <Link
             href="/"

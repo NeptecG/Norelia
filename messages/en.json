@@ -280,6 +280,30 @@
     "vatInvalid": "Enter a valid 9-digit VAT number",
     "taxOfficeRequired": "Please enter the tax office"
   },
+  "CheckoutPayment": {
+    "back": "BACK TO DELIVERY",
+    "heading": "How would you like to pay?",
+    "paymentMethod": "PAYMENT METHOD",
+    "irisTitle": "Bank transfer via IRIS",
+    "irisDesc": "Instant payment from your bank app, no card needed",
+    "cardTitle": "Credit or debit card",
+    "cardDesc": "Visa, Mastercard · interest-free installments available",
+    "applePayTitle": "Apple Pay",
+    "applePayDesc": "Pay in one tap with your iPhone or Mac",
+    "googlePayTitle": "Google Pay",
+    "googlePayDesc": "Pay in one tap with your Google account",
+    "klarnaTitle": "Klarna",
+    "klarnaDesc": "Pay later or split into 3 interest-free payments",
+    "codTitle": "Cash on delivery",
+    "codDesc": "Pay the courier in cash on arrival",
+    "rowCod": "Cash on delivery",
+    "secure": "Secure, encrypted payment",
+    "pay": "COMPLETE ORDER",
+    "payLabel": "Complete order",
+    "backToDelivery": "Back to delivery",
+    "emptyText": "Your cart is empty, so there is nothing to pay for yet.",
+    "emptyCta": "CONTINUE SHOPPING"
+  },
   "ScrollToTop": {
     "label": "Scroll to top",
     "top": "TOP"

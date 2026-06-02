@@ -280,6 +280,30 @@
     "vatInvalid": "Δώσε έγκυρο ΑΦΜ 9 ψηφίων",
     "taxOfficeRequired": "Συμπλήρωσε τη ΔΟΥ"
   },
+  "CheckoutPayment": {
+    "back": "ΕΠΙΣΤΡΟΦΗ ΣΤΗΝ ΑΠΟΣΤΟΛΗ",
+    "heading": "Πώς θέλεις να πληρώσεις;",
+    "paymentMethod": "ΤΡΟΠΟΣ ΠΛΗΡΩΜΗΣ",
+    "irisTitle": "Μεταφορά χρημάτων μέσω IRIS",
+    "irisDesc": "Άμεση πληρωμή από την εφαρμογή της τράπεζάς σου, χωρίς κάρτα",
+    "cardTitle": "Πιστωτική ή χρεωστική κάρτα",
+    "cardDesc": "Visa, Mastercard · διαθέσιμες άτοκες δόσεις",
+    "applePayTitle": "Apple Pay",
+    "applePayDesc": "Πλήρωσε με ένα άγγιγμα από iPhone ή Mac",
+    "googlePayTitle": "Google Pay",
+    "googlePayDesc": "Πλήρωσε με ένα άγγιγμα μέσω Google",
+    "klarnaTitle": "Klarna",
+    "klarnaDesc": "Πλήρωσε αργότερα ή σε 3 άτοκες δόσεις",
+    "codTitle": "Αντικαταβολή",
+    "codDesc": "Πλήρωσε τον courier με μετρητά κατά την παράδοση",
+    "rowCod": "Αντικαταβολή",
+    "secure": "Ασφαλής, κρυπτογραφημένη πληρωμή",
+    "pay": "ΟΛΟΚΛΗΡΩΣΗ ΠΑΡΑΓΓΕΛΙΑΣ",
+    "payLabel": "Ολοκλήρωση παραγγελίας",
+    "backToDelivery": "Επιστροφή στην αποστολή",
+    "emptyText": "Το καλάθι σου είναι άδειο, οπότε δεν υπάρχει κάτι για πληρωμή.",
+    "emptyCta": "ΣΥΝΕΧΕΙΑ ΑΓΟΡΩΝ"
+  },
   "ScrollToTop": {
     "label": "Επιστροφή στην αρχή",
     "top": "ΚΟΡΥΦΗ"
