@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { parsePriceNumber } from '@/lib/utils'
 import { HOME_DELIVERY_COST } from '@/lib/constants'
+import { Arrow } from '@/components/icons/arrow'
 import type { CartItem } from '@/types'
 
 interface CheckoutSummaryProps {
@@ -144,7 +145,7 @@ export function CheckoutSummary({
           className="group w-full flex items-center justify-center gap-2 bg-on-surface text-surface font-body text-xs tracking-[0.2em] uppercase py-4 hover:opacity-80 transition-opacity"
         >
           {ctaLabel}
-          <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          <Arrow dir="right" size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
         </button>
       </div>
     </aside>

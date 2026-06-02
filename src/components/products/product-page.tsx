@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Link, useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
-import { Heart, Truck, Shield, RotateCcw, Ruler, ChevronLeft } from 'lucide-react'
+import { Heart, Truck, Shield, RotateCcw, Ruler } from 'lucide-react'
+import { Arrow } from '@/components/icons/arrow'
 import { cn, FILTER_TO_SLUG, getStock } from '@/lib/utils'
 import { useCatLabel, useColorLabel } from '@/hooks/use-i18n-labels'
 import { SIZES } from '@/data/sizes'
@@ -112,7 +113,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
           onClick={() => router.back()}
           className="flex items-center gap-2 py-3 pr-4 md:py-2 md:pr-3 font-body text-sm md:text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
         >
-          <ChevronLeft size={18} strokeWidth={1.5} className="md:w-[15px] md:h-[15px]" />
+          <Arrow size={18} className="md:w-[15px] md:h-[15px]" />
           {t('back')}
         </button>
       </div>

@@ -5,7 +5,8 @@ import { z } from 'zod'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
-import { Upload, ArrowLeft, Check, Ruler } from 'lucide-react'
+import { Upload, Check, Ruler } from 'lucide-react'
+import { Arrow } from '@/components/icons/arrow'
 import { useTranslations } from 'next-intl'
 import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
@@ -1277,7 +1278,7 @@ export function GarmentDesigner() {
             onClick={() => setStep('design')}
             className="flex items-center gap-2 font-body text-[12px] tracking-[0.18em] uppercase text-on-surface mb-8 hover:opacity-70 transition-opacity"
           >
-            <ArrowLeft size={16}/>
+            <Arrow size={16} />
             {t('backToDesigner')}
           </button>
 

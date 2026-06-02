@@ -12,6 +12,7 @@ import { parsePriceNumber, getStock } from '@/lib/utils'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import { StepIndicator } from '@/components/checkout/step-indicator'
+import { BackLink } from '@/components/checkout/back-link'
 import type { CartItem } from '@/types'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
@@ -380,13 +381,7 @@ export default function CheckoutPage() {
           <>
           <StepIndicator current={0} />
           {/* Continue Shopping link */}
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors mb-8"
-          >
-            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 18l-6-6 6-6" /></svg>
-            {t('continueShopping')}
-          </Link>
+          <BackLink href="/" label={t('continueShopping')} />
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
 
             {/* Items column */}

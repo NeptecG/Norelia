@@ -14,6 +14,7 @@ import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, ESTIMATED_DELIVERY_DAYS } 
 import { StepIndicator } from '@/components/checkout/step-indicator'
 import { OptionCard } from '@/components/checkout/option-card'
 import { CheckoutSummary } from '@/components/checkout/checkout-summary'
+import { BackLink } from '@/components/checkout/back-link'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
@@ -166,13 +167,7 @@ export default function CheckoutShippingPage() {
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
 
-        <Link
-          href="/checkout"
-          className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors mb-8"
-        >
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 18l-6-6 6-6" /></svg>
-          {t('back')}
-        </Link>
+        <BackLink href="/checkout" label={t('back')} />
 
         <StepIndicator current={1} />
 
