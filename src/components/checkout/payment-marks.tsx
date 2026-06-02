@@ -31,10 +31,10 @@ const CARD = (
 const IRIS = (
   <svg width="50" height="24" viewBox="0 0 52 24" fill="none" aria-hidden="true">
     <g transform="translate(10,12)" fill="none" strokeWidth="5.5">
-      <circle r="6.5" stroke="#1A9E8E" strokeDasharray="9.6 31.2" transform="rotate(0)" />
-      <circle r="6.5" stroke="#F39A23" strokeDasharray="9.6 31.2" transform="rotate(90)" />
-      <circle r="6.5" stroke="#E8473C" strokeDasharray="9.6 31.2" transform="rotate(180)" />
-      <circle r="6.5" stroke="#1C6CA9" strokeDasharray="9.6 31.2" transform="rotate(270)" />
+      <circle r="6.5" stroke="#1A9E8E" strokeDasharray="10.3 30.54" transform="rotate(0)" />
+      <circle r="6.5" stroke="#F39A23" strokeDasharray="10.3 30.54" transform="rotate(90)" />
+      <circle r="6.5" stroke="#E8473C" strokeDasharray="10.3 30.54" transform="rotate(180)" />
+      <circle r="6.5" stroke="#1C6CA9" strokeDasharray="10.3 30.54" transform="rotate(270)" />
     </g>
     <text x="22" y="16" fill="#404040" fontSize="12.5" fontWeight="700" fontFamily="Arial, sans-serif">IRIS</text>
   </svg>
