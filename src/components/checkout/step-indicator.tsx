@@ -28,7 +28,7 @@ export function StepIndicator({ current }: { current: 0 | 1 | 2 }) {
               )}
             >
               <span className={cn(
-                'flex items-center justify-center size-6 rounded-full border text-[10px]',
+                'flex items-center justify-center size-6 rounded-full border text-[10px] leading-none tracking-normal',
                 active
                   ? 'border-on-surface bg-on-surface text-surface'
                   : reached ? 'border-on-surface' : 'border-on-surface/30',
