@@ -15,40 +15,9 @@ import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, ESTIMATED_DELIVERY_DAYS, C
 import { StepIndicator } from '@/components/checkout/step-indicator'
 import { OptionCard } from '@/components/checkout/option-card'
 import { CheckoutSummary } from '@/components/checkout/checkout-summary'
+import { PaymentMark } from '@/components/checkout/payment-marks'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
-
-// Payment-method icons — module-level JSX (not nested components)
-const ICON_IRIS = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M3 9l9-5 9 5" /><path d="M5 10v7M10 10v7M14 10v7M19 10v7" /><path d="M3 20h18" />
-  </svg>
-)
-const ICON_CARD = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="2.5" y="5" width="19" height="14" rx="2" /><path d="M2.5 9.5h19" /><path d="M6 15h4" />
-  </svg>
-)
-const ICON_PHONE = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" />
-  </svg>
-)
-const ICON_WALLET = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="3" y="6" width="18" height="13" rx="2" /><path d="M3 10.5h18" /><circle cx="17" cy="14.5" r="1.2" />
-  </svg>
-)
-const ICON_KLARNA = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 9.5h18M8 3v4M16 3v4" />
-  </svg>
-)
-const ICON_CASH = (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="2.5" y="6" width="19" height="12" rx="1.5" /><circle cx="12" cy="12" r="2.5" /><path d="M6 9v6M18 9v6" />
-  </svg>
-)
 
 interface PaymentFields {
   paymentMethod: PaymentMethod
@@ -58,7 +27,6 @@ interface MethodDef {
   id:    PaymentMethod
   title: string
   desc:  string
-  icon:  ReactNode
   price?: ReactNode
 }
 
@@ -99,13 +67,13 @@ export default function CheckoutPaymentPage() {
 
   // Cash on delivery is offered for courier (home) delivery only.
   const methods: MethodDef[] = [
-    { id: 'card',      title: t('cardTitle'),      desc: t('cardDesc'),      icon: ICON_CARD },
-    { id: 'iris',      title: t('irisTitle'),      desc: t('irisDesc'),      icon: ICON_IRIS },
-    { id: 'applepay',  title: t('applePayTitle'),  desc: t('applePayDesc'),  icon: ICON_PHONE },
-    { id: 'googlepay', title: t('googlePayTitle'), desc: t('googlePayDesc'), icon: ICON_WALLET },
-    { id: 'klarna',    title: t('klarnaTitle'),    desc: t('klarnaDesc'),    icon: ICON_KLARNA },
+    { id: 'card',      title: t('cardTitle'),      desc: t('cardDesc') },
+    { id: 'iris',      title: t('irisTitle'),      desc: t('irisDesc') },
+    { id: 'applepay',  title: t('applePayTitle'),  desc: t('applePayDesc') },
+    { id: 'googlepay', title: t('googlePayTitle'), desc: t('googlePayDesc') },
+    { id: 'klarna',    title: t('klarnaTitle'),    desc: t('klarnaDesc') },
     ...(isHome ? [{
-      id: 'cod' as const, title: t('codTitle'), desc: t('codDesc'), icon: ICON_CASH,
+      id: 'cod' as const, title: t('codTitle'), desc: t('codDesc'),
       price: <span className="text-on-surface">+€{COD_FEE.toFixed(2)}</span>,
     }] : []),
   ]
@@ -169,7 +137,7 @@ export default function CheckoutPaymentPage() {
                     register={register('paymentMethod')}
                     title={m.title}
                     desc={m.desc}
-                    icon={m.icon}
+                    icon={<PaymentMark method={m.id} />}
                     price={m.price}
                   />
                 ))}

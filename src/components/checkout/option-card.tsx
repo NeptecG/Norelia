@@ -24,18 +24,17 @@ export function OptionCard({ value, selected, title, register, desc, price, icon
     )}>
       <span aria-hidden="true" className={cn('absolute left-0 top-0 bottom-0 w-[2px] transition-colors', selected ? 'bg-destructive' : 'bg-transparent')} />
       <input type="radio" {...register} value={value} className="sr-only" />
-      <span className={cn(
-        'shrink-0 size-[18px] rounded-full border flex items-center justify-center transition-colors',
-        selected ? 'border-on-surface' : 'border-on-surface/40',
-      )}>
-        {selected && <span className="size-2.5 rounded-full bg-on-surface" />}
-      </span>
-      {icon && <span className="shrink-0 text-on-surface/65">{icon}</span>}
+      {icon && <span className="shrink-0 flex items-center text-on-surface/65">{icon}</span>}
       <span className="min-w-0 flex-1">
         <span className="block font-display text-lg text-on-surface leading-tight">{title}</span>
         {desc && <span className="block font-body text-[11px] text-on-surface-muted mt-0.5">{desc}</span>}
       </span>
       {price != null && <span className="shrink-0 font-body text-sm text-on-surface">{price}</span>}
+      {selected && (
+        <svg className="shrink-0 text-on-surface" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      )}
     </label>
   )
 }
