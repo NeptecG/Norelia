@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const SECTIONS = [
   {
     title:  'Information We Collect',
-    detail: 'When you place an order we collect your name, email address, shipping address, and phone number. We also collect payment information, though card details are processed directly by our payment provider (Stripe) and never stored on our servers. When you browse our site we may collect non-personal analytics data such as pages visited and device type.',
+    detail: 'When you place an order we collect your name, email address, shipping address, and phone number. We also collect payment information, though card details are processed directly by our payment provider (Viva.com) and never stored on our servers. When you browse our site we may collect non-personal analytics data such as pages visited and device type.',
   },
   {
     title:  'How We Use Your Data',
