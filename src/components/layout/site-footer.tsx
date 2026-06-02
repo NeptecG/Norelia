@@ -161,11 +161,43 @@ function MastercardIcon() {
   )
 }
 
-function PayPalIcon() {
+function IrisIcon() {
   return (
-    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="PayPal" role="img" className="rounded-sm border border-white/10">
-      <rect width="50" height="32" rx="3" fill="#003087" />
-      <text x="25" y="21" textAnchor="middle" fill="white" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif" letterSpacing="0.3">PayPal</text>
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="IRIS" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#ffffff" />
+      <g transform="translate(12,16)" fill="none" strokeWidth="4.2">
+        <circle r="5" stroke="#1A9E8E" strokeDasharray="7.9 23.5" transform="rotate(0)" />
+        <circle r="5" stroke="#F39A23" strokeDasharray="7.9 23.5" transform="rotate(90)" />
+        <circle r="5" stroke="#E8473C" strokeDasharray="7.9 23.5" transform="rotate(180)" />
+        <circle r="5" stroke="#1C6CA9" strokeDasharray="7.9 23.5" transform="rotate(270)" />
+      </g>
+      <text x="31" y="20" textAnchor="middle" fill="#404040" fontSize="11" fontWeight="800" fontFamily="Arial, sans-serif">IRIS</text>
+    </svg>
+  )
+}
+
+function ApplePayIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Apple Pay" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#000000" />
+      <path transform="translate(10,8) scale(0.62)" fill="#ffffff" d="M17.05 12.04c-.03-3.16 2.58-4.68 2.7-4.75-1.47-2.15-3.76-2.45-4.57-2.48-1.95-.2-3.8 1.15-4.79 1.15-.98 0-2.51-1.12-4.13-1.09-2.13.03-4.09 1.24-5.18 3.15-2.21 3.83-.56 9.5 1.58 12.61 1.05 1.52 2.3 3.23 3.94 3.17 1.58-.06 2.18-1.02 4.09-1.02 1.9 0 2.44 1.02 4.11.99 1.7-.03 2.77-1.55 3.8-3.08 1.2-1.76 1.69-3.47 1.71-3.56-.04-.02-3.28-1.26-3.31-4.99zM14.13 4.42c.87-1.05 1.46-2.51 1.3-3.97-1.25.05-2.77.83-3.67 1.88-.81.93-1.51 2.42-1.32 3.85 1.39.11 2.81-.71 3.69-1.76z" />
+      <text x="31" y="21" textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="500" fontFamily="Arial, sans-serif">Pay</text>
+    </svg>
+  )
+}
+
+function GooglePayIcon() {
+  return (
+    <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Google Pay" role="img" className="rounded-sm border border-white/10">
+      <rect width="50" height="32" rx="3" fill="#ffffff" />
+      <g transform="translate(13,16)" fill="none" strokeWidth="2.8">
+        <circle r="5.2" stroke="#EA4335" strokeDasharray="7 26" transform="rotate(-90)" />
+        <circle r="5.2" stroke="#FBBC04" strokeDasharray="7 26" transform="rotate(180)" />
+        <circle r="5.2" stroke="#34A853" strokeDasharray="7 26" transform="rotate(90)" />
+        <circle r="5.2" stroke="#4285F4" strokeDasharray="7 26" transform="rotate(0)" />
+        <rect x="0.5" y="-1.4" width="5" height="2.8" fill="#4285F4" stroke="none" />
+      </g>
+      <text x="31" y="20" textAnchor="middle" fill="#5F6368" fontSize="11" fontWeight="500" fontFamily="Arial, sans-serif">Pay</text>
     </svg>
   )
 }
@@ -188,7 +220,9 @@ function PaymentColumn({ t }: { t: TFooter }) {
       <div className="flex flex-wrap gap-2">
         <VisaIcon />
         <MastercardIcon />
-        <PayPalIcon />
+        <IrisIcon />
+        <ApplePayIcon />
+        <GooglePayIcon />
         <KlarnaIcon />
       </div>
     </div>
