@@ -39,6 +39,8 @@ vi.mock('next-intl', () => ({
       notesPlaceholder:       'Gift wrap, delivery notes, etc.',
       placeOrderLabel:        'Place order',
       placeOrder:             'PLACE ORDER',
+      proceedToCheckout:      'PROCEED TO CHECKOUT',
+      proceedToCheckoutLabel: 'Proceed to checkout',
     }
     const template = map[key] ?? key
     if (!values) return template
@@ -48,8 +50,9 @@ vi.mock('next-intl', () => ({
     )
   },
 }))
+const { pushMock } = vi.hoisted(() => ({ pushMock: vi.fn() }))
 vi.mock('@/navigation', () => ({
-  useRouter: () => ({ push: vi.fn(), back: vi.fn() }),
+  useRouter: () => ({ push: pushMock, back: vi.fn() }),
   usePathname: () => '/',
   Link: ({ href, children }: { href: string; children: React.ReactNode }) =>
     <a href={href}>{children}</a>,
@@ -171,17 +174,14 @@ describe('CheckoutPage', () => {
     expect(screen.getAllByText(/free shipping included/i).length).toBeGreaterThan(0)
   })
 
-  it('clicking "PLACE ORDER" calls setShowCheckoutModal(true)', async () => {
-    const setShowCheckoutModal = vi.fn()
+  it('clicking "PROCEED TO CHECKOUT" navigates to the delivery step', async () => {
+    pushMock.mockClear()
     vi.mocked(useCartStore).mockReturnValue(
       makeCartMock({ cartLines: vi.fn(() => [mockLine]) }) as ReturnType<typeof useCartStore>,
     )
-    vi.mocked(useUIStore).mockReturnValue(
-      makeUIMock({ setShowCheckoutModal }) as ReturnType<typeof useUIStore>,
-    )
     await renderPage()
-    fireEvent.click(screen.getByRole('button', { name: /place order/i }))
-    expect(setShowCheckoutModal).toHaveBeenCalledWith(true)
+    fireEvent.click(screen.getByRole('button', { name: /proceed to checkout/i }))
+    expect(pushMock).toHaveBeenCalledWith('/checkout/shipping')
   })
 
   it('displays salePrice formatted to 2 decimal places when item has salePrice', async () => {

@@ -22,3 +22,5 @@ export const SCROLL_TOP_THRESHOLD   = 400
 export const CART_COOLDOWN_MS       = 1000
 export const FAV_COOLDOWN_MS        = 1000
 export const FREE_SHIPPING_THRESHOLD = 60  // €60 free shipping
+export const HOME_DELIVERY_COST       = 3   // € flat courier fee (waived over the free-shipping threshold)
+export const ESTIMATED_DELIVERY_DAYS  = 3   // working-day estimate shown on the delivery step

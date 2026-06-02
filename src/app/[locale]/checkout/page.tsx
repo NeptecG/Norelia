@@ -3,12 +3,11 @@
 import type React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
-import { Link } from '@/navigation'
+import { Link, useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { Trash2 } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
-import { useUIStore } from '@/stores/ui-store'
 import { parsePriceNumber, getStock } from '@/lib/utils'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
@@ -287,11 +286,11 @@ export function OrderSummary({
         {/* ── Place Order ── */}
         <button
           type="button"
-          aria-label={t('placeOrderLabel')}
+          aria-label={t('proceedToCheckoutLabel')}
           onClick={onPlaceOrder}
           className="w-full bg-on-surface text-surface font-body text-xs tracking-[0.2em] uppercase py-4 hover:opacity-80 transition-opacity"
         >
-          {t('placeOrder')}
+          {t('proceedToCheckout')}
         </button>
       </div>
     </aside>
@@ -311,7 +310,7 @@ const VALID_COUPONS: Record<string, number> = {
 export default function CheckoutPage() {
   const t = useTranslations('CheckoutPage')
   const { cartLines, removeFromCart, decrementCart, addToCart } = useCartStore()
-  const { setShowCheckoutModal } = useUIStore()
+  const router = useRouter()
   const reduced = useReducedMotion() ?? false
 
   const [orderNotes,    setOrderNotes]    = useState('')
@@ -439,7 +438,7 @@ export default function CheckoutPage() {
               onCouponApply={handleCouponApply}
               onCouponRemove={handleCouponRemove}
               onNotesChange={setOrderNotes}
-              onPlaceOrder={() => setShowCheckoutModal(true)}
+              onPlaceOrder={() => router.push('/checkout/shipping')}
             />
           </div>
           </>
