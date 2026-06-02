@@ -3,7 +3,7 @@ import { twMerge } from 'tailwind-merge'
 import { PRODUCTS } from '@/data/products'
 import { STOCK, STOCK_BY_SIZE, DEFAULT_STOCK } from '@/data/stock'
 import { BP, FIT_SURCHARGE, EMBROIDERY_SURCHARGE } from '@/data/pricing'
-import type { Product, Gender, GarmentType, SizeKey, FitType, PrintMethod } from '@/types'
+import type { Product, Gender, GarmentType, SizeKey, FitType, PrintMethod, CartItem } from '@/types'
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs))
@@ -53,6 +53,11 @@ export function stripGreekTonos(input: string): string {
 
 export function parsePriceNumber(price: string): number {
   return parseFloat(price.replace('€', ''))
+}
+
+// VAT-inclusive product subtotal for a set of cart lines (uses sale price when present).
+export function getCartSubtotal(items: CartItem[]): number {
+  return items.reduce((sum, i) => sum + (i.salePrice != null ? i.salePrice : parsePriceNumber(i.price)) * i.qty, 0)
 }
 
 export function calcSalePercent(price: string, salePrice: number): number {

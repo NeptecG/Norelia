@@ -20,6 +20,7 @@ export function OptionCard({ value, selected, title, register, desc, price, icon
   return (
     <label className={cn(
       'relative flex items-center gap-4 border cursor-pointer transition-colors pl-6 pr-5 py-4',
+      'has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-on-surface has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-surface',
       selected ? 'border-on-surface bg-surface-raised/50' : 'border-border hover:border-on-surface/40',
     )}>
       <span aria-hidden="true" className={cn('absolute left-0 top-0 bottom-0 w-[2px] transition-colors', selected ? 'bg-destructive' : 'bg-transparent')} />

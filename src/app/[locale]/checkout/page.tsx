@@ -3,16 +3,18 @@
 import type React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
-import { Link, useRouter } from '@/navigation'
+import { useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { Trash2 } from 'lucide-react'
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useCartStore } from '@/stores/cart-store'
-import { parsePriceNumber, getStock } from '@/lib/utils'
+import { parsePriceNumber, getStock, getCartSubtotal } from '@/lib/utils'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
+import { useMounted } from '@/hooks/use-mounted'
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants'
 import { StepIndicator } from '@/components/checkout/step-indicator'
 import { BackLink } from '@/components/checkout/back-link'
+import { CheckoutEmpty } from '@/components/checkout/checkout-empty'
 import type { CartItem } from '@/types'
 
 const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
@@ -313,6 +315,7 @@ export default function CheckoutPage() {
   const t = useTranslations('CheckoutPage')
   const { cartLines, removeFromCart, decrementCart, addToCart } = useCartStore()
   const router = useRouter()
+  const mounted = useMounted()
   const reduced = useReducedMotion() ?? false
 
   const [orderNotes,    setOrderNotes]    = useState('')
@@ -323,10 +326,7 @@ export default function CheckoutPage() {
   const lines   = cartLines()
   const isEmpty = lines.length === 0
 
-  const rawSubtotal = lines.reduce((sum, item) => {
-    const unitPrice = item.salePrice != null ? item.salePrice : parsePriceNumber(item.price)
-    return sum + unitPrice * item.qty
-  }, 0)
+  const rawSubtotal = getCartSubtotal(lines)
 
   // All prices are VAT-inclusive (Greek standard 24%).
   const discountRate  = appliedCoupon ? (VALID_COUPONS[appliedCoupon] ?? 0) : 0
@@ -356,6 +356,10 @@ export default function CheckoutPage() {
 
   const colCls = 'pb-3 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface-muted'
 
+  // Cart comes from a persisted (client-only) store; render nothing until mounted
+  // so the server and first client render match (no hydration mismatch).
+  if (!mounted) return <main className="min-h-screen pt-20 bg-surface" />
+
   return (
     <main className="min-h-screen pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
@@ -364,17 +368,7 @@ export default function CheckoutPage() {
           /* ── Empty state ── */
           <>
           <h1 className="font-display text-6xl text-on-surface leading-none mb-10">{t('title')}</h1>
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <p className="font-body text-base text-on-surface/60 tracking-wide">
-              {t('cartEmpty')}
-            </p>
-            <Link
-              href="/"
-              className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-raised transition-colors"
-            >
-              {t('continueShopping')}
-            </Link>
-          </div>
+          <CheckoutEmpty message={t('cartEmpty')} ctaLabel={t('continueShopping')} ctaHref="/" />
           </>
         ) : (
           /* ── Cart layout ── */

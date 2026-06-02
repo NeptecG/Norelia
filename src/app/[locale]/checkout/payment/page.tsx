@@ -1,24 +1,26 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { useTranslations, useLocale } from 'next-intl'
-import { motion, useReducedMotion } from 'motion/react'
-import { Link } from '@/navigation'
+import { useTranslations } from 'next-intl'
+import { motion } from 'motion/react'
+import { useRouter } from '@/navigation'
 import { useCartStore } from '@/stores/cart-store'
 import { useCheckoutStore } from '@/stores/checkout-store'
 import type { PaymentMethod } from '@/stores/checkout-store'
 import { useUIStore } from '@/stores/ui-store'
-import { parsePriceNumber } from '@/lib/utils'
-import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, ESTIMATED_DELIVERY_DAYS, COD_FEE } from '@/lib/constants'
+import { getCartSubtotal } from '@/lib/utils'
+import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, COD_FEE } from '@/lib/constants'
+import { useMounted } from '@/hooks/use-mounted'
+import { useEstimatedDeliveryDate } from '@/hooks/use-estimated-delivery'
+import { useSectionMotion } from '@/components/checkout/checkout-motion'
 import { StepIndicator } from '@/components/checkout/step-indicator'
 import { OptionCard } from '@/components/checkout/option-card'
 import { CheckoutSummary } from '@/components/checkout/checkout-summary'
+import { CheckoutEmpty } from '@/components/checkout/checkout-empty'
 import { PaymentMark } from '@/components/checkout/payment-marks'
 import { BackLink } from '@/components/checkout/back-link'
-
-const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
 interface PaymentFields {
   paymentMethod: PaymentMethod
@@ -32,9 +34,11 @@ interface MethodDef {
 }
 
 export default function CheckoutPaymentPage() {
-  const t       = useTranslations('CheckoutPayment')
-  const locale  = useLocale()
-  const reduced = useReducedMotion() ?? false
+  const t        = useTranslations('CheckoutPayment')
+  const router   = useRouter()
+  const mounted  = useMounted()
+  const sectionMotion = useSectionMotion()
+  const deliveryDate  = useEstimatedDeliveryDate()
   const { cartLines } = useCartStore()
   const { gift, setGift, deliveryMethod, shippingCost: storedShipping, setPaymentMethod } = useCheckoutStore()
   const { setShowCheckoutModal } = useUIStore()
@@ -46,25 +50,21 @@ export default function CheckoutPaymentPage() {
 
   const lines        = cartLines()
   const isEmpty      = lines.length === 0
-  const productValue = lines.reduce((s, i) => s + (i.salePrice != null ? i.salePrice : parsePriceNumber(i.price)) * i.qty, 0)
+  const productValue = getCartSubtotal(lines)
 
-  // Carry shipping from the delivery step; fall back to home pricing on refresh.
+  // Carry shipping from the delivery step. A null shippingCost means the shopper
+  // never completed delivery (skipped ahead / hard refresh that cleared session).
+  const needsShipping  = !isEmpty && storedShipping === null
   const isHome         = deliveryMethod === 'home'
   const shippingCost   = storedShipping ?? (productValue >= FREE_SHIPPING_THRESHOLD ? 0 : HOME_DELIVERY_COST)
   const shippingWaived = isHome && shippingCost === 0
   const codFee         = selected === 'cod' ? COD_FEE : 0
   const total          = productValue + shippingCost + codFee
 
-  const deliveryDate = useMemo(() => {
-    const d = new Date()
-    let added = 0
-    while (added < ESTIMATED_DELIVERY_DAYS) {
-      d.setDate(d.getDate() + 1)
-      const day = d.getDay()
-      if (day !== 0 && day !== 6) added++
-    }
-    return new Intl.DateTimeFormat(locale, { weekday: 'short', day: '2-digit', month: 'short' }).format(d)
-  }, [locale])
+  // Send a shopper who skipped the delivery step back to complete it.
+  useEffect(() => {
+    if (mounted && needsShipping) router.replace('/checkout/shipping')
+  }, [mounted, needsShipping, router])
 
   // Cash on delivery is offered for courier (home) delivery only.
   const methods: MethodDef[] = [
@@ -79,29 +79,22 @@ export default function CheckoutPaymentPage() {
     }] : []),
   ]
 
-  const sectionMotion = (delay: number) =>
-    reduced ? {} : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4, delay, ease: EASE } }
-
   // Real charging is not wired yet — the CTA records the choice and shows the notice.
   const onValid = (data: PaymentFields) => {
     setPaymentMethod(data.paymentMethod)
     setShowCheckoutModal(true)
   }
 
+  // Render nothing until mounted (persisted, client-only stores) to avoid a
+  // hydration mismatch; and hold render while redirecting a skip-ahead shopper.
+  if (!mounted || needsShipping) return <main className="min-h-screen pt-20 bg-surface" />
+
   if (isEmpty) {
     return (
       <main className="min-h-screen pt-20 bg-surface">
         <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mb-10">{t('heading')}</h1>
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <p className="font-body text-base text-on-surface/60 tracking-wide">{t('emptyText')}</p>
-            <Link
-              href="/"
-              className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-raised transition-colors"
-            >
-              {t('emptyCta')}
-            </Link>
-          </div>
+          <CheckoutEmpty message={t('emptyText')} ctaLabel={t('emptyCta')} ctaHref="/" />
         </div>
       </main>
     )

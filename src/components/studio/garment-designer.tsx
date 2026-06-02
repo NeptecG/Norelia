@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import emailjs from '@emailjs/browser'
 import { Upload, Check, Ruler } from 'lucide-react'
 import { Arrow } from '@/components/icons/arrow'
-import { FIELD_INPUT, FIELD_LABEL, FIELD_ERR, Req } from '@/components/checkout/fields'
+import { CustomerFields } from '@/components/checkout/customer-fields'
 import { useTranslations } from 'next-intl'
 import { PATHS } from '@/data/paths'
 import { GCOLORS } from '@/data/colors'
@@ -858,73 +858,23 @@ export function OrderForm({ onSubmit, isLoading }: OrderFormProps) {
     resolver: zodResolver(schema),
   })
 
-  // Phone: allow only digits, spaces and a leading +. Zip: digits only.
-  // Sanitize before RHF reads the value so letters can never be entered (incl. paste).
-  const phoneReg = register('phone')
-  const zipReg   = register('zip')
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="sm:col-span-2">
-          <label htmlFor="order-name" className={FIELD_LABEL}>{t('fieldName')}<Req /></label>
-          <input id="order-name" {...register('name')} className={FIELD_INPUT} placeholder={t('placeholderName')} autoComplete="name" />
-          {errors.name && <p className={FIELD_ERR}>{errors.name.message}</p>}
-        </div>
-        <div className="sm:col-span-2">
-          <label htmlFor="order-email" className={FIELD_LABEL}>{t('fieldEmail')}<Req /></label>
-          <input id="order-email" type="email" {...register('email')} className={FIELD_INPUT} placeholder={t('emailPlaceholder')} autoComplete="email" />
-          {errors.email && <p className={FIELD_ERR}>{errors.email.message}</p>}
-        </div>
-        <div className="sm:col-span-2">
-          <label htmlFor="order-address" className={FIELD_LABEL}>{t('fieldAddress')}<Req /></label>
-          <input id="order-address" {...register('address')} className={FIELD_INPUT} placeholder={t('placeholderStreet')} autoComplete="street-address" />
-          {errors.address && <p className={FIELD_ERR}>{errors.address.message}</p>}
-        </div>
-        <div>
-          <label htmlFor="order-city" className={FIELD_LABEL}>{t('fieldCity')}<Req /></label>
-          <input id="order-city" {...register('city')} className={FIELD_INPUT} placeholder={t('placeholderCity')} autoComplete="address-level2" />
-          {errors.city && <p className={FIELD_ERR}>{errors.city.message}</p>}
-        </div>
-        <div>
-          <label htmlFor="order-zip" className={FIELD_LABEL}>{t('fieldZip')}<Req /></label>
-          <input
-            id="order-zip"
-            {...zipReg}
-            onChange={(e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); zipReg.onChange(e) }}
-            inputMode="numeric"
-            maxLength={5}
-            className={FIELD_INPUT}
-            placeholder={t('placeholderZip')}
-            autoComplete="postal-code"
-          />
-          {errors.zip && <p className={FIELD_ERR}>{errors.zip.message}</p>}
-        </div>
-        <div className="sm:col-span-2">
-          <label htmlFor="order-phone" className={FIELD_LABEL}>{t('fieldPhone')}<Req /></label>
-          <input
-            id="order-phone"
-            {...phoneReg}
-            onChange={(e) => { e.target.value = e.target.value.replace(/[^\d+\s]/g, '').slice(0, 16); phoneReg.onChange(e) }}
-            inputMode="tel"
-            maxLength={16}
-            className={FIELD_INPUT}
-            placeholder={t('placeholderPhone')}
-            autoComplete="tel"
-          />
-          {errors.phone && <p className={FIELD_ERR}>{errors.phone.message}</p>}
-        </div>
-        <div className="sm:col-span-2">
-          <label htmlFor="order-notes" className={FIELD_LABEL}>{t('fieldNotes')}</label>
-          <textarea
-            id="order-notes"
-            {...register('notes')}
-            rows={3}
-            className={cn(FIELD_INPUT, 'resize-none')}
-            placeholder={t('placeholderNotes')}
-          />
-        </div>
-      </div>
+      <CustomerFields
+        register={register}
+        errors={errors}
+        names={{ name: 'name', email: 'email', street: 'address', city: 'city', postal: 'zip', phone: 'phone', notes: 'notes' }}
+        labels={{
+          name: t('fieldName'),       namePlaceholder: t('placeholderName'),
+          email: t('fieldEmail'),     emailPlaceholder: t('emailPlaceholder'),
+          street: t('fieldAddress'),  streetPlaceholder: t('placeholderStreet'),
+          city: t('fieldCity'),       cityPlaceholder: t('placeholderCity'),
+          postal: t('fieldZip'),      postalPlaceholder: t('placeholderZip'),
+          phone: t('fieldPhone'),     phonePlaceholder: t('placeholderPhone'),
+          notes: t('fieldNotes'),     notesPlaceholder: t('placeholderNotes'),
+        }}
+        idPrefix="order"
+      />
       <button
         type="submit"
         disabled={isLoading}

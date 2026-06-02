@@ -4,20 +4,23 @@ import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useTranslations, useLocale } from 'next-intl'
-import { motion, useReducedMotion } from 'motion/react'
-import { Link, useRouter } from '@/navigation'
+import { useTranslations } from 'next-intl'
+import { motion } from 'motion/react'
+import { useRouter } from '@/navigation'
 import { useCartStore } from '@/stores/cart-store'
 import { useCheckoutStore } from '@/stores/checkout-store'
-import { cn, parsePriceNumber } from '@/lib/utils'
-import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST, ESTIMATED_DELIVERY_DAYS } from '@/lib/constants'
+import { getCartSubtotal } from '@/lib/utils'
+import { FREE_SHIPPING_THRESHOLD, HOME_DELIVERY_COST } from '@/lib/constants'
+import { useMounted } from '@/hooks/use-mounted'
+import { useEstimatedDeliveryDate } from '@/hooks/use-estimated-delivery'
+import { useSectionMotion } from '@/components/checkout/checkout-motion'
 import { StepIndicator } from '@/components/checkout/step-indicator'
 import { OptionCard } from '@/components/checkout/option-card'
 import { CheckoutSummary } from '@/components/checkout/checkout-summary'
+import { CheckoutEmpty } from '@/components/checkout/checkout-empty'
+import { CustomerFields } from '@/components/checkout/customer-fields'
 import { BackLink } from '@/components/checkout/back-link'
 import { FIELD_INPUT as INPUT_CLS, FIELD_LABEL as LABEL_CLS, FIELD_ERR as ERR_CLS, Req } from '@/components/checkout/fields'
-
-const EASE: [number, number, number, number] = [0.25, 0, 0, 1]
 
 // Reveal box that attaches under the selected option card
 const REVEAL_CLS = 'border border-on-surface border-t-0 -mt-px px-5 md:px-6 pt-4 pb-5'
@@ -54,10 +57,11 @@ interface ShippingFields {
 }
 
 export default function CheckoutShippingPage() {
-  const t       = useTranslations('CheckoutShipping')
-  const locale  = useLocale()
-  const reduced = useReducedMotion() ?? false
-  const router  = useRouter()
+  const t        = useTranslations('CheckoutShipping')
+  const router   = useRouter()
+  const mounted  = useMounted()
+  const sectionMotion = useSectionMotion()
+  const deliveryDate  = useEstimatedDeliveryDate()
   const { cartLines } = useCartStore()
   const { gift, setGift, setDelivery } = useCheckoutStore()
 
@@ -106,51 +110,31 @@ export default function CheckoutShippingPage() {
   const isStore   = deliveryMethod === 'store'
   const isInvoice = receiptType === 'invoice'
 
-  const phoneReg  = register('phone')
-  const postalReg = register('postal')
-  const vatReg    = register('vatNumber')
+  const vatReg = register('vatNumber')
 
   const lines        = cartLines()
   const isEmpty      = lines.length === 0
-  const productValue = lines.reduce((s, i) => s + (i.salePrice != null ? i.salePrice : parsePriceNumber(i.price)) * i.qty, 0)
+  const productValue = getCartSubtotal(lines)
   const freeQualified  = productValue >= FREE_SHIPPING_THRESHOLD
   const shippingCost   = isHome ? (freeQualified ? 0 : HOME_DELIVERY_COST) : 0
   const shippingWaived = isHome && freeQualified
   const total          = productValue + shippingCost
-
-  const deliveryDate = useMemo(() => {
-    const d = new Date()
-    let added = 0
-    while (added < ESTIMATED_DELIVERY_DAYS) {
-      d.setDate(d.getDate() + 1)
-      const day = d.getDay()
-      if (day !== 0 && day !== 6) added++
-    }
-    return new Intl.DateTimeFormat(locale, { weekday: 'short', day: '2-digit', month: 'short' }).format(d)
-  }, [locale])
-
-  const sectionMotion = (delay: number) =>
-    reduced ? {} : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.4, delay, ease: EASE } }
 
   const onValid = (data: ShippingFields) => {
     setDelivery(data.deliveryMethod, shippingCost)
     router.push('/checkout/payment')
   }
 
+  // Avoid an SSR/client hydration mismatch: the cart comes from a persisted
+  // (client-only) store, so render nothing until mounted.
+  if (!mounted) return <main className="min-h-screen pt-20 bg-surface" />
+
   if (isEmpty) {
     return (
       <main className="min-h-screen pt-20 bg-surface">
         <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mb-10">{t('heading')}</h1>
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <p className="font-body text-base text-on-surface/60 tracking-wide">{t('emptyText')}</p>
-            <Link
-              href="/"
-              className="font-body text-xs tracking-[0.2em] uppercase border border-border px-8 py-3 text-on-surface hover:bg-surface-raised transition-colors"
-            >
-              {t('emptyCta')}
-            </Link>
-          </div>
+          <CheckoutEmpty message={t('emptyText')} ctaLabel={t('emptyCta')} ctaHref="/" />
         </div>
       </main>
     )
@@ -196,55 +180,20 @@ export default function CheckoutShippingPage() {
                     />
                     {isHome && (
                       <div className={REVEAL_CLS}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="sm:col-span-2">
-                            <label htmlFor="ship-name" className={LABEL_CLS}>{t('addressName')}<Req /></label>
-                            <input id="ship-name" {...register('name')} className={INPUT_CLS} placeholder={t('addressNamePlaceholder')} autoComplete="name" />
-                            {errors.name && <p className={ERR_CLS}>{errors.name.message}</p>}
-                          </div>
-                          <div className="sm:col-span-2">
-                            <label htmlFor="ship-street" className={LABEL_CLS}>{t('addressStreet')}<Req /></label>
-                            <input id="ship-street" {...register('street')} className={INPUT_CLS} placeholder={t('addressStreetPlaceholder')} autoComplete="street-address" />
-                            {errors.street && <p className={ERR_CLS}>{errors.street.message}</p>}
-                          </div>
-                          <div>
-                            <label htmlFor="ship-city" className={LABEL_CLS}>{t('addressCity')}<Req /></label>
-                            <input id="ship-city" {...register('city')} className={INPUT_CLS} placeholder={t('addressCityPlaceholder')} autoComplete="address-level2" />
-                            {errors.city && <p className={ERR_CLS}>{errors.city.message}</p>}
-                          </div>
-                          <div>
-                            <label htmlFor="ship-postal" className={LABEL_CLS}>{t('addressPostal')}<Req /></label>
-                            <input
-                              id="ship-postal"
-                              inputMode="numeric"
-                              maxLength={5}
-                              {...postalReg}
-                              onChange={e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 5); postalReg.onChange(e) }}
-                              className={INPUT_CLS}
-                              placeholder={t('addressPostalPlaceholder')}
-                              autoComplete="postal-code"
-                            />
-                            {errors.postal && <p className={ERR_CLS}>{errors.postal.message}</p>}
-                          </div>
-                          <div className="sm:col-span-2">
-                            <label htmlFor="ship-phone" className={LABEL_CLS}>{t('addressPhone')}<Req /></label>
-                            <input
-                              id="ship-phone"
-                              inputMode="tel"
-                              maxLength={16}
-                              {...phoneReg}
-                              onChange={e => { e.target.value = e.target.value.replace(/[^\d+\s]/g, '').slice(0, 16); phoneReg.onChange(e) }}
-                              className={INPUT_CLS}
-                              placeholder={t('addressPhonePlaceholder')}
-                              autoComplete="tel"
-                            />
-                            {errors.phone && <p className={ERR_CLS}>{errors.phone.message}</p>}
-                          </div>
-                          <div className="sm:col-span-2">
-                            <label htmlFor="ship-notes" className={LABEL_CLS}>{t('addressNotes')}</label>
-                            <textarea id="ship-notes" {...register('notes')} rows={2} className={cn(INPUT_CLS, 'resize-none')} placeholder={t('addressNotesPlaceholder')} />
-                          </div>
-                        </div>
+                        <CustomerFields
+                          register={register}
+                          errors={errors}
+                          names={{ name: 'name', street: 'street', city: 'city', postal: 'postal', phone: 'phone', notes: 'notes' }}
+                          labels={{
+                            name: t('addressName'),     namePlaceholder: t('addressNamePlaceholder'),
+                            street: t('addressStreet'), streetPlaceholder: t('addressStreetPlaceholder'),
+                            city: t('addressCity'),     cityPlaceholder: t('addressCityPlaceholder'),
+                            postal: t('addressPostal'), postalPlaceholder: t('addressPostalPlaceholder'),
+                            phone: t('addressPhone'),   phonePlaceholder: t('addressPhonePlaceholder'),
+                            notes: t('addressNotes'),   notesPlaceholder: t('addressNotesPlaceholder'),
+                          }}
+                          idPrefix="ship"
+                        />
                       </div>
                     )}
                   </div>
