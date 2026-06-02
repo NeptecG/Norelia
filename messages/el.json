@@ -126,7 +126,7 @@
     "orderTotal": "Συνολο Παραγγελιας",
     "freeShipping": "Δωρεάν αποστολή!",
     "addMoreForFreeShipping": "Πρόσθεσε €{amount} για δωρεάν αποστολή",
-    "checkout": "Προχωρηση στην Αγορα",
+    "checkout": "Προχωρησε στην Αγορα",
     "removedFromCart": "{name} αφαιρεθηκε απο το καλαθι",
     "addedToFavorites": "{name} προστεθηκε στα αγαπημενα",
     "removedFromFavorites": "{name} αφαιρεθηκε απο τα αγαπημενα",
