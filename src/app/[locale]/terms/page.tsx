@@ -77,6 +77,13 @@ export default async function TermsPage() {
             <p className="font-body text-[13px] text-on-surface-muted leading-[1.85] tracking-[0.02em] border-l-2 border-border-subtle pl-5">{t('section6Detail')}</p>
           </div>
 
+          {/* Section 7 — out-of-court dispute resolution */}
+          <div className="border-t border-border-subtle pt-10 mb-12">
+            <p className="font-display text-[11px] tracking-[0.3em] text-on-surface/25 mb-2.5">07</p>
+            <h2 className="font-display text-2xl tracking-[0.06em] text-on-surface mb-5">{t('section7Title')}</h2>
+            <p className="font-body text-[13px] text-on-surface-muted leading-[1.85] tracking-[0.02em] border-l-2 border-border-subtle pl-5">{t('section7Detail')}</p>
+          </div>
+
           <div className="bg-surface-raised px-6 py-5 mt-4">
             <p className="font-body text-[12px] text-on-surface-muted leading-[1.8]">
               <strong className="text-on-surface">{t('noteStrong')}</strong>

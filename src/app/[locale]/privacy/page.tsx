@@ -30,6 +30,10 @@ const SECTIONS = [
     detail: 'Under GDPR you have the right to access, correct, or delete your personal data at any time. You may also request a portable copy of your data or object to specific processing. To exercise any of these rights, contact us at privacy@norelia.com. We will respond within 30 days.',
   },
   {
+    title:  "Children's Privacy",
+    detail: 'Our store is intended for a general audience and is not directed at children. We do not knowingly collect personal data from anyone under the age of 15 (the digital age of consent in Greece). If you believe a child has provided us with personal information, please contact us at privacy@norelia.com and we will delete it promptly.',
+  },
+  {
     title:  'Contact',
     detail: 'For any privacy-related enquiries, write to privacy@norelia.com or by post to: NORELIA., G. Gianniwth 216, Preveza 48100, Greece. This policy was last updated in May 2026.',
   },
