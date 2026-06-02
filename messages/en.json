@@ -262,6 +262,7 @@
     "estDelivery": "Delivery by {date}",
     "itemsCount": "{count, plural, one {# item} other {# items}}",
     "gift": "This is a gift",
+    "giftConfirm": "Your order will be gift wrapped",
     "backToCart": "Back to cart",
     "rowProducts": "Products",
     "rowShipping": "Shipping",

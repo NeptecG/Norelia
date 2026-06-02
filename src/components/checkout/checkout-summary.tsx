@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { Link } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { parsePriceNumber } from '@/lib/utils'
 import { HOME_DELIVERY_COST } from '@/lib/constants'
@@ -19,8 +18,6 @@ interface CheckoutSummaryProps {
   onToggleGift:   () => void
   ctaLabel:       string
   ctaAriaLabel:   string
-  backHref:       string
-  backLabel:      string
 }
 
 // Dark, sticky order summary shared by the delivery and payment steps. The CTA
@@ -28,7 +25,7 @@ interface CheckoutSummaryProps {
 export function CheckoutSummary({
   items, productValue, shippingCost, shippingWaived, extraFee,
   total, deliveryDate, gift, onToggleGift,
-  ctaLabel, ctaAriaLabel, backHref, backLabel,
+  ctaLabel, ctaAriaLabel,
 }: CheckoutSummaryProps) {
   const t = useTranslations('CheckoutShipping')
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0)
@@ -71,25 +68,35 @@ export function CheckoutSummary({
       <div className="px-6 py-5">
 
         {/* ── Gift toggle ── */}
-        <button
-          type="button"
-          onClick={onToggleGift}
-          aria-pressed={gift}
-          className="flex items-center gap-3 w-full mb-5 pb-5 border-b border-border text-left group"
-        >
-          <span
-            className={`shrink-0 size-4 border flex items-center justify-center transition-colors ${
-              gift ? 'bg-on-surface border-on-surface' : 'border-on-surface/40 group-hover:border-on-surface/70'
-            }`}
+        <div className="mb-5 pb-5 border-b border-border">
+          <button
+            type="button"
+            onClick={onToggleGift}
+            aria-pressed={gift}
+            className="flex items-center gap-3 w-full text-left group"
           >
-            {gift && (
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                <path d="M2.5 6.5L5 9l4.5-5.5" stroke="var(--color-surface)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            <span
+              className={`shrink-0 size-4 border flex items-center justify-center transition-colors ${
+                gift ? 'border-success bg-success/10' : 'border-on-surface/40 group-hover:border-on-surface/70'
+              }`}
+            >
+              {gift && (
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M2.5 6.5L5 9l4.5-5.5" stroke="var(--color-success-val)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </span>
+            <span className="font-body text-xs tracking-[0.04em] text-on-surface/80">{t('gift')}</span>
+          </button>
+          {gift && (
+            <p aria-live="polite" className="flex items-center gap-1.5 mt-2.5 pl-7 font-body text-[11px] tracking-[0.02em] text-success">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" />
               </svg>
-            )}
-          </span>
-          <span className="font-body text-xs tracking-[0.04em] text-on-surface/80">{t('gift')}</span>
-        </button>
+              {t('giftConfirm')}
+            </p>
+          )}
+        </div>
 
         {/* ── Rows ── */}
         <div className="flex justify-between font-body text-sm mb-2.5">
@@ -139,14 +146,6 @@ export function CheckoutSummary({
           {ctaLabel}
           <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">→</span>
         </button>
-
-        {/* ── Back link ── */}
-        <Link
-          href={backHref}
-          className="block text-center mt-4 font-body text-[11px] tracking-[0.04em] text-on-surface/55 hover:text-on-surface transition-colors underline underline-offset-4 decoration-on-surface/25"
-        >
-          {backLabel}
-        </Link>
       </div>
     </aside>
   )

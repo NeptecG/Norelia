@@ -262,6 +262,7 @@
     "estDelivery": "Παράδοση έως {date}",
     "itemsCount": "{count, plural, one {# προϊόν} other {# προϊόντα}}",
     "gift": "Είναι για δώρο",
+    "giftConfirm": "Η παραγγελία σου θα τυλιχτεί για δώρο",
     "backToCart": "Επιστροφή στο καλάθι",
     "rowProducts": "Προϊόντα",
     "rowShipping": "Μεταφορικά",

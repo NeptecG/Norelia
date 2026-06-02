@@ -384,7 +384,7 @@ export default function CheckoutPage() {
             href="/"
             className="inline-flex items-center gap-2 font-body text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors mb-8"
           >
-            <span aria-hidden="true">←</span>
+            <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 18l-6-6 6-6" /></svg>
             {t('continueShopping')}
           </Link>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
