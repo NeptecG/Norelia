@@ -15,6 +15,7 @@ export default async function ReturnsPage() {
     { titleKey: 'section2Title', detailKey: 'section2Detail' },
     { titleKey: 'section3Title', detailKey: 'section3Detail' },
     { titleKey: 'section4Title', detailKey: 'section4Detail' },
+    { titleKey: 'section5Title', detailKey: 'section5Detail' },
   ] as const
 
   return (
