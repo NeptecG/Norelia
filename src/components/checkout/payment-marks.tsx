@@ -26,18 +26,17 @@ const CARD = (
   </svg>
 )
 
-// IRIS — five-segment colour wheel (red, orange, lime, teal, blue) + wordmark,
-// matching the real IRIS payments mark
+// IRIS — four-quadrant ring (TL red, TR blue, BL orange, BR teal) + wordmark,
+// colours taken from the official IRIS online payments logo
 const IRIS = (
   <svg width="50" height="24" viewBox="0 0 52 24" fill="none" aria-hidden="true">
-    <g transform="translate(10,12)" fill="none" strokeWidth="5">
-      <circle r="6.6" stroke="#1D71B8" strokeDasharray="7.3 34.2" transform="rotate(-90)" />
-      <circle r="6.6" stroke="#00A19A" strokeDasharray="7.3 34.2" transform="rotate(-18)" />
-      <circle r="6.6" stroke="#8DC63F" strokeDasharray="7.3 34.2" transform="rotate(54)" />
-      <circle r="6.6" stroke="#F39200" strokeDasharray="7.3 34.2" transform="rotate(126)" />
-      <circle r="6.6" stroke="#E2231A" strokeDasharray="7.3 34.2" transform="rotate(198)" />
+    <g transform="translate(10,12)" fill="none" strokeWidth="5.5">
+      <circle r="6.5" stroke="#1A9E8E" strokeDasharray="9.6 31.2" transform="rotate(0)" />
+      <circle r="6.5" stroke="#F39A23" strokeDasharray="9.6 31.2" transform="rotate(90)" />
+      <circle r="6.5" stroke="#E8473C" strokeDasharray="9.6 31.2" transform="rotate(180)" />
+      <circle r="6.5" stroke="#1C6CA9" strokeDasharray="9.6 31.2" transform="rotate(270)" />
     </g>
-    <text x="22" y="16" fill="#58595B" fontSize="12.5" fontWeight="800" fontFamily="Arial, sans-serif">IRIS</text>
+    <text x="22" y="16" fill="#404040" fontSize="12.5" fontWeight="700" fontFamily="Arial, sans-serif">IRIS</text>
   </svg>
 )
 
