@@ -71,9 +71,9 @@ export default function CheckoutPaymentPage() {
   const { setShowCheckoutModal } = useUIStore()
 
   const { register, handleSubmit, control } = useForm<PaymentFields>({
-    defaultValues: { paymentMethod: 'iris' },
+    defaultValues: { paymentMethod: 'card' },
   })
-  const selected = useWatch({ control, name: 'paymentMethod' }) ?? 'iris'
+  const selected = useWatch({ control, name: 'paymentMethod' }) ?? 'card'
 
   const lines        = cartLines()
   const isEmpty      = lines.length === 0
@@ -99,8 +99,8 @@ export default function CheckoutPaymentPage() {
 
   // Cash on delivery is offered for courier (home) delivery only.
   const methods: MethodDef[] = [
-    { id: 'iris',      title: t('irisTitle'),      desc: t('irisDesc'),      icon: ICON_IRIS },
     { id: 'card',      title: t('cardTitle'),      desc: t('cardDesc'),      icon: ICON_CARD },
+    { id: 'iris',      title: t('irisTitle'),      desc: t('irisDesc'),      icon: ICON_IRIS },
     { id: 'applepay',  title: t('applePayTitle'),  desc: t('applePayDesc'),  icon: ICON_PHONE },
     { id: 'googlepay', title: t('googlePayTitle'), desc: t('googlePayDesc'), icon: ICON_WALLET },
     { id: 'klarna',    title: t('klarnaTitle'),    desc: t('klarnaDesc'),    icon: ICON_KLARNA },

@@ -284,7 +284,7 @@
     "back": "BACK TO DELIVERY",
     "heading": "How would you like to pay?",
     "paymentMethod": "PAYMENT METHOD",
-    "irisTitle": "Bank transfer via IRIS",
+    "irisTitle": "IRIS Payment",
     "irisDesc": "Instant payment from your bank app, no card needed",
     "cardTitle": "Credit or debit card",
     "cardDesc": "Visa, Mastercard · interest-free installments available",
