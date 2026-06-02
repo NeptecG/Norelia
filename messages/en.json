@@ -156,6 +156,7 @@
     "returns": "Returns & Exchanges",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
+    "company": "Company Info",
     "contact": "Contact",
     "hours": "Mon–Fri, 9:00–17:00",
     "saturday": "Saturday, 10:00–14:00",
@@ -304,6 +305,22 @@
     "backToDelivery": "Back to delivery",
     "emptyText": "Your cart is empty, so there is nothing to pay for yet.",
     "emptyCta": "CONTINUE SHOPPING"
+  },
+  "Company": {
+    "eyebrow": "LEGAL INFORMATION",
+    "heading": "Company Details",
+    "intro": "{brand} is operated by the company registered below. These details are published in line with Greek e-commerce law.",
+    "labelGemi": "GEMI NUMBER",
+    "valueGemi": "156720504000",
+    "labelOffice": "REGISTERED OFFICE",
+    "valueOffice": "Ermou 2, 54625 Thessaloniki, Greece",
+    "labelCapital": "SHARE CAPITAL",
+    "valueCapital": "€75,200.00",
+    "labelManagers": "MANAGERS",
+    "valueManagers": "Petros Gkioulekas, Georgios Gkioulekas",
+    "contactHeading": "Contact",
+    "email": "support@lobster.gr",
+    "tel": "+30 2312317583"
   },
   "ScrollToTop": {
     "label": "Scroll to top",

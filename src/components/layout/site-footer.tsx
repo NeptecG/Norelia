@@ -99,6 +99,7 @@ function InfoColumn({ t }: { t: TFooter }) {
         <FooterLink href="/returns">{t('returns')}</FooterLink>
         <FooterLink href="/privacy">{t('privacy')}</FooterLink>
         <FooterLink href="/terms">{t('terms')}</FooterLink>
+        <FooterLink href="/company">{t('company')}</FooterLink>
       </div>
     </div>
   )
