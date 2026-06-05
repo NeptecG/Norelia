@@ -22,20 +22,22 @@ vi.mock('@/navigation', () => ({
 
 import ShippingPage from './page'
 
-describe('ShippingPage', () => {
-  it('renders the heading key', async () => {
+describe('Shipping & Returns page', () => {
+  it('renders the combined heading', async () => {
     render(await ShippingPage())
-    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
-    expect(screen.getByText('heading')).toBeTruthy()
+    const h1 = screen.getByRole('heading', { level: 1 })
+    expect(h1.textContent).toMatch(/combinedheading/i)
   })
 
-  it('renders method1Title key', async () => {
+  it('renders the shipping methods', async () => {
     render(await ShippingPage())
     expect(screen.getByText('method1Title')).toBeTruthy()
+    expect(screen.getByText('method3Title')).toBeTruthy()
   })
 
-  it('renders method2Title key', async () => {
+  it('renders the returns sections', async () => {
     render(await ShippingPage())
-    expect(screen.getByText('method2Title')).toBeTruthy()
+    expect(screen.getByText('section1Title')).toBeTruthy()
+    expect(screen.getByText('section5Title')).toBeTruthy()
   })
 })

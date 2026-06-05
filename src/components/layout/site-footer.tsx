@@ -95,11 +95,17 @@ function InfoColumn({ t }: { t: TFooter }) {
       <div className="flex flex-col items-start">
         <FooterLink href="/about">{t('about')}</FooterLink>
         <FooterLink href="/size-guide">{t('sizeGuide')}</FooterLink>
-        <FooterLink href="/shipping">{t('shipping')}</FooterLink>
-        <FooterLink href="/returns">{t('returns')}</FooterLink>
-        <FooterLink href="/privacy">{t('privacy')}</FooterLink>
-        <FooterLink href="/terms">{t('terms')}</FooterLink>
-        <FooterLink href="/company">{t('company')}</FooterLink>
+        <FooterLink href="/shipping">{t('shippingReturns')}</FooterLink>
+      </div>
+
+      {/* Legal sub-group — kept as separate, directly-linkable pages */}
+      <div className="mt-8">
+        <FooterHeading>{t('legal')}</FooterHeading>
+        <div className="flex flex-col items-start">
+          <FooterLink href="/privacy">{t('privacy')}</FooterLink>
+          <FooterLink href="/terms">{t('terms')}</FooterLink>
+          <FooterLink href="/company">{t('company')}</FooterLink>
+        </div>
       </div>
     </div>
   )
