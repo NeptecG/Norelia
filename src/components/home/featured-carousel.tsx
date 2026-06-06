@@ -16,7 +16,7 @@ function useIsMobile() {
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
     check()
-    window.addEventListener('resize', check)
+    window.addEventListener('resize', check, { passive: true })
     return () => window.removeEventListener('resize', check)
   }, [])
   return isMobile
@@ -30,14 +30,21 @@ function usePagination(total: number) {
   return { page: safePage, setPage }
 }
 
+interface ViewAllLink {
+  label: string
+  href: string
+}
+
 interface Props {
   title: string
   subtitle?: string
   products: Product[]
   viewAllHref?: string
+  /** When provided, renders multiple links instead of the single viewAllHref link */
+  viewAllLinks?: ViewAllLink[]
 }
 
-export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Props) {
+export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewAllLinks }: Props) {
   const reducedMotion = useReducedMotion()
   const isMobile = useIsMobile()
   const t = useTranslations('FeaturedCarousel')
@@ -69,14 +76,25 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref }: Pro
             </h2>
           </div>
 
-          {viewAllHref && (
+          {viewAllLinks && viewAllLinks.length > 0 ? (
+            <div className="flex items-center gap-4 shrink-0 ml-4">
+              {viewAllLinks.map(link => (
+                <Link key={link.href} href={link.href} className="group relative">
+                  <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
+                    {link.label}
+                  </span>
+                  <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
+                </Link>
+              ))}
+            </div>
+          ) : viewAllHref ? (
             <Link href={viewAllHref} className="group relative shrink-0 ml-4">
               <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
                 {t('viewAll')}
               </span>
               <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-[280ms]" />
             </Link>
-          )}
+          ) : null}
         </div>
 
         {/* Product grid */}

@@ -81,6 +81,13 @@
   }
 }
 
+/* Pause the marquee for users who prefer reduced motion (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker {
+    animation-play-state: paused;
+  }
+}
+
 @layer base {
   :root {
     /* Shadcn base tokens */

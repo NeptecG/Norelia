@@ -127,7 +127,23 @@ export default function CheckoutShippingPage() {
 
   // Avoid an SSR/client hydration mismatch: the cart comes from a persisted
   // (client-only) store, so render nothing until mounted.
-  if (!mounted) return <main className="min-h-screen pt-20 bg-surface" />
+  if (!mounted) return (
+    <main className="min-h-screen pt-20 bg-surface animate-pulse">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
+        <div className="h-14 bg-surface-raised w-52 mb-10" />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
+          {/* Form fields skeleton */}
+          <div className="space-y-4">
+            {['sk-a', 'sk-b', 'sk-c', 'sk-d', 'sk-e'].map(k => (
+              <div key={k} className="h-14 bg-surface-raised" />
+            ))}
+          </div>
+          {/* Summary skeleton */}
+          <div className="h-[320px] bg-surface-raised" />
+        </div>
+      </div>
+    </main>
+  )
 
   if (isEmpty) {
     return (

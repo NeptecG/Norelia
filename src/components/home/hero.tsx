@@ -43,8 +43,9 @@ function HeroHalf({
   }
 
   const eyebrowVariants = {
-    // Start at 0.3 opacity so it's discoverable; brightens to full on hover
-    rest: { opacity: 0.3, y: 0 },
+    // 0.65 at rest: always readable on mobile (no hover events); brightens to
+    // full on desktop hover. Was 0.3 which made it invisible on touch devices.
+    rest: { opacity: 0.65, y: 0 },
     hover: { opacity: 1, y: 0 },
   }
 

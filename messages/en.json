@@ -47,7 +47,13 @@
     "trendingTitle": "TRENDING",
     "trendingSubtitle": "THIS SEASON",
     "onSaleTitle": "ON SALE",
-    "onSaleSubtitle": "LIMITED TIME OFFERS"
+    "onSaleSubtitle": "LIMITED TIME OFFERS",
+    "shopMen": "Shop Men",
+    "shopWomen": "Shop Women",
+    "editorialEyebrow": "THE BRAND",
+    "editorialHeading": "BUILT FOR THE\nSTREETS",
+    "editorialBody": "We don't do trends. We do pieces you'll wear for years - designed with precision, cut to last, and worn by people who choose quality over hype.",
+    "editorialCta": "Our Story"
   },
   "FeaturedCarousel": {
     "viewAll": "View All",

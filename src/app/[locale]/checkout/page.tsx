@@ -458,7 +458,31 @@ export default function CheckoutPage() {
 
   // Cart comes from a persisted (client-only) store; render nothing until mounted
   // so the server and first client render match (no hydration mismatch).
-  if (!mounted) return <main className="min-h-screen pt-20 bg-surface" />
+  if (!mounted) return (
+    <main className="min-h-screen pt-20 bg-surface animate-pulse">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
+        <div className="h-14 bg-surface-raised w-52 mb-10" />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
+          {/* Cart rows skeleton */}
+          <div>
+            {['sk-a', 'sk-b', 'sk-c'].map(k => (
+              <div key={k} className="flex gap-4 py-5 border-b border-border">
+                <div className="shrink-0 w-[68px] h-[86px] bg-surface-raised" />
+                <div className="flex-1 space-y-2 pt-1">
+                  <div className="h-2.5 bg-surface-raised w-20" />
+                  <div className="h-5 bg-surface-raised w-36" />
+                  <div className="h-2.5 bg-surface-raised w-14" />
+                </div>
+                <div className="h-10 w-24 bg-surface-raised self-center" />
+              </div>
+            ))}
+          </div>
+          {/* Order summary skeleton */}
+          <div className="h-[420px] bg-surface-raised" />
+        </div>
+      </div>
+    </main>
+  )
 
   return (
     <main className="min-h-screen pt-20 bg-surface">

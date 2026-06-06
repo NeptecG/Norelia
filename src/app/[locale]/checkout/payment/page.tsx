@@ -87,7 +87,23 @@ export default function CheckoutPaymentPage() {
 
   // Render nothing until mounted (persisted, client-only stores) to avoid a
   // hydration mismatch; and hold render while redirecting a skip-ahead shopper.
-  if (!mounted || needsShipping) return <main className="min-h-screen pt-20 bg-surface" />
+  if (!mounted || needsShipping) return (
+    <main className="min-h-screen pt-20 bg-surface animate-pulse">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
+        <div className="h-14 bg-surface-raised w-52 mb-10" />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
+          {/* Payment options skeleton */}
+          <div className="space-y-4">
+            {['sk-a', 'sk-b', 'sk-c'].map(k => (
+              <div key={k} className="h-16 bg-surface-raised" />
+            ))}
+          </div>
+          {/* Summary skeleton */}
+          <div className="h-[320px] bg-surface-raised" />
+        </div>
+      </div>
+    </main>
+  )
 
   if (isEmpty) {
     return (

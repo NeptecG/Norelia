@@ -47,7 +47,13 @@
     "trendingTitle": "ΤΑΣΕΙΣ",
     "trendingSubtitle": "ΑΥΤΗ ΤΗ ΣΕΖΟΝ",
     "onSaleTitle": "ΕΚΠΤΩΣΕΙΣ",
-    "onSaleSubtitle": "ΠΡΟΣΦΟΡΕΣ"
+    "onSaleSubtitle": "ΠΡΟΣΦΟΡΕΣ",
+    "shopMen": "Ανδρικα",
+    "shopWomen": "Γυναικεια",
+    "editorialEyebrow": "Η ΜΑΡΚΑ",
+    "editorialHeading": "ΦΤΙΑΧΤΗΚΕ\nΓΙΑ ΤΟ ΔΡΟΜΟ",
+    "editorialBody": "Δεν ακολουθουμε τασεις. Φτιαχνουμε κομματια που θα φορας χρονια - σχεδιασμενα με ακριβεια, κομμενα για να κρατουν, και φορεμενα απο ανθρωπους που επιλεγουν ποιοτητα αντι για hype.",
+    "editorialCta": "Η ιστορια μας"
   },
   "FeaturedCarousel": {
     "viewAll": "Ολα",

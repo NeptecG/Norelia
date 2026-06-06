@@ -10,6 +10,7 @@ import { LanguageSwitcher } from '@/components/layout/language-switcher'
 import { cn } from '@/lib/utils'
 import { BRAND, MEN_NAV_CATS, WOMEN_NAV_CATS, NAV_CAT_TO_SLUG } from '@/lib/constants'
 import { PRODUCTS } from '@/data/products'
+import { useFocusTrap } from '@/hooks/use-focus-trap'
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -24,7 +25,7 @@ function useIsMobile() {
     // is more appropriate — the full nav has too many items to fit cleanly.
     const check = () => setIsMobile(window.innerWidth < 1024)
     check()
-    window.addEventListener('resize', check)
+    window.addEventListener('resize', check, { passive: true })
     return () => window.removeEventListener('resize', check)
   }, [])
   return isMobile
@@ -54,6 +55,22 @@ export function Nav() {
   const searchRef   = useRef<HTMLDivElement>(null)
   const searchInput = useRef<HTMLInputElement>(null)
   const closeTimer  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const mobNavRef   = useRef<HTMLDivElement>(null)
+
+  useFocusTrap(mobNavRef, mobMenuOpen)
+
+  // Cmd+K / Ctrl+K global shortcut — open search
+  useEffect(() => {
+    function handleShortcut(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+        setMobMenuOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleShortcut)
+    return () => document.removeEventListener('keydown', handleShortcut)
+  }, [])
 
   // Close search on outside click
   useEffect(() => {
@@ -171,6 +188,7 @@ export function Nav() {
                 {activeMenu === 'men' && (
                   <motion.div
                     key="men-dropdown"
+                    role="menu"
                     variants={dropdownVariants}
                     initial="initial"
                     animate="animate"
@@ -181,6 +199,7 @@ export function Nav() {
                     {MEN_NAV_CATS.map(cat => (
                       <Link
                         key={cat}
+                        role="menuitem"
                         href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
                         onClick={() => setActiveMenu(null)}
                         className={cn(
@@ -220,6 +239,7 @@ export function Nav() {
                 {activeMenu === 'women' && (
                   <motion.div
                     key="women-dropdown"
+                    role="menu"
                     variants={dropdownVariants}
                     initial="initial"
                     animate="animate"
@@ -230,6 +250,7 @@ export function Nav() {
                     {WOMEN_NAV_CATS.map(cat => (
                       <Link
                         key={cat}
+                        role="menuitem"
                         href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
                         onClick={() => setActiveMenu(null)}
                         className={cn(
@@ -511,6 +532,7 @@ export function Nav() {
         {mobMenuOpen && (
           <motion.div
             key="mob-menu"
+            ref={mobNavRef}
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}

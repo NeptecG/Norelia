@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
@@ -13,20 +13,17 @@ const PREFS_KEY   = 'norelia_gdpr_prefs'
 export function GDPRBanner() {
   const t = useTranslations('GDPRBanner')
 
-  // Hydration-safe: start hidden on server, reveal on client after localStorage check.
-  // Using useEffect prevents the server/client mismatch that occurs when
-  // localStorage is read directly inside useState().
-  const [visible,    setVisible]    = useState(false)
+  // Lazy initializer reads localStorage only on the client (useState runs only
+  // client-side in a 'use client' component), so there is no SSR/hydration
+  // mismatch and no need for a synchronous setState inside useEffect.
+  const [visible,    setVisible]    = useState(() => {
+    if (typeof window === 'undefined') return false
+    return !localStorage.getItem(CONSENT_KEY)
+  })
   const [showPrefs,  setShowPrefs]  = useState(false)
   const [analytics,  setAnalytics]  = useState(false)
   const [marketing,  setMarketing]  = useState(false)
   const shouldReduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    if (!localStorage.getItem(CONSENT_KEY)) {
-      setVisible(true)
-    }
-  }, [])
 
   function accept() {
     localStorage.setItem(CONSENT_KEY, 'accepted')

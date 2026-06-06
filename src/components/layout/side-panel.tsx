@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -10,6 +10,7 @@ import { X, Trash2, Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { parsePriceNumber, getStock } from '@/lib/utils'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
+import { useFocusTrap } from '@/hooks/use-focus-trap'
 import { useUIStore } from '@/stores/ui-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useFavoritesStore } from '@/stores/favorites-store'
@@ -112,7 +113,7 @@ function CartItemRow({
             <button
               onClick={onDecrement}
               disabled={item.qty <= 1}
-              className="w-7 h-7 flex items-center justify-center text-on-surface disabled:text-on-surface-muted disabled:cursor-not-allowed font-body text-base hover:bg-surface-raised transition-colors"
+              className="w-11 h-11 flex items-center justify-center text-on-surface disabled:text-on-surface-muted disabled:cursor-not-allowed font-body text-base hover:bg-surface-raised transition-colors"
             >
               −
             </button>
@@ -122,7 +123,7 @@ function CartItemRow({
             <button
               onClick={onAdd}
               disabled={!canAdd}
-              className="w-7 h-7 flex items-center justify-center text-on-surface disabled:text-on-surface-muted disabled:cursor-not-allowed font-body text-base hover:bg-surface-raised transition-colors"
+              className="w-11 h-11 flex items-center justify-center text-on-surface disabled:text-on-surface-muted disabled:cursor-not-allowed font-body text-base hover:bg-surface-raised transition-colors"
             >
               +
             </button>
@@ -215,6 +216,8 @@ export function SidePanel() {
 
   const router = useRouter()
   const shouldReduceMotion = useReducedMotion()
+  const panelRef = useRef<HTMLDivElement>(null)
+  useFocusTrap(panelRef, sidePanel !== null)
 
   const isCart = sidePanel === 'cart'
 
@@ -277,6 +280,7 @@ export function SidePanel() {
           {/* Panel */}
           <motion.div
             key="panel"
+            ref={panelRef}
             initial={panelVariants.initial}
             animate={panelVariants.animate}
             exit={panelVariants.exit}

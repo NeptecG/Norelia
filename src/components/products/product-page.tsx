@@ -111,7 +111,15 @@ export function ProductPage({ product, initialColor, from }: Props) {
       <div className="mx-auto max-w-6xl px-4 md:px-8 pt-6 pb-0">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => {
+            try {
+              if (document.referrer && new URL(document.referrer).hostname === window.location.hostname) {
+                router.back()
+                return
+              }
+            } catch { /* ignore malformed referrer */ }
+            router.push(catHref)
+          }}
           className="flex items-center gap-2 py-3 pr-4 md:py-2 md:pr-3 font-body text-sm md:text-[10px] tracking-[0.15em] uppercase text-on-surface-muted hover:text-on-surface transition-colors"
         >
           <Arrow size={18} className="md:w-[15px] md:h-[15px]" />

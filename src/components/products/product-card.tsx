@@ -150,7 +150,7 @@ export function ProductCard({ product, priority = false }: Props) {
           onClick={handleFavorite}
           variants={heartVariants}
           transition={{ duration: 0.15 }}
-          className="absolute right-1.5 top-1.5 z-[2] flex items-center justify-center min-w-[36px] min-h-[36px]"
+          className="absolute right-0.5 top-0.5 z-[2] flex items-center justify-center min-w-[44px] min-h-[44px]"
         >
           <Heart
             size={16}
