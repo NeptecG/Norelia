@@ -121,20 +121,21 @@ export function Nav() {
   if (!isMobile) {
     return (
       <nav className="dark sticky top-0 z-[100] bg-surface-alt border-b border-border">
-        {/* Flex justify-between for brand + icons; center links absolutely positioned so they
-            sit at the TRUE midpoint of the bar regardless of asymmetric side widths. */}
+        {/* Three flex zones with justify-between: brand (left) · links (center) · actions (right).
+            space-between gives the center links EQUAL whitespace on both sides, so they read as
+            optically centered between the two clusters. True viewport-centering looked wrong here
+            because the heavy right cluster (icons + sign-in + flags, ~326px) dwarfs the light brand
+            (~95px) — pinning links to viewport center left a 426px gap on one side and 196px on the
+            other. Equal gaps is what reads as "centered" to the eye. */}
         <div className="max-w-[1440px] mx-auto px-[60px] relative flex items-center justify-between h-[54px] z-10">
 
           {/* Brand */}
-          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0 z-10">
+          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0">
             {BRAND}
           </Link>
 
-          {/* Center links — pinned to the exact horizontal center of the nav bar.
-              pointer-events-none on the overlay so brand / icon clicks pass through;
-              pointer-events-auto restored on the inner group so links work. */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="flex gap-6 items-center pointer-events-auto">
+          {/* Center links — middle zone of justify-between, so equal gaps to brand and actions */}
+          <div className="flex gap-6 items-center">
 
             {/* Home */}
             <Link
@@ -261,10 +262,9 @@ export function Nav() {
             </Link>
 
           </div>
-          </div>{/* end absolute center overlay */}
 
-          {/* Right side icons — z-10 so they sit above the pointer-events-none overlay */}
-          <div className="flex items-center gap-4 z-10">
+          {/* Right side icons */}
+          <div className="flex items-center gap-4">
 
             {/* Search */}
             <div ref={searchRef} className="relative flex items-center gap-2">
