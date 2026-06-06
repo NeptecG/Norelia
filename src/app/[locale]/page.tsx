@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { Link } from '@/navigation'
 import { Hero } from '@/components/home/hero'
 import { Marquee } from '@/components/home/marquee'
 import { FeaturedCarousel } from '@/components/home/featured-carousel'
@@ -28,32 +27,6 @@ export default async function HomePage() {
     <main>
       <Hero />
       <Marquee dark={true} />
-
-      {/* ── Editorial band ── */}
-      <section className="dark bg-surface-alt border-t border-border-subtle">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-20 md:py-[88px] grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
-          <div>
-            <p className="font-body text-[10px] tracking-[0.3em] uppercase text-on-surface/40 mb-4">
-              {t('editorialEyebrow')}
-            </p>
-            <h2 className="font-display text-[64px] md:text-[80px] leading-[0.92] tracking-[0.04em] text-on-surface whitespace-pre-line">
-              {t('editorialHeading')}
-            </h2>
-          </div>
-          <div>
-            <p className="font-body text-[15px] text-on-surface-muted leading-[1.85] tracking-[0.02em] mb-8">
-              {t('editorialBody')}
-            </p>
-            <Link
-              href="/about"
-              className="group relative inline-block font-body text-[10px] tracking-[0.24em] uppercase text-on-surface"
-            >
-              {t('editorialCta')}
-              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface scale-x-100 group-hover:opacity-60 transition-opacity duration-[280ms]" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       <FeaturedCarousel
         title={t('newInTitle')}
