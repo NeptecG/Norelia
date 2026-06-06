@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { AnimatePresence, motion } from 'motion/react'
 import { Link, useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { Heart, Truck, Shield, RotateCcw, Ruler } from 'lucide-react'
@@ -176,16 +177,27 @@ export function ProductPage({ product, initialColor, from }: Props) {
             </button>
           </div>
 
-          {/* Main image */}
+          {/* Main image — crossfades when switching front/back */}
           <div className="relative flex-1 aspect-[3/4] bg-surface-raised overflow-hidden rounded-sm">
-            <Image
-              src={activeImg}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, 40vw"
-            />
+            <AnimatePresence mode="sync">
+              <motion.div
+                key={activeImg}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={activeImg}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 
@@ -312,11 +324,11 @@ export function ProductPage({ product, initialColor, from }: Props) {
                 aria-label={t('decreaseQty')}
                 disabled={qty <= 1}
                 onClick={() => setQty(q => Math.max(1, q - 1))}
-                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
+                className="w-11 h-11 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
               >
                 −
               </button>
-              <span className="w-9 text-center font-body text-[12px] text-on-surface select-none">
+              <span className="w-11 text-center font-body text-[12px] text-on-surface select-none">
                 {qty}
               </span>
               <button
@@ -324,7 +336,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
                 aria-label={t('increaseQty')}
                 disabled={qty >= stock}
                 onClick={() => setQty(q => Math.min(stock, q + 1))}
-                className="w-9 h-9 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
+                className="w-11 h-11 flex items-center justify-center font-body text-on-surface disabled:opacity-30 hover:bg-surface-raised transition-colors"
               >
                 +
               </button>

@@ -74,11 +74,11 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
             aria-label={t('decreaseQty')}
             disabled={item.qty <= 1}
             onClick={() => onDecrement(item.id)}
-            className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-10 h-10 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             −
           </button>
-          <span className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface border-x border-border select-none">
+          <span className="w-10 h-10 flex items-center justify-center font-body text-sm text-on-surface border-x border-border select-none">
             {item.qty}
           </span>
           <button
@@ -86,7 +86,7 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
             aria-label={t('increaseQty')}
             disabled={item.qty >= stock}
             onClick={() => onIncrement(item.id)}
-            className="w-8 h-8 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="w-10 h-10 flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             +
           </button>
@@ -122,6 +122,106 @@ export function CartTableRow({ item, reduced, stock, onDecrement, onIncrement, o
         <span className="font-body text-sm font-semibold text-on-surface">€{lineTotal}</span>
       </td>
     </motion.tr>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// CartMobileCard — stacked card layout for mobile (replaces table row)
+// ---------------------------------------------------------------------------
+
+interface CartMobileCardProps {
+  item:        CartItem
+  reduced:     boolean
+  stock:       number
+  onDecrement: (id: number) => void
+  onIncrement: (id: number) => void
+  onRemove:    (id: number) => void
+}
+
+export function CartMobileCard({ item, reduced, stock, onDecrement, onIncrement, onRemove }: CartMobileCardProps) {
+  const t = useTranslations('CheckoutPage')
+  const catLabel = useCatLabel()
+  const unitPrice = item.salePrice != null ? item.salePrice : parsePriceNumber(item.price)
+  const lineTotal = (unitPrice * item.qty).toFixed(2)
+
+  return (
+    <motion.div
+      initial={reduced ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.15, ease: EASE } }}
+      transition={{ duration: 0.25, ease: EASE }}
+      className="flex gap-4 py-5 border-b border-border"
+    >
+      {/* Thumbnail */}
+      <div className="relative shrink-0 w-[68px] h-[86px] bg-surface-alt overflow-hidden">
+        <Image src={item.img} alt={item.name} fill sizes="68px" className="object-cover" />
+      </div>
+
+      {/* Info + controls */}
+      <div className="flex-1 min-w-0">
+        <p className="font-body text-[9px] tracking-[0.18em] uppercase text-on-surface/50 mb-0.5">
+          {catLabel(item.cat)}
+        </p>
+        <p className="font-display text-xl text-on-surface leading-tight truncate">
+          {item.name}
+        </p>
+
+        {/* Price */}
+        <div className="mt-1 mb-3">
+          {item.salePrice != null ? (
+            <span className="font-body text-xs">
+              <span className="line-through text-on-surface/40 mr-1.5">{item.price}</span>
+              <span className="font-bold text-destructive">€{item.salePrice.toFixed(2)}</span>
+            </span>
+          ) : (
+            <span className="font-body text-xs text-on-surface">{item.price}</span>
+          )}
+        </div>
+
+        {/* Qty stepper + line total + remove */}
+        <div className="flex items-center gap-4">
+          {/* Stepper — min 44px touch targets */}
+          <div className="flex items-center border border-border">
+            <button
+              type="button"
+              aria-label={t('decreaseQty')}
+              disabled={item.qty <= 1}
+              onClick={() => onDecrement(item.id)}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              −
+            </button>
+            <span className="w-9 min-h-[44px] flex items-center justify-center font-body text-sm text-on-surface border-x border-border select-none">
+              {item.qty}
+            </span>
+            <button
+              type="button"
+              aria-label={t('increaseQty')}
+              disabled={item.qty >= stock}
+              onClick={() => onIncrement(item.id)}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center font-body text-sm text-on-surface hover:bg-surface-raised transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              +
+            </button>
+          </div>
+
+          {/* Line total */}
+          <span className="font-body text-sm font-semibold text-on-surface ml-auto">
+            €{lineTotal}
+          </span>
+
+          {/* Remove */}
+          <button
+            type="button"
+            aria-label={t('removeFromCart', { name: item.name })}
+            onClick={() => onRemove(item.id)}
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] text-on-surface/40 hover:text-destructive transition-colors"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -382,8 +482,25 @@ export default function CheckoutPage() {
             {/* Items column */}
             <section aria-label="Cart items">
 
-              {/* Scrollable table — min-w prevents crushing on narrow screens */}
-              <div className="overflow-x-auto">
+              {/* Mobile stacked cards — shown only on small screens */}
+              <div className="block md:hidden">
+                <AnimatePresence mode="popLayout">
+                  {lines.map(item => (
+                    <CartMobileCard
+                      key={item.id}
+                      item={item}
+                      reduced={reduced}
+                      stock={getStock(item.id)}
+                      onDecrement={decrementCart}
+                      onIncrement={id => addToCart(id, 1)}
+                      onRemove={removeFromCart}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              {/* Desktop table — hidden on small screens */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full min-w-[560px]">
                   <thead>
                     <tr className="border-b border-border">

@@ -145,7 +145,16 @@
     "acceptAll": "Accept All",
     "decline": "Decline",
     "acceptLabel": "Accept all cookies",
-    "declineLabel": "Decline non-essential cookies"
+    "declineLabel": "Decline non-essential cookies",
+    "manage": "Preferences",
+    "prefNecessary": "Strictly Necessary",
+    "prefNecessaryDesc": "Required for the site to function. Cannot be disabled.",
+    "prefAlwaysOn": "Always On",
+    "prefAnalytics": "Performance",
+    "prefAnalyticsDesc": "Help us understand how the site is used.",
+    "prefMarketing": "Marketing",
+    "prefMarketingDesc": "Used to show personalised advertisements.",
+    "prefSave": "Save Preferences"
   },
   "SiteFooter": {
     "premiumStreetware": "Premium Streetwear",
@@ -169,7 +178,8 @@
     "secure": "Secure Payments · SSL Encrypted",
     "instagramLabel": "Norelia on Instagram",
     "xLabel": "Norelia on X",
-    "youtubeLabel": "Norelia on YouTube"
+    "youtubeLabel": "Norelia on YouTube",
+    "tiktokLabel": "Norelia on TikTok"
   },
   "SignInModal": {
     "signInTitle": "SIGN IN",

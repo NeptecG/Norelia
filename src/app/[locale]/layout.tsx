@@ -30,8 +30,15 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      {/* Skip-to-content: visible only on keyboard focus — WCAG 2.4.1 */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:bg-surface focus:text-on-surface focus:px-4 focus:py-2 focus:font-body focus:text-sm focus:tracking-wide"
+      >
+        Skip to main content
+      </a>
       <Nav />
-      <main>{children}</main>
+      <main id="main-content">{children}</main>
       <NewsletterBar />
       <SiteFooter />
       <SidePanel />

@@ -81,6 +81,19 @@ function BrandColumn({ t }: { t: TFooter }) {
             <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none" />
           </svg>
         </a>
+
+        {/* TikTok — inline SVG */}
+        <a
+          href="https://www.tiktok.com/@norelia"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t('tiktokLabel')}
+          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.53V6.79a4.85 4.85 0 01-1.02-.1z"/>
+          </svg>
+        </a>
       </div>
     </div>
   )
@@ -152,7 +165,7 @@ function VisaIcon() {
   return (
     <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Visa" role="img" className="rounded-sm border border-white/10">
       <rect width="50" height="32" rx="3" fill="#1A1F71" />
-      <text x="25" y="22" textAnchor="middle" fill="white" fontSize="14" fontWeight="700" fontFamily="Arial, sans-serif" fontStyle="italic" letterSpacing="1">VISA</text>
+      <text x="25" y="22" textAnchor="middle" fill="white" fontSize="14" fontWeight="700" fontFamily="system-ui, sans-serif" fontStyle="italic" letterSpacing="1">VISA</text>
     </svg>
   )
 }
@@ -178,7 +191,7 @@ function IrisIcon() {
         <circle r="5" stroke="#E8473C" strokeDasharray="7.9 23.5" transform="rotate(180)" />
         <circle r="5" stroke="#1C6CA9" strokeDasharray="7.9 23.5" transform="rotate(270)" />
       </g>
-      <text x="31" y="20" textAnchor="middle" fill="#404040" fontSize="11" fontWeight="800" fontFamily="Arial, sans-serif">IRIS</text>
+      <text x="31" y="20" textAnchor="middle" fill="#404040" fontSize="11" fontWeight="800" fontFamily="system-ui, sans-serif">IRIS</text>
     </svg>
   )
 }
@@ -188,7 +201,7 @@ function ApplePayIcon() {
     <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Apple Pay" role="img" className="rounded-sm border border-white/10">
       <rect width="50" height="32" rx="3" fill="#000000" />
       <path transform="translate(10,8) scale(0.62)" fill="#ffffff" d="M17.05 12.04c-.03-3.16 2.58-4.68 2.7-4.75-1.47-2.15-3.76-2.45-4.57-2.48-1.95-.2-3.8 1.15-4.79 1.15-.98 0-2.51-1.12-4.13-1.09-2.13.03-4.09 1.24-5.18 3.15-2.21 3.83-.56 9.5 1.58 12.61 1.05 1.52 2.3 3.23 3.94 3.17 1.58-.06 2.18-1.02 4.09-1.02 1.9 0 2.44 1.02 4.11.99 1.7-.03 2.77-1.55 3.8-3.08 1.2-1.76 1.69-3.47 1.71-3.56-.04-.02-3.28-1.26-3.31-4.99zM14.13 4.42c.87-1.05 1.46-2.51 1.3-3.97-1.25.05-2.77.83-3.67 1.88-.81.93-1.51 2.42-1.32 3.85 1.39.11 2.81-.71 3.69-1.76z" />
-      <text x="31" y="21" textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="500" fontFamily="Arial, sans-serif">Pay</text>
+      <text x="31" y="21" textAnchor="middle" fill="#ffffff" fontSize="12" fontWeight="500" fontFamily="system-ui, sans-serif">Pay</text>
     </svg>
   )
 }
@@ -204,7 +217,7 @@ function GooglePayIcon() {
         <circle r="5.2" stroke="#4285F4" strokeDasharray="7 26" transform="rotate(0)" />
         <rect x="0.5" y="-1.4" width="5" height="2.8" fill="#4285F4" stroke="none" />
       </g>
-      <text x="31" y="20" textAnchor="middle" fill="#5F6368" fontSize="11" fontWeight="500" fontFamily="Arial, sans-serif">Pay</text>
+      <text x="31" y="20" textAnchor="middle" fill="#5F6368" fontSize="11" fontWeight="500" fontFamily="system-ui, sans-serif">Pay</text>
     </svg>
   )
 }
@@ -213,7 +226,7 @@ function KlarnaIcon() {
   return (
     <svg viewBox="0 0 50 32" width="50" height="32" aria-label="Klarna" role="img" className="rounded-sm border border-white/10">
       <rect width="50" height="32" rx="3" fill="#FFB3C7" />
-      <text x="25" y="21" textAnchor="middle" fill="#1A1A1A" fontSize="11" fontWeight="700" fontFamily="Arial, sans-serif" letterSpacing="0.3">klarna</text>
+      <text x="25" y="21" textAnchor="middle" fill="#1A1A1A" fontSize="11" fontWeight="700" fontFamily="system-ui, sans-serif" letterSpacing="0.3">klarna</text>
     </svg>
   )
 }

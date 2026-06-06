@@ -26,6 +26,16 @@ export const metadata: Metadata = {
   title: { default: BRAND, template: `%s | ${BRAND}` },
   description: 'Minimalist premium streetwear. Custom printing. Free shipping over €60.',
   metadataBase: new URL('https://norelia.com'),
+  openGraph: {
+    siteName: 'NORELIA.',
+    type: 'website',
+    locale: 'el_GR',
+    alternateLocale: 'en_GB',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@norelia',
+  },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

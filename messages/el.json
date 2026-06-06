@@ -145,7 +145,16 @@
     "acceptAll": "Αποδοχή Όλων",
     "decline": "Απόρριψη",
     "acceptLabel": "Αποδοχή όλων των cookies",
-    "declineLabel": "Απόρριψη μη απαραίτητων cookies"
+    "declineLabel": "Απόρριψη μη απαραίτητων cookies",
+    "manage": "Επιλογές",
+    "prefNecessary": "Αναγκαία",
+    "prefNecessaryDesc": "Απαραίτητα για τη λειτουργία του ιστότοπου. Δεν απενεργοποιούνται.",
+    "prefAlwaysOn": "Πάντα ενεργά",
+    "prefAnalytics": "Επιδόσεις",
+    "prefAnalyticsDesc": "Μας βοηθούν να κατανοήσουμε πώς χρησιμοποιείται ο ιστότοπος.",
+    "prefMarketing": "Μαρκετινγκ",
+    "prefMarketingDesc": "Χρησιμοποιούνται για εξατομικευμένες διαφημίσεις.",
+    "prefSave": "Αποθήκευση"
   },
   "SiteFooter": {
     "premiumStreetware": "Premium Streetwear",
@@ -169,7 +178,8 @@
     "secure": "Ασφαλεις Πληρωμες · SSL Κρυπτογραφηση",
     "instagramLabel": "Norelia στο Instagram",
     "xLabel": "Norelia στο X",
-    "youtubeLabel": "Norelia στο YouTube"
+    "youtubeLabel": "Norelia στο YouTube",
+    "tiktokLabel": "Norelia στο TikTok"
   },
   "SignInModal": {
     "signInTitle": "ΣΥΝΔΕΣΗ",

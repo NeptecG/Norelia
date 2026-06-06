@@ -45,8 +45,9 @@ export function PriceTag({ price, salePrice, size = 'md' }: Props) {
         {/* mr-[0.12em]: same subtle gap after the € on the sale price */}
         <span className="mr-[0.12em]">€</span>{salePrice}
       </span>
-      {/* inline-flex + lining-nums + tabular-nums: keeps − and digits on same optical baseline */}
-      <span className="rounded bg-destructive px-1.5 py-[0.2em] text-[0.75em] font-bold text-surface inline-flex items-center self-center lining-nums tabular-nums leading-none">
+      {/* Fixed-height inline-flex: avoids leading-none glyph-shift; h-[1.5em] is
+          relative to the badge's own font size so it scales with the parent size class */}
+      <span className="inline-flex items-center rounded bg-destructive px-[5px] h-[1.5em] text-[0.72em] font-bold text-surface self-center lining-nums tabular-nums whitespace-nowrap">
         −{pct}%
       </span>
     </div>

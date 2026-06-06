@@ -8,6 +8,12 @@ import { PRODUCTS } from '@/data/products'
 export const metadata: Metadata = {
   title: 'NORELIA. Premium Streetwear',
   description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
+  openGraph: {
+    title: 'NORELIA. Premium Streetwear',
+    description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
+    url: 'https://norelia.com',
+    type: 'website',
+  },
 }
 
 export default async function HomePage() {

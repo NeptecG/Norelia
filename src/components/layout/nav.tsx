@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { Heart, ShoppingBag, X, Search } from 'lucide-react'
+import { Heart, ShoppingBag, X, Search, ChevronDown } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/navigation'
@@ -19,7 +19,10 @@ import { useFavoritesStore } from '@/stores/favorites-store'
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
+    // Show full desktop nav at 1024px+ (lg breakpoint).
+    // 768–1023px is tablet / small-laptop territory where a hamburger menu
+    // is more appropriate — the full nav has too many items to fit cleanly.
+    const check = () => setIsMobile(window.innerWidth < 1024)
     check()
     window.addEventListener('resize', check)
     return () => window.removeEventListener('resize', check)
@@ -127,13 +130,13 @@ export function Nav() {
           </Link>
 
           {/* Center links */}
-          <div className="flex gap-8 items-center">
+          <div className="flex gap-6 items-center">
 
             {/* Home */}
             <Link
               href="/"
               aria-current={pathname === '/' ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors whitespace-nowrap"
             >
               {t('home')}
               <span className={cn(
@@ -154,7 +157,7 @@ export function Nav() {
                 aria-expanded={activeMenu === 'men'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/men') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors whitespace-nowrap"
               >
                 {t('men')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'men' || pathname.startsWith('/men') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
@@ -203,7 +206,7 @@ export function Nav() {
                 aria-expanded={activeMenu === 'women'}
                 aria-haspopup="menu"
                 aria-current={pathname.startsWith('/women') ? 'page' : undefined}
-                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+                className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors whitespace-nowrap"
               >
                 {t('women')}
                 <span className={cn('absolute -bottom-0.5 left-0 right-0 h-px bg-on-surface transition-transform origin-left duration-[280ms]', activeMenu === 'women' || pathname.startsWith('/women') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100')} />
@@ -244,7 +247,7 @@ export function Nav() {
             <Link
               href="/studio"
               aria-current={pathname.startsWith('/studio') ? 'page' : undefined}
-              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors"
+              className="relative group font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/82 hover:text-on-surface transition-colors whitespace-nowrap"
             >
               {t('designYourOwn')}
               <span className={cn(
@@ -256,7 +259,7 @@ export function Nav() {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center gap-5 justify-self-end">
+          <div className="flex items-center gap-4 justify-self-end">
 
             {/* Search */}
             <div ref={searchRef} className="relative flex items-center gap-2">
@@ -389,19 +392,19 @@ export function Nav() {
       {/* Top bar */}
       <div className="flex items-center justify-between px-4 h-[54px] relative z-[201]">
 
-        {/* Brand */}
-        <Link href="/" className="font-display text-[22px] tracking-[0.2em] text-on-surface shrink-0">
+        {/* Brand — font-brand matches desktop wordmark */}
+        <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0">
           {BRAND}
         </Link>
 
-        {/* Right icons */}
-        <div className="flex items-center gap-3.5">
+        {/* Right icons — min 44×44px touch targets per Apple HIG / WCAG */}
+        <div className="flex items-center -mr-1.5">
 
           {/* Search */}
           <button
             aria-label={t('searchLabel')}
             onClick={() => { setSearchOpen(v => !v); setSearchQuery(''); setMobMenuOpen(false) }}
-            className="text-on-surface/82 flex items-center"
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] text-on-surface/82"
           >
             <Search size={17} strokeWidth={1.6} />
           </button>
@@ -410,11 +413,11 @@ export function Nav() {
           <button
             aria-label={totalFavCount > 0 ? t('favoritesWithCount', { count: totalFavCount }) : t('favoritesLabel')}
             onClick={() => toggleSidePanel('favorites')}
-            className="relative text-on-surface/82"
+            className="relative flex items-center justify-center min-w-[44px] min-h-[44px] text-on-surface/82"
           >
             <Heart size={18} strokeWidth={1.6} className={totalFavCount > 0 ? 'fill-destructive stroke-destructive' : ''} />
             {totalFavCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-destructive text-surface font-body text-[8px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute top-2 right-2 w-3.5 h-3.5 bg-destructive text-surface font-body text-[8px] font-bold rounded-full flex items-center justify-center pointer-events-none">
                 {totalFavCount}
               </span>
             )}
@@ -424,11 +427,11 @@ export function Nav() {
           <button
             aria-label={totalCartCount > 0 ? t('cartWithCount', { count: totalCartCount }) : t('cartLabel')}
             onClick={() => toggleSidePanel('cart')}
-            className="relative text-on-surface/82"
+            className="relative flex items-center justify-center min-w-[44px] min-h-[44px] text-on-surface/82"
           >
             <ShoppingBag size={18} strokeWidth={1.6} />
             {totalCartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-destructive text-surface font-body text-[8px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute top-2 right-2 w-3.5 h-3.5 bg-destructive text-surface font-body text-[8px] font-bold rounded-full flex items-center justify-center pointer-events-none">
                 {totalCartCount}
               </span>
             )}
@@ -438,10 +441,10 @@ export function Nav() {
           <button
             aria-label={t('menuLabel')}
             onClick={() => { setMobMenuOpen(v => { if (v) setMobExpanded(null); return !v }); setSearchOpen(false) }}
-            className="text-on-surface/82 flex items-center justify-center w-[22px] h-[22px]"
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] text-on-surface/82"
           >
             {mobMenuOpen ? <X size={20} strokeWidth={1.8} /> : (
-              <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
                 <rect y="0" width="20" height="2" fill="currentColor" />
                 <rect y="6" width="20" height="2" fill="currentColor" />
                 <rect y="12" width="20" height="2" fill="currentColor" />
@@ -498,65 +501,148 @@ export function Nav() {
         </div>
       )}
 
-      {/* Mobile menu overlay — inside .dark nav so bg-surface-alt resolves to dark surface */}
-      {mobMenuOpen && (
-        <div className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2">
-
-          <Link href="/" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('home')}</Link>
-
-          {/* Men accordion */}
-          <button
-            onClick={() => setMobExpanded(e => e === 'men' ? null : 'men')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
+      {/* Mobile menu overlay — AnimatePresence for smooth slide-in/out */}
+      <AnimatePresence>
+        {mobMenuOpen && (
+          <motion.div
+            key="mob-menu"
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed top-[54px] left-0 right-0 bottom-0 bg-surface-alt z-[199] overflow-y-auto px-6 pb-12 pt-2"
           >
-            <span>{t('men')}</span>
-            <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'men' ? '−' : '+'}</span>
-          </button>
-          {mobExpanded === 'men' && MEN_NAV_CATS.map(cat => (
+
+            {/* Home */}
             <Link
-              key={cat}
-              href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
+              href="/"
               onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
-              className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
+              aria-current={pathname === '/' ? 'page' : undefined}
+              className={cn(
+                'block font-body text-[12px] tracking-[0.18em] uppercase py-[15px] border-b border-on-surface/7 transition-colors',
+                pathname === '/' ? 'text-on-surface' : 'text-on-surface/65 hover:text-on-surface/88',
+              )}
             >
-              {catLabels[cat] ?? cat}
+              {t('home')}
             </Link>
-          ))}
 
-          {/* Women accordion */}
-          <button
-            onClick={() => setMobExpanded(e => e === 'women' ? null : 'women')}
-            className="w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7"
-          >
-            <span>{t('women')}</span>
-            <span className="text-on-surface/30 text-[16px] leading-none">{mobExpanded === 'women' ? '−' : '+'}</span>
-          </button>
-          {mobExpanded === 'women' && WOMEN_NAV_CATS.map(cat => (
+            {/* Men accordion */}
+            <button
+              onClick={() => setMobExpanded(e => e === 'men' ? null : 'men')}
+              aria-expanded={mobExpanded === 'men'}
+              className={cn(
+                'w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase py-[15px] border-b border-on-surface/7 transition-colors',
+                pathname.startsWith('/men') ? 'text-on-surface' : 'text-on-surface/65 hover:text-on-surface/88',
+              )}
+            >
+              <span>{t('men')}</span>
+              <motion.span
+                animate={{ rotate: mobExpanded === 'men' ? 180 : 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="text-on-surface/35"
+              >
+                <ChevronDown size={14} strokeWidth={1.8} />
+              </motion.span>
+            </button>
+            <AnimatePresence initial={false}>
+              {mobExpanded === 'men' && (
+                <motion.div
+                  key="men-sub"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                  className="overflow-hidden"
+                >
+                  {MEN_NAV_CATS.map(cat => (
+                    <Link
+                      key={cat}
+                      href={`/men/${NAV_CAT_TO_SLUG[cat]}`}
+                      onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
+                      className={cn(
+                        'block pl-5 font-body text-[10px] tracking-[0.14em] uppercase py-[11px] transition-colors',
+                        cat === 'Sales' ? 'text-destructive' : 'text-on-surface/45 hover:text-on-surface/80',
+                      )}
+                    >
+                      {catLabels[cat] ?? cat}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Women accordion */}
+            <button
+              onClick={() => setMobExpanded(e => e === 'women' ? null : 'women')}
+              aria-expanded={mobExpanded === 'women'}
+              className={cn(
+                'w-full flex justify-between items-center font-body text-[12px] tracking-[0.18em] uppercase py-[15px] border-b border-on-surface/7 transition-colors',
+                pathname.startsWith('/women') ? 'text-on-surface' : 'text-on-surface/65 hover:text-on-surface/88',
+              )}
+            >
+              <span>{t('women')}</span>
+              <motion.span
+                animate={{ rotate: mobExpanded === 'women' ? 180 : 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="text-on-surface/35"
+              >
+                <ChevronDown size={14} strokeWidth={1.8} />
+              </motion.span>
+            </button>
+            <AnimatePresence initial={false}>
+              {mobExpanded === 'women' && (
+                <motion.div
+                  key="women-sub"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                  className="overflow-hidden"
+                >
+                  {WOMEN_NAV_CATS.map(cat => (
+                    <Link
+                      key={cat}
+                      href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
+                      onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
+                      className={cn(
+                        'block pl-5 font-body text-[10px] tracking-[0.14em] uppercase py-[11px] transition-colors',
+                        cat === 'Sales' ? 'text-destructive' : 'text-on-surface/45 hover:text-on-surface/80',
+                      )}
+                    >
+                      {catLabels[cat] ?? cat}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Studio */}
             <Link
-              key={cat}
-              href={`/women/${NAV_CAT_TO_SLUG[cat]}`}
+              href="/studio"
               onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }}
-              className="block pl-5 font-body text-[10px] tracking-[0.14em] uppercase text-on-surface/45 py-[11px]"
+              aria-current={pathname.startsWith('/studio') ? 'page' : undefined}
+              className={cn(
+                'block font-body text-[12px] tracking-[0.18em] uppercase py-[15px] border-b border-on-surface/7 transition-colors',
+                pathname.startsWith('/studio') ? 'text-on-surface' : 'text-on-surface/65 hover:text-on-surface/88',
+              )}
             >
-              {catLabels[cat] ?? cat}
+              {t('designYourOwn')}
             </Link>
-          ))}
 
-          <Link href="/studio" onClick={() => { setMobMenuOpen(false); setMobExpanded(null) }} className="block font-body text-[12px] tracking-[0.18em] uppercase text-on-surface/88 py-[15px] border-b border-on-surface/7">{t('designYourOwn')}</Link>
+            <button
+              onClick={() => { setShowSignIn(true); setMobMenuOpen(false); setMobExpanded(null) }}
+              className="block mt-7 w-full border border-on-surface/35 font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/75 px-6 py-3 text-left"
+            >
+              {t('signIn')}
+            </button>
 
-          <button
-            onClick={() => { setShowSignIn(true); setMobMenuOpen(false); setMobExpanded(null) }}
-            className="block mt-7 w-full border border-on-surface/35 font-body text-[10px] tracking-[0.2em] uppercase text-on-surface/75 px-6 py-3 text-left"
-          >
-            {t('signIn')}
-          </button>
+            <div className="mt-5 flex items-center gap-3">
+              <LanguageSwitcher />
+            </div>
 
-          <div className="mt-5 flex items-center gap-3">
-            <LanguageSwitcher />
-          </div>
-
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </nav>
   )

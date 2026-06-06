@@ -127,7 +127,7 @@ export function Hero() {
   const t = useTranslations('Hero')
 
   return (
-    <section className="flex flex-col md:flex-row md:h-[88vh] border-b border-border">
+    <section className="flex flex-col md:flex-row md:h-[88dvh] border-b border-border">
       {/* Visually hidden h1 for screen readers and SEO — visual title is in the hero halves */}
       <h1 className="sr-only">{t('srHeading')}</h1>
       <HeroHalf
