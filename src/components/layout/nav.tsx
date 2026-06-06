@@ -152,7 +152,7 @@ export function Nav() {
 
             {/* Men dropdown */}
             <div
-              className="relative"
+              className="relative flex items-center"
               onMouseEnter={() => openMenu('men')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
@@ -201,7 +201,7 @@ export function Nav() {
 
             {/* Women dropdown */}
             <div
-              className="relative"
+              className="relative flex items-center"
               onMouseEnter={() => openMenu('women')}
               onMouseLeave={closeMenu}
               onKeyDown={(e) => { if (e.key === 'Escape') setActiveMenu(null) }}
