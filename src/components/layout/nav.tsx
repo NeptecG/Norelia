@@ -121,16 +121,20 @@ export function Nav() {
   if (!isMobile) {
     return (
       <nav className="dark sticky top-0 z-[100] bg-surface-alt border-b border-border">
-        {/* 3-col grid (1fr auto 1fr) centres the nav links in the bar regardless of brand/icon widths */}
-        <div className="max-w-[1440px] mx-auto px-[60px] grid grid-cols-[1fr_auto_1fr] items-center h-[54px] relative z-10">
+        {/* Flex justify-between for brand + icons; center links absolutely positioned so they
+            sit at the TRUE midpoint of the bar regardless of asymmetric side widths. */}
+        <div className="max-w-[1440px] mx-auto px-[60px] relative flex items-center justify-between h-[54px] z-10">
 
-          {/* Brand — justify-self-start so the grid cell doesn't stretch the link's click area */}
-          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0 justify-self-start">
+          {/* Brand */}
+          <Link href="/" className="font-brand text-[22px] tracking-[0.2em] text-on-surface shrink-0 z-10">
             {BRAND}
           </Link>
 
-          {/* Center links */}
-          <div className="flex gap-6 items-center">
+          {/* Center links — pinned to the exact horizontal center of the nav bar.
+              pointer-events-none on the overlay so brand / icon clicks pass through;
+              pointer-events-auto restored on the inner group so links work. */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="flex gap-6 items-center pointer-events-auto">
 
             {/* Home */}
             <Link
@@ -257,9 +261,10 @@ export function Nav() {
             </Link>
 
           </div>
+          </div>{/* end absolute center overlay */}
 
-          {/* Right side icons */}
-          <div className="flex items-center gap-4 justify-self-end">
+          {/* Right side icons — z-10 so they sit above the pointer-events-none overlay */}
+          <div className="flex items-center gap-4 z-10">
 
             {/* Search */}
             <div ref={searchRef} className="relative flex items-center gap-2">
