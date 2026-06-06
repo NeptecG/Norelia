@@ -47,7 +47,7 @@ function TabButton({ id, panelId, label, active, onSelect }: TabButtonProps) {
       aria-controls={panelId}
       onClick={onSelect}
       className={cn(
-        'group relative pb-4 font-display text-2xl md:text-3xl tracking-[0.08em] transition-colors',
+        'group relative pb-4 font-display text-lg md:text-xl tracking-[0.08em] transition-colors',
         active ? 'text-on-surface' : 'text-on-surface/40 hover:text-on-surface/70',
       )}
     >
