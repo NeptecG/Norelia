@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
+import { Arrow } from '@/components/icons/arrow'
 
 // ── Schema ─────────────────────────────────────────────────────────────────────
 
@@ -96,9 +97,10 @@ export function NewsletterBar() {
               <button
                 type="submit"
                 aria-label={t('subscribe')}
-                className="flex items-center gap-2 pl-5 py-2.5 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors duration-150 whitespace-nowrap shrink-0"
+                className="group flex items-center gap-2 pl-5 py-2.5 font-body text-[11px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors duration-150 whitespace-nowrap shrink-0"
               >
                 {t('subscribe')}
+                <Arrow dir="right" size={12} className="transition-transform duration-200 group-hover:translate-x-1" />
               </button>
             </div>
             {errors.email && (
