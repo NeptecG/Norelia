@@ -6,16 +6,16 @@ import { Heart } from 'lucide-react'
 import { Link, useRouter, usePathname } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
-import { cn, getStock } from '@/lib/utils'
+import { cn, getStock, stripGreekTonos } from '@/lib/utils'
 import { LOW_STOCK_THRESHOLD } from '@/lib/constants'
-import { useCatLabel } from '@/hooks/use-i18n-labels'
+import { useCatLabel, useColorLabel } from '@/hooks/use-i18n-labels'
 import { useFavoritesStore } from '@/stores/favorites-store'
 import { useCartStore } from '@/stores/cart-store'
 import { useUIStore } from '@/stores/ui-store'
 import { PriceTag } from '@/components/products/price-tag'
 import { GCOLORS } from '@/data/colors'
 import { SIZES } from '@/data/sizes'
-import type { Product } from '@/types'
+import type { Product, GarmentColor } from '@/types'
 
 interface Props {
   product: Product
@@ -30,8 +30,12 @@ export function ProductCard({ product, priority = false }: Props) {
   const pathname       = usePathname()
   const t              = useTranslations('ProductCard')
   const catLabel       = useCatLabel()
+  const colorLabel     = useColorLabel()
   const [hovering, setHovering]           = useState(false)
   const [sizePickerOpen, setSizePickerOpen] = useState(false)
+  // Clicking a swatch selects the colour for Quick Add (no navigation).
+  // Default matches the product page (GCOLORS[1] = Black).
+  const [selectedColor, setSelectedColor] = useState<GarmentColor>(GCOLORS[1])
 
   // For unisex products, pass the browsing-gender context so the product page
   // can show the correct breadcrumb (e.g. Women > Hoodies instead of Men > Hoodies)
@@ -79,7 +83,10 @@ export function ProductCard({ product, priority = false }: Props) {
       return
     }
     addToCart(product.id, 1)
-    showToast(t('sizeAdded', { name: product.name, size }), 'add', 'cart')
+    showToast(
+      t('sizeAdded', { name: product.name, size, color: stripGreekTonos(colorLabel(selectedColor.name)) }),
+      'add', 'cart',
+    )
     setSizePickerOpen(false)
   }
 
@@ -87,11 +94,6 @@ export function ProductCard({ product, priority = false }: Props) {
   const imageScaleVariants = {
     rest:  { scale: 1 },
     hover: { scale: reducedMotion ? 1 : 1.05 },
-  }
-
-  const underlineVariants = {
-    rest:  { scaleX: 0 },
-    hover: { scaleX: reducedMotion ? 0 : 1 },
   }
 
   const quickAddVariants = {
@@ -218,13 +220,6 @@ export function ProductCard({ product, priority = false }: Props) {
           )}
         </motion.div>
 
-        {/* Bottom underline accent */}
-        <motion.div
-          variants={underlineVariants}
-          transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
-          style={{ originX: 0 }}
-          className="absolute bottom-0 inset-x-0 h-0.5 bg-on-surface z-[2] pointer-events-none"
-        />
       </div>
 
       {/* ── Info area ──────────────────────────────────────────────────────────── */}
@@ -255,22 +250,29 @@ export function ProductCard({ product, priority = false }: Props) {
           transition={{ duration: 0.2 }}
           className="flex gap-1.5"
         >
-          {GCOLORS.map((c) => (
-            <button
-              key={c.name}
-              type="button"
-              aria-label={c.name}
-              onClick={(e) => {
-                e.stopPropagation()
-                router.push(`/product/${product.code}?color=${encodeURIComponent(c.name)}${genderCtx ? `&from=${genderCtx}` : ''}`)
-              }}
-              style={{ '--swatch-color': c.hex } as React.CSSProperties}
-              className={cn(
-                'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer',
-                c.outline && 'ring-1 ring-border ring-offset-1',
-              )}
-            />
-          ))}
+          {GCOLORS.map((c) => {
+            const isSelected = selectedColor.name === c.name
+            return (
+              <button
+                key={c.name}
+                type="button"
+                aria-label={c.name}
+                aria-pressed={isSelected}
+                onClick={(e) => {
+                  // Select the colour for Quick Add — do NOT navigate to the product page.
+                  e.stopPropagation()
+                  setSelectedColor(c)
+                }}
+                style={{ '--swatch-color': c.hex } as React.CSSProperties}
+                className={cn(
+                  'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer transition-shadow',
+                  isSelected
+                    ? 'ring-1 ring-on-surface ring-offset-1'
+                    : c.outline ? 'ring-1 ring-border ring-offset-1' : '',
+                )}
+              />
+            )
+          })}
         </motion.div>
 
         <PriceTag price={product.price} salePrice={product.salePrice} />

@@ -5,7 +5,6 @@ import { Link } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react'
 import { cn } from '@/lib/utils'
-import { Arrow } from '@/components/icons/arrow'
 import { ProductCard } from '@/components/products/product-card'
 import type { Product } from '@/types'
 
@@ -149,55 +148,33 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
           </AnimatePresence>
         </div>
 
-        {/* Controls — prev/next arrows flank the dots. Arrows disable at the ends;
-            dots stay as a position indicator and remain individually tappable. */}
+        {/* Page indicator — tappable dots. On mobile, a finger-swipe changes page
+            (the slide animation follows the swipe direction); desktop clicks a dot. */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-3 mt-7">
-            <button
-              type="button"
-              onClick={() => goTo(page - 1)}
-              disabled={page === 0}
-              aria-label={t('prevPage')}
-              className="flex h-11 w-11 items-center justify-center text-on-surface transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-20"
-            >
-              <Arrow dir="left" size={16} />
-            </button>
-
-            <div className="flex">
-              {Array.from({ length: totalPages }).map((_, idx) => {
-                const isActive = idx === page
-                return (
-                  // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={t('goToPage', { n: idx + 1 })}
-                    aria-current={isActive ? 'true' : undefined}
-                    onClick={() => goTo(idx)}
-                    className="p-2"
-                  >
-                    <motion.span
-                      animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
-                      transition={{ duration: 0.15 }}
-                      className={cn(
-                        'block rounded-full transition-colors',
-                        isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
-                      )}
-                    />
-                  </button>
-                )
-              })}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => goTo(page + 1)}
-              disabled={page === totalPages - 1}
-              aria-label={t('nextPage')}
-              className="flex h-11 w-11 items-center justify-center text-on-surface transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-20"
-            >
-              <Arrow dir="right" size={16} />
-            </button>
+          <div className="flex justify-center mt-7">
+            {Array.from({ length: totalPages }).map((_, idx) => {
+              const isActive = idx === page
+              return (
+                // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
+                <button
+                  key={idx}
+                  type="button"
+                  aria-label={t('goToPage', { n: idx + 1 })}
+                  aria-current={isActive ? 'true' : undefined}
+                  onClick={() => goTo(idx)}
+                  className="p-2"
+                >
+                  <motion.span
+                    animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
+                    transition={{ duration: 0.15 }}
+                    className={cn(
+                      'block rounded-full transition-colors',
+                      isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
+                    )}
+                  />
+                </button>
+              )
+            })}
           </div>
         )}
 

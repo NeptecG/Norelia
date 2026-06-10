@@ -83,7 +83,7 @@
     "addedToFavorites": "Προστεθηκε στα αγαπημενα",
     "removedFromFavorites": "Αφαιρεθηκε απο τα αγαπημενα",
     "noMoreStock": "Δεν υπαρχει αλλο {size} για {name}",
-    "sizeAdded": "{name}, {size} προστεθηκε στο καλαθι",
+    "sizeAdded": "{name}, {color} {size} προστεθηκε στο καλαθι",
     "lowStock": "Απομενουν {n}"
   },
   "ProductPage": {

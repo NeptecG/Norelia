@@ -167,8 +167,8 @@ export function GDPRBanner() {
                         )}
                       >
                         <span className={cn(
-                          'absolute top-0.5 w-4 h-4 bg-surface rounded-full transition-transform duration-200',
-                          analytics ? 'translate-x-[18px]' : 'translate-x-0.5',
+                          'absolute top-0.5 left-0.5 w-4 h-4 bg-surface rounded-full transition-transform duration-200',
+                          analytics ? 'translate-x-[16px]' : 'translate-x-0',
                         )} />
                       </button>
                       <div>
@@ -195,8 +195,8 @@ export function GDPRBanner() {
                         )}
                       >
                         <span className={cn(
-                          'absolute top-0.5 w-4 h-4 bg-surface rounded-full transition-transform duration-200',
-                          marketing ? 'translate-x-[18px]' : 'translate-x-0.5',
+                          'absolute top-0.5 left-0.5 w-4 h-4 bg-surface rounded-full transition-transform duration-200',
+                          marketing ? 'translate-x-[16px]' : 'translate-x-0',
                         )} />
                       </button>
                       <div>

@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { Link } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
-import { Arrow } from '@/components/icons/arrow'
 import { cn } from '@/lib/utils'
 
 interface HeroHalfProps {
@@ -54,12 +53,6 @@ function HeroHalf({
   const ctaVariants = {
     rest:  { backgroundColor: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,1)' },
     hover: { backgroundColor: 'rgba(255,255,255,1)', color: 'rgba(17,17,17,1)' },
-  }
-
-  // Arrow nudges right on hover — a small cue of forward motion.
-  const arrowVariants = {
-    rest:  { x: 0 },
-    hover: { x: prefersReduced ? 0 : 3 },
   }
 
   const animateState = isHovered ? 'hover' : 'rest'
@@ -119,15 +112,12 @@ function HeroHalf({
 
         {/* SHOP pill — outlined CTA, faint glass at rest, fills white on hover */}
         <motion.span
-          className="inline-flex items-center gap-2.5 border border-white/60 px-6 py-2.5 font-body text-[11px] tracking-[0.25em] uppercase backdrop-blur-[2px]"
+          className="inline-flex items-center border border-white/60 px-7 py-2.5 font-body text-[11px] tracking-[0.25em] uppercase backdrop-blur-[2px]"
           variants={ctaVariants}
           animate={animateState}
           transition={{ duration: 0.3 }}
         >
           {shopLabel}
-          <motion.span className="inline-flex" variants={arrowVariants} animate={animateState} transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}>
-            <Arrow dir="right" size={13} />
-          </motion.span>
         </motion.span>
       </div>
     </Link>

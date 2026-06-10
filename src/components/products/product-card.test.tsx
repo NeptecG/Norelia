@@ -13,9 +13,13 @@ vi.mock('next/image', () => ({
     React.createElement('img', { src, alt, className, sizes }),
 }))
 
-// Mock next-intl
+// Mock next-intl. useColorLabel calls t.has(), so expose it like the real hook.
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => {
+    const t = (key: string) => key
+    t.has = () => true
+    return t
+  },
 }))
 
 // Mock @/navigation (useRouter used for color swatch routing, usePathname for gender context)

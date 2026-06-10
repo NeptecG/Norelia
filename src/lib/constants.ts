@@ -1,7 +1,7 @@
 export const BRAND = 'NORELIA.'
 export const CONTACT_EMAIL = 'hello@norelia.com'
 
-export const MARQUEE_TEXT = 'NORELIA. STUDIO / PREMIUM STREETWEAR / CUSTOM PRINTING / SS 2026 / DTG & EMBROIDERY / FREE SHIPPING OVER €60 /'
+export const MARQUEE_TEXT = 'NORELIA. STUDIO | PREMIUM STREETWEAR | CUSTOM PRINTING | SS 2026 | DTG & EMBROIDERY | FREE SHIPPING OVER €60 |'
 
 export const MEN_NAV_CATS    = ['New In', 'T-Shirts', 'Hoodies', 'Zippers', 'Tank Tops', 'Sales'] as const
 export const WOMEN_NAV_CATS  = ['New In', 'T-Shirts', 'Hoodies', 'Zippers', 'Sales'] as const
