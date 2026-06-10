@@ -32,6 +32,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [qty, setQty] = useState(1)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
+  const [showSticky, setShowSticky] = useState(false)
   const [activeImageSide, setActiveImageSide] = useState<'front' | 'back'>('front')
   const defaultColor = GCOLORS.find(c => c.name === initialColor) ?? GCOLORS[1]
   const [selectedColor, setSelectedColor] = useState<GarmentColor>(defaultColor)
@@ -46,6 +47,19 @@ export function ProductPage({ product, initialColor, from }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Mobile sticky add-to-cart: reveal a bottom bar once the primary button has
+  // scrolled out of view. Guarded for jsdom, which has no IntersectionObserver.
+  useEffect(() => {
+    const el = addBtnRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowSticky(!entry.isIntersecting),
+      { rootMargin: '0px 0px -8% 0px' },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   // Cart tracks by product ID only — size-aware cart tracking arrives with Supabase.
   // Subtracting the total cart qty from the selected size's stock is conservative:
   // if you have 1 Medium in the cart and switch to Small, Small will also show 0.
@@ -56,6 +70,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
     : 0  // not rendered when no size is selected
   const isFav     = favorites.includes(product.id)
   const addingRef = useRef(false)  // prevents rapid double-click from firing twice
+  const addBtnRef = useRef<HTMLButtonElement>(null)  // watched to reveal the mobile sticky bar
 
   // Breadcrumb helpers — for unisex products use the `from` param to show the
   // correct gender context (the page the user navigated from)
@@ -366,6 +381,7 @@ export function ProductPage({ product, initialColor, from }: Props) {
 
           {/* Add to Cart */}
           <button
+            ref={addBtnRef}
             type="button"
             disabled={addBtnDisabled}
             onClick={handleAddToCart}
@@ -408,6 +424,44 @@ export function ProductPage({ product, initialColor, from }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Mobile sticky add-to-cart — slides up once the primary button scrolls past */}
+      <AnimatePresence>
+        {showSticky && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ duration: 0.25, ease: [0.25, 0, 0, 1] }}
+            className="md:hidden fixed inset-x-0 bottom-0 z-[90] flex items-center gap-3 border-t border-border bg-surface px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-body text-[11px] uppercase tracking-[0.08em] text-on-surface">
+                {product.name}
+              </p>
+              {product.salePrice != null ? (
+                <span className="font-body text-[13px]">
+                  <span className="font-bold text-destructive">€{product.salePrice}</span>
+                  <span className="ml-1.5 text-[11px] text-on-surface-muted line-through">{product.price}</span>
+                </span>
+              ) : (
+                <span className="font-body text-[13px] font-semibold text-on-surface">{product.price}</span>
+              )}
+            </div>
+            <button
+              type="button"
+              disabled={addBtnDisabled}
+              onClick={handleAddToCart}
+              className={cn(
+                'shrink-0 bg-on-surface px-6 py-3.5 font-body text-[11px] tracking-[0.2em] uppercase text-surface transition-opacity',
+                addBtnDisabled ? 'cursor-not-allowed opacity-40' : 'hover:opacity-90',
+              )}
+            >
+              {addBtnText}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <SizeMiniGuide
         product={product}

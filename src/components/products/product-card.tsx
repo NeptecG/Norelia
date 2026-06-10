@@ -7,6 +7,7 @@ import { Link, useRouter, usePathname } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn, getStock } from '@/lib/utils'
+import { LOW_STOCK_THRESHOLD } from '@/lib/constants'
 import { useCatLabel } from '@/hooks/use-i18n-labels'
 import { useFavoritesStore } from '@/stores/favorites-store'
 import { useCartStore } from '@/stores/cart-store'
@@ -47,7 +48,9 @@ export function ProductCard({ product, priority = false }: Props) {
   const lastToggleRef = useRef<Record<number, number>>({})
 
   const favorited  = isFavorite(product.id)
-  const outOfStock = getStock(product.id) === 0
+  const stock      = getStock(product.id)
+  const outOfStock = stock === 0
+  const lowStock   = stock > 0 && stock <= LOW_STOCK_THRESHOLD
 
   function handleFavorite(e: React.MouseEvent) {
     e.preventDefault()
@@ -271,6 +274,14 @@ export function ProductCard({ product, priority = false }: Props) {
         </motion.div>
 
         <PriceTag price={product.price} salePrice={product.salePrice} />
+
+        {/* Low-stock urgency cue — honest (driven by real stock), restrained dot + count */}
+        {lowStock && (
+          <p className="flex items-center gap-1.5 font-body text-[10px] tracking-[0.14em] uppercase text-destructive">
+            <span aria-hidden="true" className="inline-block h-1 w-1 rounded-full bg-destructive" />
+            {t('lowStock', { n: stock })}
+          </p>
+        )}
       </div>
     </motion.div>
   )

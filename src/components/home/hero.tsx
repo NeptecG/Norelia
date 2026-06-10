@@ -49,10 +49,17 @@ function HeroHalf({
     hover: { opacity: 1, y: 0 },
   }
 
-  // Outlined SHOP pill that fills white-on-hover — a clear, restrained CTA affordance.
+  // Outlined SHOP pill: faint glass at rest so it reads on any photo, fills solid
+  // white on hover. A restrained, premium CTA affordance.
   const ctaVariants = {
-    rest:  { backgroundColor: 'rgba(255,255,255,0)', color: 'rgba(255,255,255,1)' },
+    rest:  { backgroundColor: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,1)' },
     hover: { backgroundColor: 'rgba(255,255,255,1)', color: 'rgba(17,17,17,1)' },
+  }
+
+  // Arrow nudges right on hover — a small cue of forward motion.
+  const arrowVariants = {
+    rest:  { x: 0 },
+    hover: { x: prefersReduced ? 0 : 3 },
   }
 
   const animateState = isHovered ? 'hover' : 'rest'
@@ -110,15 +117,17 @@ function HeroHalf({
           {label}
         </motion.span>
 
-        {/* SHOP pill — outlined CTA, fills white on hover, arrow nods to forward motion */}
+        {/* SHOP pill — outlined CTA, faint glass at rest, fills white on hover */}
         <motion.span
-          className="inline-flex items-center gap-2 border border-white/55 px-7 py-2.5 font-body text-[11px] tracking-[0.3em] uppercase"
+          className="inline-flex items-center gap-2.5 border border-white/60 px-6 py-2.5 font-body text-[11px] tracking-[0.25em] uppercase backdrop-blur-[2px]"
           variants={ctaVariants}
           animate={animateState}
           transition={{ duration: 0.3 }}
         >
           {shopLabel}
-          <Arrow dir="right" size={13} />
+          <motion.span className="inline-flex" variants={arrowVariants} animate={animateState} transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}>
+            <Arrow dir="right" size={13} />
+          </motion.span>
         </motion.span>
       </div>
     </Link>

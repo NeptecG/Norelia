@@ -83,7 +83,8 @@
     "addedToFavorites": "Added to favorites",
     "removedFromFavorites": "Removed from favorites",
     "noMoreStock": "No more {size} left for {name}",
-    "sizeAdded": "{name}, {size} added to cart"
+    "sizeAdded": "{name}, {size} added to cart",
+    "lowStock": "{n} left"
   },
   "ProductPage": {
     "sizeLabel": "Size",
