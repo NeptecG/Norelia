@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from '@/navigation'
 import { useTranslations } from 'next-intl'
-import { motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { Arrow } from '@/components/icons/arrow'
 import { ProductCard } from '@/components/products/product-card'
 import type { Product } from '@/types'
 
@@ -53,10 +54,34 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
   const perPage = isMobile ? 2 : 4
   const totalPages = Math.ceil(products.length / perPage)
   const { page, setPage } = usePagination(totalPages)
+  // Direction the page is moving (1 = forward, -1 = back) so the slide animation
+  // enters/exits from the correct side.
+  const [direction, setDirection] = useState(0)
 
   if (products.length === 0) return null
 
   const visibleProducts = products.slice(page * perPage, page * perPage + perPage)
+
+  // Clamped page navigation shared by arrows, dots and swipe.
+  const goTo = (next: number) => {
+    const clamped = Math.max(0, Math.min(totalPages - 1, next))
+    if (clamped === page) return
+    setDirection(clamped > page ? 1 : -1)
+    setPage(clamped)
+  }
+
+  // Mobile: a horizontal flick past a small distance / velocity flips the page.
+  const handleDragEnd = (_e: unknown, info: PanInfo) => {
+    if (info.offset.x < -50 || info.velocity.x < -500) goTo(page + 1)
+    else if (info.offset.x > 50 || info.velocity.x > 500) goTo(page - 1)
+  }
+
+  // Directional slide + fade. Falls back to a plain fade under reduced-motion.
+  const pageVariants = {
+    enter:  (dir: number) => (reducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? 48 : -48 }),
+    center: { opacity: 1, x: 0 },
+    exit:   (dir: number) => (reducedMotion ? { opacity: 0 } : { opacity: 0, x: dir > 0 ? -48 : 48 }),
+  }
 
   return (
     <section className="border-t border-border-subtle py-16 md:py-[60px]">
@@ -97,49 +122,82 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
           ) : null}
         </div>
 
-        {/* Product grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {visibleProducts.map((product, idx) => (
+        {/* Product grid — one page at a time. On mobile the grid is draggable, so
+            a finger-flick swaps pages; on desktop the arrows below do the same.
+            overflow-hidden clips the off-screen slide so neighbouring pages never
+            peek past the section edge. */}
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait" custom={direction} initial={false}>
             <motion.div
-              key={product.id}
-              initial={reducedMotion ? false : { opacity: 0, y: 22 }}
-              animate={reducedMotion ? {} : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.4,
-                delay: idx * 0.08,
-                ease: EASE,
-              }}
+              key={page}
+              custom={direction}
+              variants={pageVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.32, ease: EASE }}
+              drag={isMobile && totalPages > 1 ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.18}
+              onDragEnd={handleDragEnd}
+              className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 touch-pan-y"
             >
-              <ProductCard product={product} />
+              {visibleProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
             </motion.div>
-          ))}
+          </AnimatePresence>
         </div>
 
-        {/* Dot pagination */}
+        {/* Controls — prev/next arrows flank the dots. Arrows disable at the ends;
+            dots stay as a position indicator and remain individually tappable. */}
         {totalPages > 1 && (
-          <div className="flex justify-center mt-7">
-            {Array.from({ length: totalPages }).map((_, idx) => {
-              const isActive = idx === page
-              return (
-                // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
-                <button
-                  key={idx}
-                  type="button"
-                  aria-label={t('goToPage', { n: idx + 1 })}
-                  onClick={() => setPage(idx)}
-                  className="p-2"
-                >
-                  <motion.span
-                    animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
-                    transition={{ duration: 0.15 }}
-                    className={cn(
-                      'block rounded-full transition-colors',
-                      isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
-                    )}
-                  />
-                </button>
-              )
-            })}
+          <div className="flex items-center justify-center gap-3 mt-7">
+            <button
+              type="button"
+              onClick={() => goTo(page - 1)}
+              disabled={page === 0}
+              aria-label={t('prevPage')}
+              className="flex h-11 w-11 items-center justify-center text-on-surface transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-20"
+            >
+              <Arrow dir="left" size={16} />
+            </button>
+
+            <div className="flex">
+              {Array.from({ length: totalPages }).map((_, idx) => {
+                const isActive = idx === page
+                return (
+                  // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
+                  <button
+                    key={idx}
+                    type="button"
+                    aria-label={t('goToPage', { n: idx + 1 })}
+                    aria-current={isActive ? 'true' : undefined}
+                    onClick={() => goTo(idx)}
+                    className="p-2"
+                  >
+                    <motion.span
+                      animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
+                      transition={{ duration: 0.15 }}
+                      className={cn(
+                        'block rounded-full transition-colors',
+                        isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
+                      )}
+                    />
+                  </button>
+                )
+              })}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => goTo(page + 1)}
+              disabled={page === totalPages - 1}
+              aria-label={t('nextPage')}
+              className="flex h-11 w-11 items-center justify-center text-on-surface transition-opacity hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-20"
+            >
+              <Arrow dir="right" size={16} />
+            </button>
           </div>
         )}
 

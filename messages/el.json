@@ -57,7 +57,9 @@
   },
   "FeaturedCarousel": {
     "viewAll": "Ολα",
-    "goToPage": "Σελίδα {n}"
+    "goToPage": "Σελίδα {n}",
+    "prevPage": "Προηγούμενα",
+    "nextPage": "Επόμενα"
   },
   "ProductGrid": {
     "nonFound": "ΚΑΝΕΝΑ ΑΠΟΤΕΛΕΣΜΑ",
@@ -148,19 +150,19 @@
   "GDPRBanner": {
     "title": "Χρησιμοποιούμε cookies",
     "body": "Χρησιμοποιούμε cookies για να βελτιώσουμε την εμπειρία περιήγησής σου και να αναλύσουμε την επισκεψιμότητα. Πατώντας Αποδοχή Όλων, συναινείς στη χρήση cookies σύμφωνα με τους κανονισμούς της ΕΕ (GDPR). Μπορείς να αρνηθείς τα μη απαραίτητα cookies χωρίς να επηρεαστεί η εμπειρία αγορών σου.",
-    "acceptAll": "Αποδοχή Όλων",
-    "decline": "Απόρριψη",
+    "acceptAll": "Αποδοχη Ολων",
+    "decline": "Απορριψη",
     "acceptLabel": "Αποδοχή όλων των cookies",
     "declineLabel": "Απόρριψη μη απαραίτητων cookies",
-    "manage": "Επιλογές",
-    "prefNecessary": "Αναγκαία",
+    "manage": "Επιλογες",
+    "prefNecessary": "Αναγκαια",
     "prefNecessaryDesc": "Απαραίτητα για τη λειτουργία του ιστότοπου. Δεν απενεργοποιούνται.",
-    "prefAlwaysOn": "Πάντα ενεργά",
-    "prefAnalytics": "Επιδόσεις",
+    "prefAlwaysOn": "Παντα ενεργα",
+    "prefAnalytics": "Επιδοσεις",
     "prefAnalyticsDesc": "Μας βοηθούν να κατανοήσουμε πώς χρησιμοποιείται ο ιστότοπος.",
     "prefMarketing": "Μαρκετινγκ",
     "prefMarketingDesc": "Χρησιμοποιούνται για εξατομικευμένες διαφημίσεις.",
-    "prefSave": "Αποθήκευση"
+    "prefSave": "Αποθηκευση"
   },
   "SiteFooter": {
     "premiumStreetware": "Premium Streetwear",

@@ -148,10 +148,12 @@ describe('CheckoutPage', () => {
       makeCartMock({ cartLines: vi.fn(() => [mockLine]) }) as ReturnType<typeof useCartStore>,
     )
     await renderPage()
-    expect(screen.getByText('ALPHA TEE')).toBeTruthy()
-    expect(screen.getByText('T-Shirt')).toBeTruthy()
+    // Each line renders in BOTH the mobile card and desktop table layouts (CSS
+    // hides one per breakpoint; jsdom renders both), so labels appear twice.
+    expect(screen.getAllByText('ALPHA TEE').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('T-Shirt').length).toBeGreaterThan(0)
     // price: no salePrice so shows item.price
-    expect(screen.getByText('€45')).toBeTruthy()
+    expect(screen.getAllByText('€45').length).toBeGreaterThan(0)
   })
 
   it('shows free shipping progress bar when subtotal is below threshold', async () => {
@@ -190,9 +192,10 @@ describe('CheckoutPage', () => {
       makeCartMock({ cartLines: vi.fn(() => [saleItem]) }) as ReturnType<typeof useCartStore>,
     )
     await renderPage()
-    // salePrice 29 → shown as €29.00 in red; original €45 shown with line-through
+    // salePrice 29 → shown as €29.00 in red; original €45 shown with line-through.
+    // Both mobile and desktop layouts render, so each price appears twice.
     expect(screen.getAllByText('€29.00').length).toBeGreaterThan(0)
-    expect(screen.getByText('€45')).toBeTruthy()
+    expect(screen.getAllByText('€45').length).toBeGreaterThan(0)
   })
 
   it('clicking × remove button calls removeFromCart with correct id', async () => {
@@ -204,7 +207,8 @@ describe('CheckoutPage', () => {
       }) as ReturnType<typeof useCartStore>,
     )
     await renderPage()
-    fireEvent.click(screen.getByRole('button', { name: /remove alpha tee from cart/i }))
+    // Both layouts render a remove button for the line; clicking either removes it.
+    fireEvent.click(screen.getAllByRole('button', { name: /remove alpha tee from cart/i })[0])
     expect(removeFromCart).toHaveBeenCalledWith(1)
   })
 })

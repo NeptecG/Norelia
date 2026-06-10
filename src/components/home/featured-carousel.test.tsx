@@ -40,6 +40,7 @@ vi.mock('motion/react', () => ({
       [key: string]: unknown
     }) => <span {...(rest as React.HTMLAttributes<HTMLSpanElement>)}>{children}</span>,
   },
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useReducedMotion: () => false,
 }))
 

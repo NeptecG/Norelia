@@ -28,13 +28,21 @@ vi.mock('@/components/home/marquee', () => ({
   Marquee: ({ dark }: { dark?: boolean }) => <div data-testid="marquee" data-dark={String(dark)} />,
 }))
 vi.mock('@/components/home/featured-carousel', () => ({
-  FeaturedCarousel: ({ title, subtitle, products, viewAllHref }: {
+  FeaturedCarousel: ({ title, subtitle, products, viewAllHref, viewAllLinks }: {
     title: string
     subtitle?: string
     products: unknown[]
     viewAllHref?: string
+    viewAllLinks?: { label: string; href: string }[]
   }) => (
-    <div data-testid="featured-carousel" data-title={title} data-subtitle={subtitle} data-count={products.length} data-href={viewAllHref} />
+    <div
+      data-testid="featured-carousel"
+      data-title={title}
+      data-subtitle={subtitle}
+      data-count={products.length}
+      data-href={viewAllHref}
+      data-links={viewAllLinks ? viewAllLinks.map(l => l.href).join(',') : ''}
+    />
   ),
 }))
 
@@ -58,7 +66,7 @@ describe('HomePage', () => {
     const newIn = carousels.find(c => c.dataset.title === 'NEW IN COLLECTION')
     expect(newIn).toBeTruthy()
     expect(Number(newIn!.dataset.count)).toBeGreaterThan(0)
-    expect(newIn!.dataset.href).toBe('/men?filter=NEWIN')
+    expect(newIn!.dataset.links).toBe('/men/newin,/women/newin')
   })
 
   it('renders TRENDING carousel with 8 products', async () => {
@@ -77,6 +85,6 @@ describe('HomePage', () => {
     const onSale = carousels.find(c => c.dataset.title === 'ON SALE')
     expect(onSale).toBeTruthy()
     expect(Number(onSale!.dataset.count)).toBeGreaterThan(0)
-    expect(onSale!.dataset.href).toBe('/men?filter=SALES')
+    expect(onSale!.dataset.links).toBe('/men/sale,/women/sale')
   })
 })

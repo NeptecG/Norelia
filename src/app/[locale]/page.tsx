@@ -33,8 +33,8 @@ export default async function HomePage() {
         subtitle={t('newInSubtitle')}
         products={newProducts}
         viewAllLinks={[
-          { label: t('shopMen'),   href: '/men/new-in' },
-          { label: t('shopWomen'), href: '/women/new-in' },
+          { label: t('shopMen'),   href: '/men/newin' },
+          { label: t('shopWomen'), href: '/women/newin' },
         ]}
       />
       <FeaturedCarousel
@@ -51,8 +51,8 @@ export default async function HomePage() {
         subtitle={t('onSaleSubtitle')}
         products={saleProducts}
         viewAllLinks={[
-          { label: t('shopMen'),   href: '/men/sales' },
-          { label: t('shopWomen'), href: '/women/sales' },
+          { label: t('shopMen'),   href: '/men/sale' },
+          { label: t('shopWomen'), href: '/women/sale' },
         ]}
       />
     </main>

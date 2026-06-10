@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
+import { useMounted } from '@/hooks/use-mounted'
 
 const CONSENT_KEY = 'norelia_gdpr_consent'
 const PREFS_KEY   = 'norelia_gdpr_prefs'
@@ -13,13 +14,19 @@ const PREFS_KEY   = 'norelia_gdpr_prefs'
 export function GDPRBanner() {
   const t = useTranslations('GDPRBanner')
 
-  // Lazy initializer reads localStorage only on the client (useState runs only
-  // client-side in a 'use client' component), so there is no SSR/hydration
-  // mismatch and no need for a synchronous setState inside useEffect.
-  const [visible,    setVisible]    = useState(() => {
+  // Hydration safety: the server (and the client's hydrating render) must output
+  // the same thing. `useMounted` returns false on the server and during the
+  // hydrating render, then true afterwards — so the banner is never present in
+  // the first client render and cannot diverge from the server HTML (React #418).
+  // `consent` is read once from localStorage in the initializer; its value is
+  // irrelevant until `mounted` is true, so no mismatch occurs. The banner then
+  // animates in from the bottom, making the post-mount reveal feel intentional.
+  const mounted = useMounted()
+  const [consent, setConsent] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false
-    return !localStorage.getItem(CONSENT_KEY)
+    return !!localStorage.getItem(CONSENT_KEY)
   })
+  const visible = mounted && !consent
   const [showPrefs,  setShowPrefs]  = useState(false)
   const [analytics,  setAnalytics]  = useState(false)
   const [marketing,  setMarketing]  = useState(false)
@@ -28,19 +35,19 @@ export function GDPRBanner() {
   function accept() {
     localStorage.setItem(CONSENT_KEY, 'accepted')
     localStorage.setItem(PREFS_KEY, JSON.stringify({ analytics: true, marketing: true }))
-    setVisible(false)
+    setConsent(true)
   }
 
   function decline() {
     localStorage.setItem(CONSENT_KEY, 'declined')
     localStorage.setItem(PREFS_KEY, JSON.stringify({ analytics: false, marketing: false }))
-    setVisible(false)
+    setConsent(true)
   }
 
   function savePrefs() {
     localStorage.setItem(CONSENT_KEY, 'custom')
     localStorage.setItem(PREFS_KEY, JSON.stringify({ analytics, marketing }))
-    setVisible(false)
+    setConsent(true)
   }
 
   const variants = shouldReduceMotion

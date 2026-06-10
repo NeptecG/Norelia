@@ -57,7 +57,9 @@
   },
   "FeaturedCarousel": {
     "viewAll": "View All",
-    "goToPage": "Go to page {n}"
+    "goToPage": "Go to page {n}",
+    "prevPage": "Previous",
+    "nextPage": "Next"
   },
   "ProductGrid": {
     "nonFound": "NONE FOUND",
