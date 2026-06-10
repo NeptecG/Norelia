@@ -238,15 +238,10 @@ export function ProductCard({ product, priority = false }: Props) {
           {product.name}
         </p>
 
-        {/* Color swatches — 0.6 opacity at rest (visible on mobile), full on hover */}
-        <motion.div
-          variants={{
-            rest:  { opacity: 0.6 },
-            hover: { opacity: 1 },
-          }}
-          transition={{ duration: 0.2 }}
-          className="flex gap-1.5"
-        >
+        {/* Color swatches — full opacity: these are interactive Quick Add colour
+            selectors now, not decoration. The white chip gets a strong outline so it
+            stays visible on the white card surface; dark fills keep a subtle hairline. */}
+        <div className="flex gap-2">
           {GCOLORS.map((c) => {
             const isSelected = selectedColor.name === c.name
             return (
@@ -262,13 +257,14 @@ export function ProductCard({ product, priority = false }: Props) {
                 }}
                 style={{ '--swatch-color': c.hex } as React.CSSProperties}
                 className={cn(
-                  'block h-3 w-3 rounded-full border border-border-subtle bg-[var(--swatch-color)] cursor-pointer transition-shadow',
+                  'block h-4 w-4 rounded-full bg-[var(--swatch-color)] cursor-pointer transition-shadow',
+                  c.outline ? 'border border-on-surface/45' : 'border border-border-subtle',
                   isSelected && 'ring-1 ring-on-surface ring-offset-1',
                 )}
               />
             )
           })}
-        </motion.div>
+        </div>
 
         <PriceTag price={product.price} salePrice={product.salePrice} />
       </div>
