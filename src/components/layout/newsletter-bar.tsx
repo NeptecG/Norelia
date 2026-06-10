@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -8,22 +8,18 @@ import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { Arrow } from '@/components/icons/arrow'
 
-// ── Schema ─────────────────────────────────────────────────────────────────────
-
-const schema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Must be a valid email'),
-})
-
-type FormValues = z.infer<typeof schema>
-
 // ── NewsletterBar ──────────────────────────────────────────────────────────────
+
+type FormValues = { email: string }
 
 export function NewsletterBar() {
   const t = useTranslations('NewsletterBar')
   const [submitted, setSubmitted] = useState(false)
+
+  const schema = useMemo(
+    () => z.object({ email: z.string().min(1, t('errorRequired')).email(t('errorInvalid')) }),
+    [t],
+  )
 
   const {
     register,

@@ -197,8 +197,13 @@
   }
 
   html {
-    scroll-behavior: smooth;
     @apply font-sans;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   /* Film-grain atmosphere — a faint, desaturated noise layer over the page so the

@@ -146,7 +146,9 @@
     "subtitle": "ΠΡΩΤΗ ΠΡΟΣΒΑΣΗ ΣΕ DROPS ΚΑΙ EXCLUSIVE ΠΡΟΣΦΟΡΕΣ",
     "placeholder": "email@σου.com",
     "subscribe": "ΕΓΓΡΑΦΗ",
-    "success": "✓ Είσαι μέσα."
+    "success": "✓ Είσαι μέσα.",
+    "errorRequired": "Το email είναι υποχρεωτικό",
+    "errorInvalid": "Εισάγετε έγκυρο email"
   },
   "GDPRBanner": {
     "title": "Χρησιμοποιούμε cookies",
@@ -202,14 +204,20 @@
     "signInButton": "ΣΥΝΔΕΣΗ",
     "createButton": "ΔΗΜΙΟΥΡΓΙΑ ΛΟΓΑΡΙΑΣΜΟΥ",
     "close": "Κλείσιμο",
-    "comingSoon": "Μόνο UI · η σύνδεση έρχεται σύντομα"
+    "comingSoon": "Μόνο UI · η σύνδεση έρχεται σύντομα",
+    "emailLabel": "Διεύθυνση email",
+    "passwordLabel": "Κωδικός πρόσβασης",
+    "nameLabel": "Ονοματεπώνυμο",
+    "showPassword": "Εμφάνιση κωδικού",
+    "hidePassword": "Απόκρυψη κωδικού"
   },
   "CheckoutComingSoonModal": {
     "label": "NORELIA. ΟΛΟΚΛΗΡΩΣΗ ΑΓΟΡΑΣ",
     "heading": "ΕΡΧΕΤΑΙ ΣΥΝΤΟΜΑ",
     "bodyBefore": "Οι online πληρωμές έρχονται. Εν τω μεταξύ, επικοινωνήστε στο",
     "bodyAfter": "για να κάνετε την παραγγελία σας.",
-    "gotIt": "ΕΝΤAΞΕΙ"
+    "gotIt": "ΕΝΤAΞΕΙ",
+    "closeLabel": "Κλείσιμο"
   },
   "CheckoutPage": {
     "title": "Το Καλάθι Μου",

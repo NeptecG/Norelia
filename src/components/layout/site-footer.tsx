@@ -46,7 +46,7 @@ function BrandColumn({ t }: { t: TFooter }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('instagramLabel')}
-          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
+          className="inline-flex items-center justify-center w-11 h-11 text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -61,7 +61,7 @@ function BrandColumn({ t }: { t: TFooter }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('xLabel')}
-          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
+          className="inline-flex items-center justify-center w-11 h-11 text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M4 4l16 16M4 20L20 4" />
@@ -74,7 +74,7 @@ function BrandColumn({ t }: { t: TFooter }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('youtubeLabel')}
-          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
+          className="inline-flex items-center justify-center w-11 h-11 text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
@@ -88,7 +88,7 @@ function BrandColumn({ t }: { t: TFooter }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t('tiktokLabel')}
-          className="text-on-surface/55 hover:text-on-surface transition-colors duration-200"
+          className="inline-flex items-center justify-center w-11 h-11 text-on-surface/55 hover:text-on-surface transition-colors duration-200"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.53V6.79a4.85 4.85 0 01-1.02-.1z"/>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Dialog } from '@base-ui/react/dialog'
+import { X } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useUIStore } from '@/stores/ui-store'
 import { BRAND, CONTACT_EMAIL } from '@/lib/constants'
@@ -37,12 +38,12 @@ export function CheckoutComingSoonModal() {
           {/* Foreground content */}
           <div className="relative z-10 px-11 pb-11 pt-12 text-center">
 
-            {/* ✕ close icon — top-right corner */}
+            {/* close icon — top-right corner */}
             <Dialog.Close
-              aria-label="Close dialog"
-              className="absolute top-4 right-5 bg-transparent border-0 cursor-pointer leading-none text-base text-on-surface/25 hover:text-on-surface/70 transition-colors"
+              aria-label={t('closeLabel')}
+              className="absolute top-0 right-0 inline-flex items-center justify-center w-11 h-11 bg-transparent border-0 cursor-pointer text-on-surface/25 hover:text-on-surface/70 transition-colors"
             >
-              ✕
+              <X size={16} aria-hidden="true" />
             </Dialog.Close>
 
             {/* Eyebrow — ultra-small, wide tracking, very faded */}

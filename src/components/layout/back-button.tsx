@@ -9,7 +9,15 @@ export function BackButton() {
   const t = useTranslations('BackButton')
   return (
     <button
-      onClick={() => router.back()}
+      onClick={() => {
+        try {
+          if (document.referrer && new URL(document.referrer).hostname === window.location.hostname) {
+            router.back()
+            return
+          }
+        } catch { /* ignore malformed referrer */ }
+        router.push('/')
+      }}
       className="group relative inline-flex items-center gap-2 font-body text-[10px] tracking-[0.18em] uppercase text-on-surface/55 hover:text-on-surface transition-colors mb-10"
     >
       <Arrow />

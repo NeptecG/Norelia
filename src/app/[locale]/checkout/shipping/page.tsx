@@ -128,7 +128,7 @@ export default function CheckoutShippingPage() {
   // Avoid an SSR/client hydration mismatch: the cart comes from a persisted
   // (client-only) store, so render nothing until mounted.
   if (!mounted) return (
-    <main className="min-h-screen pt-20 bg-surface animate-pulse">
+    <main className="min-h-dvh pt-20 bg-surface animate-pulse">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
         <div className="h-14 bg-surface-raised w-52 mb-10" />
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
@@ -147,7 +147,7 @@ export default function CheckoutShippingPage() {
 
   if (isEmpty) {
     return (
-      <main className="min-h-screen pt-20 bg-surface">
+      <main className="min-h-dvh pt-20 bg-surface">
         <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
           <h1 className="font-display text-5xl md:text-6xl text-on-surface leading-none mb-10">{t('heading')}</h1>
           <CheckoutEmpty message={t('emptyText')} ctaLabel={t('emptyCta')} ctaHref="/" />
@@ -157,7 +157,7 @@ export default function CheckoutShippingPage() {
   }
 
   return (
-    <main className="min-h-screen pt-20 bg-surface">
+    <main className="min-h-dvh pt-20 bg-surface">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px] py-12">
 
         <BackLink href="/checkout" label={t('back')} />

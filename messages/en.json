@@ -146,7 +146,9 @@
     "subtitle": "Early access to drops & exclusive offers",
     "placeholder": "your@email.com",
     "subscribe": "Subscribe",
-    "success": "✓ You're in."
+    "success": "✓ You're in.",
+    "errorRequired": "Email is required",
+    "errorInvalid": "Must be a valid email"
   },
   "GDPRBanner": {
     "title": "We use cookies",
@@ -202,14 +204,20 @@
     "signInButton": "Sign In",
     "createButton": "Create Account",
     "close": "Close",
-    "comingSoon": "UI only · authentication coming soon"
+    "comingSoon": "UI only · authentication coming soon",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "nameLabel": "Full name",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "CheckoutComingSoonModal": {
     "label": "NORELIA. CHECKOUT",
     "heading": "COMING SOON",
     "bodyBefore": "Online payments are on their way. In the meantime, reach out at",
     "bodyAfter": "to place your order.",
-    "gotIt": "GOT IT"
+    "gotIt": "GOT IT",
+    "closeLabel": "Close dialog"
   },
   "CheckoutPage": {
     "title": "My Shopping Cart",
