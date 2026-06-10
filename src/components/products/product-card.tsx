@@ -128,6 +128,15 @@ export function ProductCard({ product, priority = false }: Props) {
           />
         </motion.div>
 
+        {/* Hover tint — a subtle darken that binds the image scale, underline and
+            quick-add slide into one cohesive gesture. pointer-events-none + no z so
+            it sits over the image but under the link/quick-add. */}
+        <motion.div
+          variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
+          transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
+          className="pointer-events-none absolute inset-0 bg-black/12"
+        />
+
         {/* Primary link overlay — z-[1] so interactive elements at z-[2] stay clickable */}
         <Link
           href={productHref}

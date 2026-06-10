@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Link } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'motion/react'
+import { Arrow } from '@/components/icons/arrow'
 import { cn } from '@/lib/utils'
 
 interface HeroHalfProps {
@@ -42,16 +43,16 @@ function HeroHalf({
     hover: { opacity: 1 },
   }
 
-  const eyebrowVariants = {
-    // 0.65 at rest: always readable on mobile (no hover events); brightens to
-    // full on desktop hover. Was 0.3 which made it invisible on touch devices.
-    rest: { opacity: 0.65, y: 0 },
+  const labelVariants = {
+    // Crisp at rest (the gender word is the hero statement); a hair of lift settles on hover.
+    rest: { opacity: 1, y: prefersReduced ? 0 : 2 },
     hover: { opacity: 1, y: 0 },
   }
 
-  const labelVariants = {
-    rest: { opacity: 0.85, y: prefersReduced ? 0 : 4 },
-    hover: { opacity: 1, y: 0 },
+  // Outlined SHOP pill that fills white-on-hover — a clear, restrained CTA affordance.
+  const ctaVariants = {
+    rest:  { backgroundColor: 'rgba(255,255,255,0)', color: 'rgba(255,255,255,1)' },
+    hover: { backgroundColor: 'rgba(255,255,255,1)', color: 'rgba(17,17,17,1)' },
   }
 
   const animateState = isHovered ? 'hover' : 'rest'
@@ -86,8 +87,8 @@ function HeroHalf({
         />
       </motion.div>
 
-      {/* Permanent bottom gradient */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+      {/* Permanent bottom gradient — strengthened so the label + CTA stay legible over busy photos */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
       {/* Hover darkening overlay */}
       <motion.div
@@ -98,18 +99,8 @@ function HeroHalf({
       />
 
       {/* Label group at bottom center */}
-      <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1">
-        {/* SHOP eyebrow — fades in on hover */}
-        <motion.span
-          className="font-body text-[11px] tracking-[0.3em] uppercase text-white/60"
-          variants={eyebrowVariants}
-          animate={animateState}
-          transition={{ duration: 0.25 }}
-        >
-          {shopLabel}
-        </motion.span>
-
-        {/* Gender label — always visible, brightens on hover */}
+      <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-4">
+        {/* Gender label — crisp white, the hero statement */}
         <motion.span
           className="font-display text-[44px] md:text-[56px] lg:text-[68px] tracking-[0.14em] text-white"
           variants={labelVariants}
@@ -117,6 +108,17 @@ function HeroHalf({
           transition={{ duration: 0.3 }}
         >
           {label}
+        </motion.span>
+
+        {/* SHOP pill — outlined CTA, fills white on hover, arrow nods to forward motion */}
+        <motion.span
+          className="inline-flex items-center gap-2 border border-white/55 px-7 py-2.5 font-body text-[11px] tracking-[0.3em] uppercase"
+          variants={ctaVariants}
+          animate={animateState}
+          transition={{ duration: 0.3 }}
+        >
+          {shopLabel}
+          <Arrow dir="right" size={13} />
         </motion.span>
       </div>
     </Link>
