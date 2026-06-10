@@ -926,16 +926,16 @@ export function StepIndicator({ step }: StepIndicatorProps) {
   const activeIdx = STEPS.findIndex(s => s.key === step)
 
   return (
-    <div className="flex items-center gap-3 mb-10" aria-label={t('stepsAriaLabel')}>
+    <div className="flex items-center gap-2 sm:gap-3 mb-10" aria-label={t('stepsAriaLabel')}>
       {STEPS.map(({ key, label }, i) => {
         const isActive = key === step
         const isDone   = i < activeIdx
         return (
           <React.Fragment key={key}>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2 sm:gap-2.5">
               <span
                 className={cn(
-                  'w-9 h-9 rounded-full flex items-center justify-center font-body text-[14px] font-semibold',
+                  'w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-body text-[14px] font-semibold',
                   isActive ? 'bg-on-surface text-surface'           :
                   isDone   ? 'bg-on-surface/30 text-on-surface'     :
                              'bg-surface-raised text-on-surface-muted border border-border-subtle',
@@ -943,9 +943,11 @@ export function StepIndicator({ step }: StepIndicatorProps) {
               >
                 {i + 1}
               </span>
+              {/* Labels hidden on small phones (numbers + connectors still show
+                  progress) — the three uppercase labels overflow narrow viewports. */}
               <span
                 className={cn(
-                  LABEL_CLS, 'text-[13px] tracking-[0.15em]',
+                  LABEL_CLS, 'hidden sm:inline text-[13px] tracking-[0.15em]',
                   isActive ? 'text-on-surface' : 'text-on-surface-muted',
                 )}
               >
@@ -979,14 +981,16 @@ export function GarmentDesigner() {
   const [step,           setStep]           = useState<DesignStep>('design')
   const [orderId,        setOrderId]        = useState('')
   const [isSubmitting,   setIsSubmitting]   = useState(false)
-  const [showEjs,        setShowEjs]        = useState(false)
   const [sendErr,        setSendErr]        = useState('')
 
-  // EmailJS credentials — read from env vars, overridable via the settings panel
-  const [ejsSvc,   setEjsSvc]   = useState(process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID   ?? '')
-  const [ejsTpl,   setEjsTpl]   = useState(process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID  ?? '')
-  const [ejsKey,   setEjsKey]   = useState(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY   ?? '')
-  const [ejsRecip, setEjsRecip] = useState(process.env.NEXT_PUBLIC_EMAILJS_RECIPIENT    ?? '')
+  // EmailJS credentials — env vars only (configured on the host). The previous
+  // in-UI settings panel was removed: it exposed the recipient address and let
+  // any visitor read the IDs or burn the send quota. Order submission moves fully
+  // server-side when the backend lands.
+  const ejsSvc   = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID  ?? ''
+  const ejsTpl   = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? ''
+  const ejsKey   = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY  ?? ''
+  const ejsRecip = process.env.NEXT_PUBLIC_EMAILJS_RECIPIENT   ?? ''
 
   // ── Refs ────────────────────────────────────────────────────────────────────
   const cvRef   = useRef<HTMLCanvasElement>(null)
@@ -1217,44 +1221,6 @@ export function GarmentDesigner() {
           </h3>
 
           <OrderForm onSubmit={handleOrderSubmit} isLoading={isSubmitting}/>
-
-          {/* EmailJS settings — collapsed by default */}
-          <div className="mt-4">
-            <button
-              type="button"
-              onClick={() => setShowEjs(!showEjs)}
-              className="w-full flex justify-between items-center border border-on-surface px-4 py-2.5 font-body text-[12px] tracking-[0.18em] uppercase hover:bg-on-surface/5 transition-colors"
-            >
-              <span>{t('emailjsSettings')}</span>
-              <span className="text-lg leading-none">{showEjs ? '−' : '+'}</span>
-            </button>
-            {showEjs && (
-              <div className="border border-on-surface border-t-0 p-4 bg-surface-raised">
-                <p className="font-body text-[13px] text-on-surface-muted leading-relaxed mb-3">
-                  {t('emailjsNote')}
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {([
-                    [t('emailjsRecipientLabel'), 'shop@gmail.com',  ejsRecip, setEjsRecip],
-                    [t('emailjsPublicKeyLabel'),  'xxxxxxxxxxxx',    ejsKey,   setEjsKey  ],
-                    [t('emailjsServiceLabel'),    'service_xxx',     ejsSvc,   setEjsSvc  ],
-                    [t('emailjsTemplateLabel'),   'template_xxx',    ejsTpl,   setEjsTpl  ],
-                  ] as [string, string, string, (v: string) => void][]).map(([l, ph, v, s]) => (
-                    <div key={l}>
-                      <p className={cn(LABEL_CLS, 'text-[10px] mb-1')}>{l}</p>
-                      <input
-                        type="text"
-                        placeholder={ph}
-                        value={v}
-                        onChange={(e) => s(e.target.value)}
-                        className="w-full px-2.5 py-2 font-body text-sm bg-surface border border-on-surface text-on-surface focus:outline-none"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
 
           {sendErr && (
             <p className="font-body text-xs text-destructive mt-3">{sendErr}</p>

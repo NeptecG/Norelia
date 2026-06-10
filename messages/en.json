@@ -601,6 +601,7 @@
     "stepDetails": "Details",
     "stepConfirmation": "Confirmation",
     "stepsAriaLabel": "Order steps",
+    "loadingDesigner": "Loading designer…",
     "designerAriaLabel": "Garment customiser",
     "backToDesigner": "Back to Designer",
     "orderSummaryHeading": "ORDER SUMMARY",

@@ -1,6 +1,11 @@
 export const BRAND = 'NORELIA.'
 export const CONTACT_EMAIL = 'hello@norelia.com'
 
+// Canonical site origin for SEO (metadataBase, sitemap, robots, OG urls).
+// Single source of truth — set NEXT_PUBLIC_SITE_URL on the host when the real
+// domain is known; falls back to the placeholder until then. No trailing slash.
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://norelia.com').replace(/\/$/, '')
+
 export const MARQUEE_TEXT = 'NORELIA. STUDIO | PREMIUM STREETWEAR | CUSTOM PRINTING | SS 2026 | DTG & EMBROIDERY | FREE SHIPPING OVER €60 |'
 
 export const MEN_NAV_CATS    = ['New In', 'T-Shirts', 'Hoodies', 'Zippers', 'Tank Tops', 'Sales'] as const

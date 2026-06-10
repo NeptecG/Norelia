@@ -4,6 +4,7 @@ import { Hero } from '@/components/home/hero'
 import { Marquee } from '@/components/home/marquee'
 import { FeaturedCarousel } from '@/components/home/featured-carousel'
 import { PRODUCTS } from '@/data/products'
+import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
   title: 'NORELIA. Premium Streetwear',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'NORELIA. Premium Streetwear',
     description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
-    url: 'https://norelia.com',
+    url: SITE_URL,
     type: 'website',
   },
 }

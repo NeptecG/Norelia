@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Fira_Sans_Condensed, Bebas_Neue } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import './globals.css'
-import { BRAND } from '@/lib/constants'
+import { BRAND, SITE_URL } from '@/lib/constants'
 
 // Fira Sans Condensed — single condensed typeface for the whole site (display + body).
 // Ships full Greek + Latin glyphs, so Greek never falls back to a different face.
@@ -25,7 +25,7 @@ const bebasNeue = Bebas_Neue({
 export const metadata: Metadata = {
   title: { default: BRAND, template: `%s | ${BRAND}` },
   description: 'Minimalist premium streetwear. Custom printing. Free shipping over €60.',
-  metadataBase: new URL('https://norelia.com'),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: 'NORELIA.',
     type: 'website',

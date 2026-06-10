@@ -601,6 +601,7 @@
     "stepDetails": "Στοιχεια",
     "stepConfirmation": "Επιβεβαιωση",
     "stepsAriaLabel": "Βήματα παραγγελίας",
+    "loadingDesigner": "Φορτωση σχεδιαστη…",
     "designerAriaLabel": "Σχεδιαστής ρούχου",
     "backToDesigner": "ΠΙΣΩ ΣΤΟΝ ΣΧΕΔΙΑΣΤΗ",
     "orderSummaryHeading": "ΣΥΝΟΨΗ ΠΑΡΑΓΓΕΛΙΑΣ",
