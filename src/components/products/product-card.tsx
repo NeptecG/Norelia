@@ -107,7 +107,11 @@ export function ProductCard({ product, priority = false }: Props) {
 
   return (
     <motion.div
-      className="group relative flex flex-col border border-on-surface/15 hover:border-on-surface transition-colors"
+      // Inset ring instead of a 1px border BOX: a border takes layout space, and on
+      // fractional card widths a sub-pixel gap opened between the image and the border,
+      // letting the white page bleed through (the "white line"). ring-inset draws over
+      // the content edge with no layout box, so there is no gap to bleed through.
+      className="group relative flex flex-col ring-1 ring-inset ring-on-surface/15 hover:ring-on-surface transition-shadow"
       initial="rest"
       animate={hovering || sizePickerOpen ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}
@@ -116,9 +120,10 @@ export function ProductCard({ product, priority = false }: Props) {
       {/* ── Image area ─────────────────────────────────────────────────────────── */}
       <div className="relative aspect-[3/4] overflow-hidden bg-surface-alt">
 
-        {/* Product image */}
+        {/* Product image — overfills the clip box by 1px so a fractional clip edge
+            never exposes a sub-pixel seam behind the image. */}
         <motion.div
-          className="absolute inset-0"
+          className="absolute -inset-px"
           variants={imageScaleVariants}
           transition={{ duration: 0.35, ease: [0.25, 0, 0, 1] }}
         >
