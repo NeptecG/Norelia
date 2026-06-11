@@ -196,10 +196,10 @@ function FavItemRow({ product, onRemove, onNavigate }: FavItemRowProps) {
         <button
           onClick={onRemove}
           aria-label={t('removeFromSaved')}
-          className="text-on-surface-muted hover:text-destructive transition-colors flex flex-col items-center gap-1 pt-1"
+          className="self-center shrink-0 w-[72px] text-center text-on-surface-muted hover:text-destructive transition-colors flex flex-col items-center gap-1.5"
         >
           <Trash2 size={14} />
-          <span className="font-body text-[9px] tracking-[0.1em] uppercase">{t('removeFromSaved')}</span>
+          <span className="font-body text-[9px] tracking-[0.1em] uppercase leading-[1.4]">{t('removeFromSaved')}</span>
         </button>
       </div>
     </div>

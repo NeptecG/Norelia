@@ -107,7 +107,7 @@ export function ProductCard({ product, priority = false }: Props) {
 
   return (
     <motion.div
-      className="group relative flex flex-col border border-border-subtle hover:border-on-surface transition-colors"
+      className="group relative flex flex-col border border-on-surface/15 hover:border-on-surface transition-colors"
       initial="rest"
       animate={hovering || sizePickerOpen ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}
