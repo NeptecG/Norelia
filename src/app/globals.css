@@ -90,6 +90,10 @@
 
 @layer base {
   :root {
+    /* Declare the site as light so browser "force dark" / auto-dark (Brave, Chrome)
+       does NOT auto-invert it — that was turning white to black and over-saturating
+       the Klarna pink. Intentionally-dark sections opt back in via `.dark` below. */
+    color-scheme: light;
     /* Shadcn base tokens */
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
@@ -141,6 +145,8 @@
   }
 
   .dark {
+    /* Dark sections (nav, footer, banner, modals) render native controls/scrollbars dark. */
+    color-scheme: dark;
     /* Shadcn base tokens — dark */
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);

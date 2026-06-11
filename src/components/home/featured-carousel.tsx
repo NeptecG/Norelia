@@ -86,8 +86,9 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
     <section className="border-t border-border-subtle py-16 md:py-[60px]">
       <div className="max-w-[1440px] mx-auto px-4 md:px-[60px]">
 
-        {/* Header row */}
-        <div className="flex items-end justify-between mb-8 md:mb-10">
+        {/* Header row — stacks on mobile so the title + view-all links never overflow
+            a narrow viewport; becomes a single row from sm up. */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-8 md:mb-10">
           <div>
             {subtitle && (
               <p className="font-body text-[11px] tracking-widest uppercase text-on-surface-muted mb-1">
@@ -95,13 +96,13 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
               </p>
             )}
             {/* title nudged -3px (-ml-[3px]) to sit a touch further left, per design */}
-            <h2 className="font-display text-5xl text-on-surface leading-none -ml-[3px]">
+            <h2 className="font-display text-4xl md:text-5xl text-on-surface leading-none -ml-[3px]">
               {title}
             </h2>
           </div>
 
           {viewAllLinks && viewAllLinks.length > 0 ? (
-            <div className="flex items-center gap-4 shrink-0 ml-4">
+            <div className="flex items-center gap-4 shrink-0 sm:ml-4">
               {viewAllLinks.map(link => (
                 <Link key={link.href} href={link.href} className="group relative">
                   <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
@@ -112,7 +113,7 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
               ))}
             </div>
           ) : viewAllHref ? (
-            <Link href={viewAllHref} className="group relative shrink-0 ml-4">
+            <Link href={viewAllHref} className="group relative shrink-0 sm:ml-4">
               <span className="font-body text-[11px] tracking-widest uppercase text-on-surface">
                 {t('viewAll')}
               </span>
