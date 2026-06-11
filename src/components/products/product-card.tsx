@@ -32,9 +32,10 @@ export function ProductCard({ product, priority = false }: Props) {
   const colorLabel     = useColorLabel()
   const [hovering, setHovering]           = useState(false)
   const [sizePickerOpen, setSizePickerOpen] = useState(false)
-  // Clicking a swatch selects the colour for Quick Add (no navigation).
-  // Default matches the product page (GCOLORS[1] = Black).
-  const [selectedColor, setSelectedColor] = useState<GarmentColor>(GCOLORS[1])
+  // Clicking a swatch selects the colour for Quick Add (no navigation). Starts
+  // unselected so the card shows no pre-selected ring at rest; Quick Add falls
+  // back to Black (GCOLORS[1]) if the shopper adds without picking a colour.
+  const [selectedColor, setSelectedColor] = useState<GarmentColor | null>(null)
 
   // For unisex products, pass the browsing-gender context so the product page
   // can show the correct breadcrumb (e.g. Women > Hoodies instead of Men > Hoodies)
@@ -80,8 +81,9 @@ export function ProductCard({ product, priority = false }: Props) {
       return
     }
     addToCart(product.id, 1)
+    const activeColor = selectedColor ?? GCOLORS[1]
     showToast(
-      t('sizeAdded', { name: product.name, size, color: stripGreekTonos(colorLabel(selectedColor.name)) }),
+      t('sizeAdded', { name: product.name, size, color: stripGreekTonos(colorLabel(activeColor.name)) }),
       'add', 'cart',
     )
     setSizePickerOpen(false)
@@ -105,7 +107,7 @@ export function ProductCard({ product, priority = false }: Props) {
 
   return (
     <motion.div
-      className="group relative flex flex-col border border-on-surface/70 hover:border-on-surface transition-colors"
+      className="group relative flex flex-col border border-border-subtle hover:border-on-surface transition-colors"
       initial="rest"
       animate={hovering || sizePickerOpen ? 'hover' : 'rest'}
       onHoverStart={() => setHovering(true)}
@@ -241,9 +243,11 @@ export function ProductCard({ product, priority = false }: Props) {
         {/* Color swatches — full opacity: these are interactive Quick Add colour
             selectors now, not decoration. The white chip gets a strong outline so it
             stays visible on the white card surface; dark fills keep a subtle hairline. */}
-        <div className="flex gap-2">
+        {/* -ml-1.5 offsets the first button's padding so the row aligns with the
+            text above. Each button has p-1.5 → ~28px hit area around a 16px chip. */}
+        <div className="flex gap-0.5 -ml-1.5">
           {GCOLORS.map((c) => {
-            const isSelected = selectedColor.name === c.name
+            const isSelected = selectedColor?.name === c.name
             return (
               <button
                 key={c.name}
@@ -255,13 +259,19 @@ export function ProductCard({ product, priority = false }: Props) {
                   e.stopPropagation()
                   setSelectedColor(c)
                 }}
-                style={{ '--swatch-color': c.hex } as React.CSSProperties}
-                className={cn(
-                  'block h-4 w-4 rounded-full bg-[var(--swatch-color)] cursor-pointer transition-shadow',
-                  c.outline ? 'border border-on-surface/45' : 'border border-border-subtle',
-                  isSelected && 'ring-1 ring-on-surface ring-offset-1',
-                )}
-              />
+                className="inline-flex items-center justify-center p-1.5 cursor-pointer"
+              >
+                {/* Chip sits at 90% at rest and grows to full on card hover (transform,
+                    no layout shift, no opacity — keeps the white chip visible). */}
+                <span
+                  style={{ '--swatch-color': c.hex } as React.CSSProperties}
+                  className={cn(
+                    'block h-4 w-4 rounded-full bg-[var(--swatch-color)] scale-90 group-hover:scale-100 motion-safe:transition-transform motion-safe:duration-200',
+                    c.outline ? 'border border-on-surface/45' : 'border border-border-subtle',
+                    isSelected && 'ring-1 ring-on-surface ring-offset-1',
+                  )}
+                />
+              </button>
             )
           })}
         </div>

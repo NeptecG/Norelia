@@ -155,21 +155,23 @@ export function FeaturedCarousel({ title, subtitle, products, viewAllHref, viewA
             {Array.from({ length: totalPages }).map((_, idx) => {
               const isActive = idx === page
               return (
-                // p-2 gives a 24px hit area around each 8–10px dot (meets 44px recommended via adjacent dots)
+                // p-2 gives a ~24px hit area around the indicator (44px via adjacent dots)
                 <button
                   key={idx}
                   type="button"
                   aria-label={t('goToPage', { n: idx + 1 })}
                   aria-current={isActive ? 'true' : undefined}
                   onClick={() => goTo(idx)}
-                  className="p-2"
+                  className="group/dot p-2"
                 >
-                  <motion.span
-                    animate={isActive ? { scale: reducedMotion ? 1 : 1.25 } : { scale: 1 }}
-                    transition={{ duration: 0.15 }}
+                  {/* Active = crisp solid pill; inactive = small clear dot that darkens
+                      on hover. Higher contrast than the old border-subtle dots. */}
+                  <span
                     className={cn(
-                      'block rounded-full transition-colors',
-                      isActive ? 'w-2.5 h-2.5 bg-on-surface' : 'w-2 h-2 bg-border-subtle',
+                      'block h-1.5 rounded-full motion-safe:transition-all motion-safe:duration-300',
+                      isActive
+                        ? 'w-5 bg-on-surface'
+                        : 'w-1.5 bg-on-surface/30 group-hover/dot:bg-on-surface/60',
                     )}
                   />
                 </button>
