@@ -7,10 +7,11 @@ import { PRODUCTS } from '@/data/products'
 import { SITE_URL } from '@/lib/constants'
 
 export const metadata: Metadata = {
-  title: 'NORELIA. Premium Streetwear',
+  // absolute = no "%s | NORELIA." template suffix, so the tab reads just "NORELIA."
+  title: { absolute: 'NORELIA.' },
   description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
   openGraph: {
-    title: 'NORELIA. Premium Streetwear',
+    title: 'NORELIA.',
     description: 'Minimal premium streetwear. New collections, trending styles, and exclusive drops.',
     url: SITE_URL,
     type: 'website',
