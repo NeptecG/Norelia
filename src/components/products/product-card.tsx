@@ -266,13 +266,14 @@ export function ProductCard({ product, priority = false }: Props) {
                 }}
                 className="inline-flex items-center justify-center p-1.5 cursor-pointer"
               >
-                {/* Chip sits at 90% at rest and grows to full on card hover (transform,
-                    no layout shift, no opacity — keeps the white chip visible). */}
+                {/* Full size on mobile (no hover to undo a shrink there); on hover-capable
+                    screens it rests at 90% and grows on card hover. Every chip keeps a
+                    clearly visible outline circle — white needs it most on the white card. */}
                 <span
                   style={{ '--swatch-color': c.hex } as React.CSSProperties}
                   className={cn(
-                    'block h-4 w-4 rounded-full bg-[var(--swatch-color)] scale-90 group-hover:scale-100 motion-safe:transition-transform motion-safe:duration-200',
-                    c.outline ? 'border border-on-surface/45' : 'border border-border-subtle',
+                    'block h-4 w-4 rounded-full bg-[var(--swatch-color)] md:scale-90 md:group-hover:scale-100 motion-safe:transition-transform motion-safe:duration-200',
+                    c.outline ? 'border border-on-surface/55' : 'border border-on-surface/30',
                     isSelected && 'ring-1 ring-on-surface ring-offset-1',
                   )}
                 />
